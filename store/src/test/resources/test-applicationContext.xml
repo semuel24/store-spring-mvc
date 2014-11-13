@@ -14,10 +14,20 @@
 
 	<context:component-scan base-package="com.store" />
 	<!-- <context:annotation-config /> -->
-	
-	
-	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:/comp/env/jdbc/MyLocalDB" />
+
+	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" /> <property 
+		name="url" value="jdbc:mysql://localhost:3306/nabi_pass_portal_1111" /> <property 
+		name="username" value="root" /> <property name="password" value="password" 
+		/> </bean> -->
+
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/nabi_pass_portal_1111" />
+		<property name="username" value="root" />
+		<property name="password" value="password" />
 	</bean>
 
 	<!-- mysql session factory config -->
