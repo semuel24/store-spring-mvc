@@ -1,2 +1,9 @@
 Infrastructure
 http://www.codejava.net/frameworks/spring/spring-4-and-hibernate-4-integration-tutorial-part-1-xml-configuration
+
+JNDI datasource
+http://www.journaldev.com/2513/tomcat-datasource-jndi-example-for-servlet-web-application
+
+generate code from mysql
+http://www.mkyong.com/hibernate/how-to-generate-code-with-hibernate-tools/
+http://www.javacodegeeks.com/2013/10/step-by-step-auto-code-generation-for-pojo-domain-java-classes-and-hbm-using-eclipse-hibernate-plugin.html
