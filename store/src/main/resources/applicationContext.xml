@@ -14,24 +14,9 @@
 				http://www.springframework.org/schema/task 
 				http://www.springframework.org/schema/task/spring-task-3.0.xsd" >
 
+	<!-- specify packages to scan annotations -->
 	<context:component-scan base-package="com.store" />
 	<context:annotation-config />
-	
-	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
-		destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url"
-			value="jdbc:mysql://localhost:3306/usermanagement" />
-		<property name="username" value="root" />
-		<property name="password" value="password" />
-	</bean> -->
-	
-	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/usermanagement" /> please redefine mysql_url in developer.properties if necessary.
-		<property name="username" value="root" /> please redefine mysql_user in developer.properties if necessary.
-		<property name="password" value="password" /> please redefine mysql_password in developer.properties if necessary.
-	</bean> -->
 	
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:/comp/env/jdbc/MyLocalDB" />
@@ -39,8 +24,8 @@
 
 	<!-- mysql session factory config -->
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
-		p:dataSource-ref="dataSource">
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
@@ -59,11 +44,12 @@
 	<!-- Transaction manager for a single Hibernate SessionFactory (alternative 
 		to JTA) -->
 	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
 	
+	<!-- enable @Transactional -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
 </beans>
