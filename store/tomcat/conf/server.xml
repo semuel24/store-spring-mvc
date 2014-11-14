@@ -44,7 +44,7 @@
       auth="Container"
       type="javax.sql.DataSource"
       driverClassName="com.mysql.jdbc.Driver"
-      url="jdbc:mysql://localhost:3306/nabi_pass_portal_1111"
+      url="jdbc:mysql://localhost:3306/usermanagement"
       username="root"
       password="password"
        
