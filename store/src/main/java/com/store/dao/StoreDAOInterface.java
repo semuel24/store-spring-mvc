@@ -15,14 +15,14 @@ public interface StoreDAOInterface<Entity> {
 	public abstract void update(Entity e);
 
 	public abstract void delete(Entity e) throws DBException;
-	
+
 	public abstract void deleteFlush(Entity e) throws DBException;
 
 	public abstract void merge(Entity e) throws DBException;
 
 	public abstract SessionFactory getSessionFactory();
-	
+
 	void create(List<Entity> es);
-	
+
 	void update(List<Entity> es);
 }

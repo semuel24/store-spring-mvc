@@ -7,3 +7,9 @@ http://www.journaldev.com/2513/tomcat-datasource-jndi-example-for-servlet-web-ap
 generate code from mysql
 http://www.mkyong.com/hibernate/how-to-generate-code-with-hibernate-tools/
 http://www.javacodegeeks.com/2013/10/step-by-step-auto-code-generation-for-pojo-domain-java-classes-and-hbm-using-eclipse-hibernate-plugin.html
+
+
+Q & A
+1. Exclusive plans or multiple stackable plans?
+For ONE service, prefer to allow exclusive plan policy; otherwise, complicated business logic may involve.
+2. If apply stackable plan policy, how do we do if partial of plans are paid?

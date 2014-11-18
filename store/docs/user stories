@@ -30,6 +30,10 @@ As a user,
 I want to upgrade/downgrade my service,
 So that I can adjust the service according my needs.
 
+*As a user,
+I want to apply various promotion code,
+So that I can get some benefits, like get extra bandwidth by referring friends.
+
 ---------------------------------
 
 As an admin,
