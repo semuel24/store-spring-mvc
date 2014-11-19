@@ -14,7 +14,7 @@ public class UserDAOImpl extends StoreDAO<User> implements UserDAO {
 	@Override
 	public User findById(Long id) {
 		Query query = factory.getCurrentSession().createQuery(
-				" from User as user where user.Id = :id");
+				" from User as user where user.id = :id");
 		query.setLong("id", id);
 
 		return (User) query.uniqueResult();
