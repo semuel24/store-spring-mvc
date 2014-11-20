@@ -30,6 +30,7 @@ public class BaseController {
 		User user = userDAO.findById(1L);
 		
 		return VIEW_INDEX;
+//		return "/client/index";
 
 	}
 
@@ -42,6 +43,38 @@ public class BaseController {
 		User user = userDAO.findById(1L);
 		
 		return VIEW_INDEX;
+
+	}
+	
+	@RequestMapping(value = "/client", method = RequestMethod.GET)
+	public String welcomeClient(ModelMap model) {
+
+//		model.addAttribute("message", "Welcome");
+//		model.addAttribute("counter", ++counter);
+//		logger.debug("[welcome] counter : {}", counter);
+
+		// Spring uses InternalResourceViewResolver and return back index.jsp
+		
+		User user = userDAO.findById(1L);
+		
+//		return VIEW_INDEX;
+		return "/client/index";
+
+	}
+	
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
+	public String welcomeAdmin(ModelMap model) {
+
+//		model.addAttribute("message", "Welcome");
+		model.addAttribute("counter", ++counter);
+//		logger.debug("[welcome] counter : {}", counter);
+
+		// Spring uses InternalResourceViewResolver and return back index.jsp
+		
+		User user = userDAO.findById(1L);
+		
+//		return VIEW_INDEX;
+		return "/admin/index";
 
 	}
 
