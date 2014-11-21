@@ -13,3 +13,6 @@ Q & A
 1. Exclusive plans or multiple stackable plans?
 For ONE service, prefer to allow exclusive plan policy; otherwise, complicated business logic may involve.
 2. If apply stackable plan policy, how do we do if partial of plans are paid?
+
+Fast Start Tomcat
+http://wiki.apache.org/tomcat/HowTo/FasterStartUp

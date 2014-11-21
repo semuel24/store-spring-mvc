@@ -55,7 +55,7 @@ public class BaseController {
 
 		// Spring uses InternalResourceViewResolver and return back index.jsp
 		
-		User user = userDAO.findById(1L);
+//		User user = userDAO.findById(1L);
 		
 //		return VIEW_INDEX;
 		return "/client/index";
