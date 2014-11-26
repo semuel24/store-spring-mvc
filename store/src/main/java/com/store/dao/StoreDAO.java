@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.store.exception.DBException;
 
-public interface StoreDAOInterface<Entity> {
+public interface StoreDAO<Entity> {
 
 	@Autowired
 	public abstract void setSessionFactory(SessionFactory factory);

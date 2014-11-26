@@ -7,11 +7,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import com.store.dao.StoreDAOInterface;
+import com.store.dao.StoreDAO;
 import com.store.exception.DBException;
 
 @Transactional
-public class StoreDAO<Entity> implements StoreDAOInterface<Entity> {
+public class StoreDAOImpl<Entity> implements StoreDAO<Entity> {
 
 	protected SessionFactory factory;
 	

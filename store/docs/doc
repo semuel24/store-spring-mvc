@@ -14,5 +14,5 @@ Q & A
 For ONE service, prefer to allow exclusive plan policy; otherwise, complicated business logic may involve.
 2. If apply stackable plan policy, how do we do if partial of plans are paid?
 
-Fast Start Tomcat
+Fast Start Tomcat 7
 http://wiki.apache.org/tomcat/HowTo/FasterStartUp
