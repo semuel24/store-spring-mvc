@@ -4,8 +4,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
+//import javax.validation.ConstraintViolation;
+//import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,12 +25,12 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private SessionService sessionService;
 
-	@Autowired
-	private Validator validator;
+	// @Autowired
+	// private Validator validator;
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String processSignUp(
@@ -38,17 +38,25 @@ public class UserController {
 			ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
+		// clear app server session
+		request.getSession().invalidate();
+				
 		// (optional)validate input format
-		Set<ConstraintViolation<SignUpForm>> constraintViolations = validator
-				.validate(signupForm);
-		if (constraintViolations.size() > 0) {
-			return "/client/signup";// should not hit here
-		}
+		// Set<ConstraintViolation<SignUpForm>> constraintViolations = validator
+		// .validate(signupForm);
+		// if (constraintViolations.size() > 0) {
+		// return "/client/signup";// should not hit here
+		// }
 
 		// (optional)validate if username and email already exists in database
 
 		// create a new user in database
-		CreateUserResult result = userService.createUser(signupForm);
+		CreateUserResult result = null;
+		try {
+			result = userService.createUser(signupForm);
+		} catch (Exception e) {
+			result = new CreateUserResult(Constants.GENERAL_FAILURE);
+		}
 		if (!Constants.SUCCESS.equalsIgnoreCase(result.getStatus())) {
 			model.put("message", result.getMessage());
 			return "/client/message";
@@ -73,20 +81,21 @@ public class UserController {
 			HttpServletResponse response) {
 		return "/client/signup";
 	}
-	
+
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request,
 			HttpServletResponse response) {
-		
-		//clear database session
-		String sessionkey = (String)request.getSession().getAttribute(Constants.SESSION);
+
+		// clear database session
+		String sessionkey = (String) request.getSession().getAttribute(
+				Constants.SESSION);
 		sessionService.invalidateSession(sessionkey);
-		
-		//clear app server session
+
+		// clear app server session
 		request.getSession().invalidate();
-		
-		//go back to home page
-		return "/client/index";
+
+		// go back to home page
+		return "redirect:/client/index";
 	}
 
 }

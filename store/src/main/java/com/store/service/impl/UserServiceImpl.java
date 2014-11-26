@@ -22,37 +22,40 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private SessionDAO sessionDAO;
-	
-	@Transactional
+
+	@Transactional(readOnly = false)
 	@Override
 	public CreateUserResult createUser(SignUpForm form) {
 
 		CreateUserResult result = new CreateUserResult(Constants.SUCCESS);
 
+		User user = new User();
+		String salt = UUID.randomUUID().toString();
+		String hashedPassword;
 		try {
-			User user = new User();
-			String salt = UUID.randomUUID().toString();
-			String hashedPassword = SHA256Generator.hash(form.getPassword()
-					+ salt);
-
-			user.setEmail(form.getEmail());
-			user.setPassword(hashedPassword);
-			user.setSalt(salt);
-			user.setUsername(form.getUsername());
-			user.setStatus(Constants.ENABLED);
-			userDAO.create(user);
-			
-			Session session = new Session();
-			String sessionkey = UUID.randomUUID().toString();
-			session.setSessionkey(sessionkey);
-			session.setTimeout(System.currentTimeMillis() + Constants.DEFAULT_SESSION_TIMEOUT);
-			sessionDAO.create(session);
-			
-			result.setSessionkey(sessionkey);
+			hashedPassword = SHA256Generator.hash(form.getPassword() + salt);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getStackTrace());
 			result.setStatus(Constants.GENERAL_FAILURE);
+			return result;
 		}
+
+		user.setEmail(form.getEmail());
+		user.setPassword(hashedPassword);
+		user.setSalt(salt);
+		user.setUsername(form.getUsername());
+		user.setStatus(Constants.ENABLED);
+		userDAO.create(user);
+
+		Session session = new Session();
+		String sessionkey = UUID.randomUUID().toString();
+		session.setSessionkey(sessionkey);
+		session.setTimeout(System.currentTimeMillis()
+				+ Constants.DEFAULT_SESSION_TIMEOUT);
+		session.setUser(user);
+		sessionDAO.create(session);
+
+		result.setSessionkey(sessionkey);
 
 		return result;
 	}

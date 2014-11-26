@@ -68,7 +68,7 @@
                         <a href="login.html">登陆</a>
                     </li>
                     <li>
-                        <a id="logout" href="">登出</a>
+                        <a id="logout" href="lo g">登出</a>
                     </li>
                     <li>
                         <a href="signup.html">注册</a>
