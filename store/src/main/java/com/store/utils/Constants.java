@@ -10,4 +10,6 @@ public class Constants {
 	public static String SESSION = "sessionkey";
 	public static Integer ENABLED = 1;
 	public static Integer DISABLED = 0;
+	
+	public static Integer DEFAULT_SESSION_TIMEOUT = 3600;
 }

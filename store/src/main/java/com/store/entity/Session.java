@@ -25,7 +25,7 @@ public class Session implements java.io.Serializable {
 	private Integer id;
 	private User user;
 	private String sessionkey;
-	private Integer timeout;
+	private Long timeout;
 	private Date lastmodifytime;
 
 	public Session() {
@@ -36,7 +36,7 @@ public class Session implements java.io.Serializable {
 		this.sessionkey = sessionkey;
 	}
 
-	public Session(User user, String sessionkey, Integer timeout,
+	public Session(User user, String sessionkey, Long timeout,
 			Date lastmodifytime) {
 		this.user = user;
 		this.sessionkey = sessionkey;
@@ -75,11 +75,11 @@ public class Session implements java.io.Serializable {
 	}
 
 	@Column(name = "timeout")
-	public Integer getTimeout() {
+	public Long getTimeout() {
 		return this.timeout;
 	}
 
-	public void setTimeout(Integer timeout) {
+	public void setTimeout(Long timeout) {
 		this.timeout = timeout;
 	}
 

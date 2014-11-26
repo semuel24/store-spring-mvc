@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.store.result.CreateUserResult;
+import com.store.service.SessionService;
 import com.store.service.UserService;
 import com.store.utils.Constants;
 import com.store.web.form.SignUpForm;
@@ -24,6 +25,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private SessionService sessionService;
 
 	@Autowired
 	private Validator validator;
@@ -68,6 +72,21 @@ public class UserController {
 	public String viewSignUp(HttpServletRequest request,
 			HttpServletResponse response) {
 		return "/client/signup";
+	}
+	
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout(HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		//clear database session
+		String sessionkey = (String)request.getSession().getAttribute(Constants.SESSION);
+		sessionService.invalidateSession(sessionkey);
+		
+		//clear app server session
+		request.getSession().invalidate();
+		
+		//go back to home page
+		return "/client/index";
 	}
 
 }
