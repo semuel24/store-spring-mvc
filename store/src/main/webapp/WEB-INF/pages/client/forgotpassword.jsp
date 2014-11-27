@@ -50,55 +50,38 @@
 	<%@ include file="common/nav.jsp"%>
 
 	<div class="container">
+
 		<div class="row">
 			<div class="box">
 				<div class="col-lg-12">
 					<hr>
 					<h2 class="intro-text text-center">
-						Your <strong>account</strong>
+						<strong>忘记密码</strong>
 					</h2>
 					<hr>
 
-					<form role="form">
+					<form:form action="forgotpassword" method="post" commandName="forgotpasswordForm" role="form">
 						<div class="row">
-							<div class="form-group col-lg-6">
-								<label>姓名:</label><span>Sam</span>
-							</div>
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
-							<div class="form-group col-lg-6">
-								<label>用户名:</label><span>Sam</span>
-							</div>
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
-							<div class="form-group col-lg-6">
-								<label>电子邮件:</label><span>sam@tubevpn.com</span>
-							</div>
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
+                            <div class="form-group col-lg-4">
 
-							<div class="form-group col-lg-6">
-								<label>密码:</label><span>******</span>
-							</div>
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label>电子邮件</label>
+                                <input id="email" name="email" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-4">
 
-							<div class="form-group col-lg-6">
-								<label>当前套餐:</label><span>免费试用</span>
-							</div>
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
-						</div>
-					</form>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <input type="hidden" name="save" value="contact">
+                                <button type="submit" class="btn btn-warning btn-block">继续</button>
+                            </div>
+                        </div>
 				</div>
 			</div>
 		</div>
-
 	</div>
 	<!-- /.container -->
 

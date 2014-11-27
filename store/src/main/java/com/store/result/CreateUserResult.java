@@ -16,9 +16,9 @@ public class CreateUserResult extends StatusResult{
 		this.sessionkey = sessionkey;
 	}
 
-	public String getMessage() {
-		//translate error code to error message
-		return StatusResult.convertErrorCode2Message(this.getStatus());
-	}
+//	public String getMessage() {
+//		//translate error code to error message
+//		return StatusResult.convertErrorCode2Message(this.getStatus());
+//	}
 
 }

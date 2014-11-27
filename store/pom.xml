@@ -90,6 +90,11 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.1.0.Final</version>
+		</dependency>
+		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>3.12.1.GA</version>
@@ -145,7 +150,7 @@
 		</dependency>
 
 		<!-- validation -->
-		<!-- <dependency>
+		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>1.1.0.Final</version>
@@ -155,7 +160,7 @@
 			<groupId>org.apache.directory.studio</groupId>
 			<artifactId>org.apache.commons.pool</artifactId>
 			<version>1.6</version>
-		</dependency> -->
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>

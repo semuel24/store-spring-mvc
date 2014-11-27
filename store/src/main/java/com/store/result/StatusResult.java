@@ -32,4 +32,9 @@ public class StatusResult {
 		return "unknown";
 	}
 	
+	public String getMessage() {
+		//translate error code to error message
+		return StatusResult.convertErrorCode2Message(this.getStatus());
+	}
+	
 }

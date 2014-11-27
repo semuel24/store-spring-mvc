@@ -2,5 +2,5 @@ package com.store.service;
 
 public interface SessionService {
 
-	public void invalidateSession(String sessionkey);
+//	public void invalidateSession(String sessionkey);
 }

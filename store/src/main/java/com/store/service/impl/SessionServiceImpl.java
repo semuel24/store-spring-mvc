@@ -6,15 +6,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.store.dao.SessionDAO;
 import com.store.service.SessionService;
 
-@Component("sessionService")
+//@Component("sessionService")
 public class SessionServiceImpl implements SessionService {
 
-	@Autowired
-	private SessionDAO sessionDAO;
-
-	@Transactional
-	@Override
-	public void invalidateSession(String sessionkey) {
-		sessionDAO.invalidateSession(sessionkey);
-	}
+//	@Autowired
+//	private SessionDAO sessionDAO;
+//
+//	@Transactional
+//	@Override
+//	public void invalidateSession(String sessionkey) {
+//		sessionDAO.invalidateSession(sessionkey);
+//	}
 }
