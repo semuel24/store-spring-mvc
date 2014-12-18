@@ -18,13 +18,13 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="index.html">主页</a></li>
-				<li><a href="product.html">产品</a></li>
-				<li><a href="account.html">帐户</a></li>
-				<li><a href="login.html">登陆</a></li>
-				<li><a id="logout" href="">登出</a></li>
-				<li><a href="signup.html">注册</a></li>
-				<li><a href="contact.html">联系我们</a></li>
+				<li><a href="home">主页</a></li>
+				<li><a href="">产品</a></li>
+				<li><a href="account">帐户</a></li>
+				<li><a href="login">登陆</a></li>
+				<li><a href="logout">登出</a></li>
+				<li><a href="signup">注册</a></li>
+				<li><a href="contact">联系我们</a></li>
 			</ul>
 		</div>
 		<!-- /.navbar-collapse -->

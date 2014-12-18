@@ -57,8 +57,8 @@
 
                             </div>
                             <div class="form-group col-lg-4">
-                                <label>用户名</label>
-                                <input name="username" id="username" type="text" class="form-control">
+                                <label>昵称</label>
+                                <input name="name" id="name" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="row">
@@ -66,7 +66,7 @@
 
                             </div>
                             <div class="form-group col-lg-4">
-                                <label>电子邮件</label>
+                                <label>电子邮件(用户名)</label>
                                 <input name="email" id="email" type="text" class="form-control">
                             </div>
                         </div>

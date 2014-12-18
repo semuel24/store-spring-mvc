@@ -79,6 +79,7 @@
                                 <button type="submit" class="btn btn-warning btn-block">继续</button>
                             </div>
                         </div>
+                	</form:form>     
 				</div>
 			</div>
 		</div>

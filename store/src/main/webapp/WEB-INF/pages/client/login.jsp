@@ -58,7 +58,7 @@
 
                             </div>
                             <div class="form-group col-lg-4">
-                                <label>电子邮件</label>
+                                <label>电子邮件(用户名)</label>
                                 <input id="email" name="email" type="text" class="form-control">
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                                 <button type="submit" class="btn btn-warning btn-block">登陆您的账户</button>
                             </div>
                         </div>
-                    </form>
+                    </form:form>
                     <div class="row">
                         <div class="form-group col-lg-4">
 

@@ -15,10 +15,10 @@
     <title>tubevpn</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="<c:url value="css/bootstrap.min.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/startbootstrap-business-casual/css/bootstrap.min.css" />" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="<c:url value="css/business-casual.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/startbootstrap-business-casual/css/business-casual.css" />" rel="stylesheet">
 
     <!-- Fonts -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
@@ -61,10 +61,12 @@
     </footer>
 
     <!-- jQuery -->
-    <script src="<c:url value="js/jquery.js"/>" ></script>
+	<script
+		src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="<c:url value="js/bootstrap.min.js"/>" ></script>
+	<!-- Bootstrap Core JavaScript -->
+	<script
+		src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>"></script>
 
 </body>
 

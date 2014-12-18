@@ -1,11 +1,15 @@
 package store.util;
 
+import org.junit.Ignore;
 import org.junit.Test;
+
 import java.util.*;
+
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
+@Ignore
 //http://www.tutorialspoint.com/java/java_sending_email.htm
 public class EmailTest {
 

@@ -1,22 +1,30 @@
 package com.store.controller;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import com.store.dto.LoginServiceDTO;
 import com.store.result.CreateUserResult;
 import com.store.result.HandleForgotPasswordResult;
 import com.store.result.LoginResult;
 import com.store.result.StatusResult;
 import com.store.service.UserService;
 import com.store.utils.Constants;
+import com.store.utils.HttpServletUtil;
+import com.store.utils.JSONConverter;
+import com.store.web.form.ContactForm;
 import com.store.web.form.ForgotpasswordForm;
 import com.store.web.form.LoginForm;
 import com.store.web.form.SignUpForm;
@@ -53,11 +61,14 @@ public class UserController {
 
 		// create a new user in database
 		CreateUserResult result = null;
-		try {
-			result = userService.createUser(signupForm);
-		} catch (Exception e) {
-			result = new CreateUserResult(Constants.GENERAL_FAILURE);
-		}
+		result = userService.createUser(signupForm);
+//		try {
+//			result = userService.createUser(signupForm);
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//			System.out.println(e.getStackTrace());
+//			result = new CreateUserResult(Constants.GENERAL_FAILURE);
+//		}
 		if(result == null) {
 			model.put("message", StatusResult
 					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
@@ -95,15 +106,15 @@ public class UserController {
 			HttpServletResponse response) {
 
 		// clear database session
-		String sessionkey = (String) request.getSession().getAttribute(
-				Constants.SESSION);
+//		String sessionkey = (String) request.getSession().getAttribute(
+//				Constants.SESSION);
 		// sessionService.invalidateSession(sessionkey);
 
 		// clear app server session
 		request.getSession().invalidate();
 
 		// go back to home page
-		return "redirect:/client/index";
+		return "/client/home";
 	}
 
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.GET)
@@ -111,7 +122,7 @@ public class UserController {
 			HttpServletResponse response) {
 
 		// go back to home page
-		return "redirect:/client/forgotpassword";
+		return "/client/forgotpassword";
 	}
 
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
@@ -181,6 +192,65 @@ public class UserController {
 				result.getSessionkey());
 
 		// go to home page
-		return "/client/index";
+		return "/client/home";
 	}
+	
+//	@RequestMapping(value = "/loginservice",method = RequestMethod.POST)
+//	public void loginService(HttpServletRequest request,
+//			HttpServletResponse response) {
+//		
+//		String postBody = null;
+//		try {
+//			postBody = getBody(request);
+//			ObjectMapper mapper = new ObjectMapper();
+//			LoginServiceDTO dto = mapper.readValue(postBody, LoginServiceDTO.class);
+//			
+//			StatusResult result = userService.handleLoginService(dto);
+//			HttpServletUtil.populateWithJSON(response, JSONConverter.getJson(result));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			
+//			
+//		}
+//	}
+	
+	@RequestMapping(value = "/account", method = RequestMethod.GET)
+	public String viewAccount(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		return "/client/account";
+	}
+	
+	@RequestMapping(value = "/contact", method = RequestMethod.GET)
+	public String viewContact(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		return "/client/contact";
+	}
+	
+	@RequestMapping(value = "/contact", method = RequestMethod.POST)
+	public String handleContact(@ModelAttribute("contactForm") ContactForm contactForm,
+			ModelMap model, HttpServletRequest request,
+			HttpServletResponse response) {
+
+	
+		// go to home page
+		return "/client/home";
+	}
+	
+	private String getBody(HttpServletRequest request) throws IOException {
+		InputStream is = new BufferedInputStream(request.getInputStream());
+		int contentLength = request.getContentLength();
+		byte[] data = new byte[contentLength];
+
+		int offset = 0;
+		while(offset < contentLength) {
+		     final int readNow = is.read(data, offset, contentLength - offset);
+		     if (readNow == -1) break;   // Unexpected EOF?
+		     offset += readNow;
+		}
+		return new String(data,"UTF-8");
+	}
+	
 }
