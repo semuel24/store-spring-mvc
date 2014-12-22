@@ -157,11 +157,35 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 	
-	public StatusResult handleAddUserService(AddorUpdateUserDTO dto) {
-		
+	public void handleAddUserService(AddorUpdateUserDTO dto) {
+		Long currentTimeStamp = System.currentTimeMillis();
+		VpnUser user = new VpnUser();
+		user.setEmail(dto.getEmail());
+		user.setPassword(dto.getPassword());
+		user.setPeriod(dto.getPeriod());
+		user.setProductKey(dto.getProdutKey());
+		user.setSalt(dto.getSalt());
+		user.setServiceStartTimestamp(currentTimeStamp);
+		user.setStatus(dto.getStatus());
+		user.setUsage(0L);
+		user.setCurrentCycleEndTimestamp(BillingCycleHelper
+				.getNextBillingTimestamp(dto.getServiceStartTimestamp(),
+						dto.getPeriod(), currentTimeStamp + 1));//make sure next billing time is after start time
+
+		redisClient.saveOrUpdateUser(user);
 	}
 	
-	public StatusResult handleUpdateUserService(AddorUpdateUserDTO dto) {
-		
+	public void handleUpdateUserService(AddorUpdateUserDTO dto) {
+		throw new UnsupportedOperationException("handleUpdateUserService");
+	}
+	
+	/**
+	 * 
+	 */
+	public void handleDeleteUserService(String productKey, String email) {
+		VpnUser user = new VpnUser();
+		user.setEmail(email);
+		user.setProductKey(productKey);
+		redisClient.deleteUser(user);
 	}
 }

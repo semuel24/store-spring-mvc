@@ -3,7 +3,6 @@ package com.store.redis.client;
 public class VpnUser {
 
 	private String email;
-	private String ip;
 	private String password;
 	private String salt;
 	private Boolean status;
@@ -19,14 +18,6 @@ public class VpnUser {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
 	}
 
 	public String getPassword() {

@@ -1,10 +1,7 @@
 package com.store.rest.service;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.store.dto.AddVpnServerDTO;
 import com.store.dto.AddorUpdateUserDTO;
-import com.store.dto.VerifyVpnAccessDTO;
 import com.store.result.StatusResult;
 import com.store.service.UserService;
 import com.store.service.VpnServerService;
@@ -25,7 +20,7 @@ import com.store.utils.HttpServletUtil;
 import com.store.utils.JSONConverter;
 
 /**
- * This controller only accepts requests from tubevpn website.
+ * This controller only accepts requests from the website.
  */
 @Controller
 public class AdminRestService extends RestService {
@@ -39,7 +34,7 @@ public class AdminRestService extends RestService {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/addVpnServer", method = RequestMethod.PUT)
+	@RequestMapping(value = "/vpnServer", method = RequestMethod.PUT)
 	public void addVpnServer(HttpServletRequest request,
 			HttpServletResponse response) {
 
@@ -66,12 +61,12 @@ public class AdminRestService extends RestService {
 				JSONConverter.getJson(result));
 	}
 
-	@RequestMapping(value = "/deleteVpnServer/{productKey}/{ip}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/vpnServer/{productKey}/{ip}", method = RequestMethod.DELETE)
 	public void deleteVpnServer(HttpServletRequest request,
 			HttpServletResponse response,
 			@PathVariable("productKey") String productKey,
 			@PathVariable("ip") String ip) {
-		
+
 		StatusResult result = null;
 		try {
 			// todo: validate incoming data format
@@ -86,10 +81,10 @@ public class AdminRestService extends RestService {
 		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
-		
+
 	}
 
-	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/user", method = RequestMethod.POST)
 	public void addUser(HttpServletRequest request, HttpServletResponse response) {
 		String postBody = null;
 		StatusResult result = null;
@@ -103,7 +98,8 @@ public class AdminRestService extends RestService {
 			// todo: validate incoming data format
 
 			// verify user access
-			result = userService.handleAddUserService(dto);
+			userService.handleAddUserService(dto);
+			result = new StatusResult(Constants.SUCCESS);
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -114,7 +110,7 @@ public class AdminRestService extends RestService {
 				JSONConverter.getJson(result));
 	}
 
-	@RequestMapping(value = "/updateUser", method = RequestMethod.PUT)
+	@RequestMapping(value = "/user", method = RequestMethod.PUT)
 	public void updateUser(HttpServletRequest request,
 			HttpServletResponse response) {
 
@@ -130,7 +126,8 @@ public class AdminRestService extends RestService {
 			// todo: validate incoming data format
 
 			// verify user access
-			result = userService.handleUpdateUserService(dto);
+			userService.handleUpdateUserService(dto);
+			result = new StatusResult(Constants.SUCCESS);
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -139,5 +136,29 @@ public class AdminRestService extends RestService {
 		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
+	}
+
+	@RequestMapping(value = "/user/{productKey}/{ip}", method = RequestMethod.DELETE)
+	public void deleteUser(HttpServletRequest request,
+			HttpServletResponse response,
+			@PathVariable("productKey") String productKey,
+			@PathVariable("email") String email) {
+
+		StatusResult result = null;
+		try {
+			// todo: validate incoming data format
+
+			// handle deletion
+			userService.handleDeleteUserService(productKey, email);
+			result = new StatusResult(Constants.SUCCESS);
+		} catch (Exception e) {
+			if (logger.isErrorEnabled()) {
+				logger.error(e.getMessage(), e);
+			}
+			result = new StatusResult(Constants.GENERAL_FAILURE);
+		}
+		HttpServletUtil.populateWithJSON(response,
+				JSONConverter.getJson(result));
+
 	}
 }

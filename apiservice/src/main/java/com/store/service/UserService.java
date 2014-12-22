@@ -9,6 +9,7 @@ public interface UserService {
 
 	public StatusResult handleStartUseVpnService(VerifyVpnAccessDTO dto);
 	public StatusResult handleReportVpnUsageService(ReportUsageDTO dto);
-	public StatusResult handleAddUserService(AddorUpdateUserDTO dto);
-	public StatusResult handleUpdateUserService(AddorUpdateUserDTO dto);
+	public void handleAddUserService(AddorUpdateUserDTO dto);
+	public void handleUpdateUserService(AddorUpdateUserDTO dto);
+	public void handleDeleteUserService(String productKey, String email);
 }

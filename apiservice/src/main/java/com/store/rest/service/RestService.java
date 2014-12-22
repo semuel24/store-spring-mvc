@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 
-public abstract class RestService {
+public class RestService {
 
 	protected String getBody(HttpServletRequest request) throws IOException {
 		InputStream is = new BufferedInputStream(request.getInputStream());

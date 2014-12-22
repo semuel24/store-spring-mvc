@@ -18,12 +18,12 @@
 	<context:component-scan base-package="com.store" />
 	<context:annotation-config />
 	
-	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+	<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:/comp/env/jdbc/MyLocalDB" />
-	</bean>
+	</bean> -->
 
 	<!-- mysql session factory config -->
-	<bean id="sessionFactory"
+	<!-- <bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="hibernateProperties">
@@ -39,22 +39,22 @@
 				<value>com.store.entity</value>
 			</list>
 		</property>
-	</bean>
+	</bean> -->
 
 	<!-- Transaction manager for a single Hibernate SessionFactory (alternative 
 		to JTA) -->
-	<bean id="transactionManager"
+	<!-- <bean id="transactionManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
-	</bean>
+	</bean> -->
 	
 	<!-- enable @Transactional -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
 	
 	<!-- validator -->
-	<bean id="validator"
-      class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+	<!-- <bean id="validator"
+      class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/> -->
       
 </beans>

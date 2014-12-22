@@ -58,6 +58,9 @@ public class RedisClient implements InitializingBean, DisposableBean {
 		bucket.set(redisUser);
 	}
 
+	/**
+	 * only needs email and productKey
+	 */
 	public void deleteUser(VpnUser redisUser) {
 		RBucket<VpnUser> bucket = redisson
 				.getBucket(normalizeUserKey(redisUser));
