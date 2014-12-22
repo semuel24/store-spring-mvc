@@ -35,12 +35,18 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	// @Autowired
-	// private SessionService sessionService;
-
 	@Autowired
 	private Validator validator;
 
+	/**
+	 * steps:
+	 * 1. validate inputs format
+	 * 2. validate email not exist
+	 * 3. create user in DB, bind default free-trial product to user and usage to 0
+	 * 4. put user data into tomcat session object
+	 * 5. (async) generate profiles
+	 * 6. (async) send confirmation e-mails
+	 */
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String handleSignUp(
 			@ModelAttribute("signupForm") SignUpForm signupForm,
@@ -164,6 +170,12 @@ public class UserController {
 		return "/client/login";
 	}
 
+	/**
+	 * steps:
+	 * 
+	 * 1. validate user existence, user status(active/deactive), email/password
+	 * 2. read user data into tomcat session object
+	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String handleLogin(@ModelAttribute("loginForm") LoginForm loginForm,
 			ModelMap model, HttpServletRequest request,
@@ -194,26 +206,6 @@ public class UserController {
 		// go to home page
 		return "/client/home";
 	}
-	
-//	@RequestMapping(value = "/loginservice",method = RequestMethod.POST)
-//	public void loginService(HttpServletRequest request,
-//			HttpServletResponse response) {
-//		
-//		String postBody = null;
-//		try {
-//			postBody = getBody(request);
-//			ObjectMapper mapper = new ObjectMapper();
-//			LoginServiceDTO dto = mapper.readValue(postBody, LoginServiceDTO.class);
-//			
-//			StatusResult result = userService.handleLoginService(dto);
-//			HttpServletUtil.populateWithJSON(response, JSONConverter.getJson(result));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			
-//			
-//		}
-//	}
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public String viewAccount(HttpServletRequest request,

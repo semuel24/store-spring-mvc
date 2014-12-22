@@ -31,9 +31,11 @@ public class User implements java.io.Serializable {
 	private String salt;
 	private int status;
 	private Date lastmodifytime;
-	private Set<Session> sessions = new HashSet<Session>(0);
 	private Set<SubscriptionStatus> subscriptionStatuses = new HashSet<SubscriptionStatus>(
 			0);
+	private Set<VpnServer> vpnServers = new HashSet<VpnServer>(
+			0);
+	
 	private Set<ShoppingCart> shoppingCarts = new HashSet<ShoppingCart>(0);
 	private Set<OrderRecord> orderRecords = new HashSet<OrderRecord>(0);
 
@@ -116,15 +118,6 @@ public class User implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	public Set<Session> getSessions() {
-		return this.sessions;
-	}
-
-	public void setSessions(Set<Session> sessions) {
-		this.sessions = sessions;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	public Set<SubscriptionStatus> getSubscriptionStatuses() {
 		return this.subscriptionStatuses;
 	}
@@ -132,6 +125,15 @@ public class User implements java.io.Serializable {
 	public void setSubscriptionStatuses(
 			Set<SubscriptionStatus> subscriptionStatuses) {
 		this.subscriptionStatuses = subscriptionStatuses;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	public Set<VpnServer> getVpnServers() {
+		return vpnServers;
+	}
+
+	public void setVpnServers(Set<VpnServer> vpnServers) {
+		this.vpnServers = vpnServers;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")

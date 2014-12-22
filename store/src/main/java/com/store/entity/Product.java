@@ -9,8 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,7 +22,6 @@ import javax.persistence.TemporalType;
 public class Product implements java.io.Serializable {
 
 	private int id;
-	private ProductGroup productGroup;
 	private String productkey;
 	private String desc;
 	private Date lastmodifytime;
@@ -33,7 +30,10 @@ public class Product implements java.io.Serializable {
 			0);
 	private Set<SubscriptionStatus> subscriptionStatuses = new HashSet<SubscriptionStatus>(
 			0);
-
+	private Set<VpnServer> vpnServers = new HashSet<VpnServer>(
+			0);
+	
+	
 	public Product() {
 	}
 
@@ -47,15 +47,7 @@ public class Product implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_group_id", nullable = false)
-	public ProductGroup getProductGroup() {
-		return this.productGroup;
-	}
-
-	public void setProductGroup(ProductGroup productGroup) {
-		this.productGroup = productGroup;
-	}
+	
 
 	@Column(name = "productkey", length = 45)
 	public String getProductkey() {
@@ -112,6 +104,15 @@ public class Product implements java.io.Serializable {
 	public void setSubscriptionStatuses(
 			Set<SubscriptionStatus> subscriptionStatuses) {
 		this.subscriptionStatuses = subscriptionStatuses;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+	public Set<VpnServer> getVpnServers() {
+		return vpnServers;
+	}
+
+	public void setVpnServers(Set<VpnServer> vpnServers) {
+		this.vpnServers = vpnServers;
 	}
 
 }

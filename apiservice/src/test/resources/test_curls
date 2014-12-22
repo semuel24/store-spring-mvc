@@ -1,0 +1,15 @@
+1. add a server to given product key
+
+2. list servers of all products
+
+3. add a user with given product key
+
+4. verify user access to given product
+
+5. delete user
+
+6. verify user access to given product
+
+7. delete the server
+
+8. list servers of all products

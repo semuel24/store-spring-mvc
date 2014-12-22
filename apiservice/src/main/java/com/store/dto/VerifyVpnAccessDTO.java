@@ -1,9 +1,10 @@
 package com.store.dto;
 
-public class LoginServiceDTO {
+public class VerifyVpnAccessDTO {
 
 	private String email;
 	private String password;
+	private String incomingIp;
 	
 	public String getEmail() {
 		return email;
@@ -16,5 +17,11 @@ public class LoginServiceDTO {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getIncomingIp() {
+		return incomingIp;
+	}
+	public void setIncomingIp(String incomingIp) {
+		this.incomingIp = incomingIp;
 	}
 }

@@ -11,10 +11,56 @@ public class Constants {
 	public static String EMAIL_INCORRECT = "4";
 	public static String USERNAME_INCORRECT = "5";
 	public static String LOGIN_FAILURE = "6";
+	public static String USER_DEACTIVE = "7";
+	public static String IP_UNKNOWN = "8";
+	public static String REACH_USAGE_LIMIT = "9";
+	
 	
 	public static String SESSION = "sessionkey";
 	public static Integer ENABLED = 1;
 	public static Integer DISABLED = 0;
 	
+	public static Long FREE_TRIAL_USAGE_LIIMIT = 838860800L;//in bytes, 800 MB
+	
 	public static Integer DEFAULT_SESSION_TIMEOUT = 300;//in seconds
+	
+	public static enum PRODUCT {
+		FREETRIAL("freetrial"),
+		SHARED_MEMBERSHIP("shared_membership"),
+		DEDICATE_MEMBERSHIP("dedicate_membership");
+		
+		private String productKey;
+		
+		private PRODUCT(String _productKey){
+			this.productKey = _productKey;
+		}
+		
+		public String getProductKey() {
+			return this.productKey;
+		}	
+		
+		@Override
+		public String toString() {
+			return this.productKey;
+		}
+	}
+	
+	public static enum PERIOD {
+		MONTH("month");
+		
+		private String period;
+		
+		private PERIOD(String _period) {
+			this.period = _period;
+		}
+		
+		public String getPeriod() {
+			return this.period;
+		}
+		
+		@Override
+		public String toString() {
+			return this.period;
+		}
+	}
 }
