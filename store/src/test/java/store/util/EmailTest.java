@@ -20,10 +20,10 @@ public class EmailTest {
 
 	private void sendHtmlEmail() {
 		// Recipient's email ID needs to be mentioned.
-		String to = "xuyaosam24@gmail.com";
+		String to = "to@gmail.com";
 
 		// Sender's email ID needs to be mentioned
-		String from = "yaoxu@tubevpn.com";
+		String from = "from@gmail.com";
 
 		// Assuming you are sending email from localhost
 		String host = "localhost";

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import com.store.utils.Constants;
 
+//http://redis.io/topics/persistence
+//https://www.linode.com/docs/databases/redis/redis-on-ubuntu-12-04-precise-pangolin
 //refer to https://github.com/mrniko/redisson/wiki/Usage-examples
 /**
  * Precondition:
@@ -39,6 +41,7 @@ import com.store.utils.Constants;
  *       	}
  *       ]
  * 	}
+ * 
  * 	  
  */
 @Component
