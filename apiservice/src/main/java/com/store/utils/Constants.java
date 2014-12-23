@@ -46,7 +46,7 @@ public class Constants {
 	}
 	
 	public static enum PERIOD {
-		MONTH("month");
+		MONTHLY("monthly");
 		
 		private String period;
 		

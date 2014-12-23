@@ -1,10 +1,8 @@
 package com.store.rest.service;
 
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.store.dto.AddVpnServerDTO;
 import com.store.dto.AddorUpdateUserDTO;
-import com.store.redis.client.RedisClient;
 import com.store.redis.client.VpnServerInfo;
 import com.store.result.ServerListResult;
 import com.store.result.StatusResult;
@@ -27,16 +23,15 @@ import com.store.utils.HttpServletUtil;
 import com.store.utils.JSONConverter;
 
 /**
- * This controller only accepts requests from the website.
+ * This controller only accepts requests from the web site.
  */
 @Controller
 public class AdminRestService extends RestService {
 
-//	private static final Logger logger = LoggerFactory
-//			.getLogger(AdminRestService.class);
-	
 	private static final Logger logger = LoggerFactory
-			.getLogger(RedisClient.class);
+			.getLogger(AdminRestService.class);
+	
+	private static String adminApiKey = "2e078028-3196-4361-a027-d9f19835cc7a";
 
 	@Autowired
 	private VpnServerService vpnServerService;
@@ -44,7 +39,7 @@ public class AdminRestService extends RestService {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/vpnserver", method = RequestMethod.PUT)
+	@RequestMapping(value = "/admin/vpnserver", method = RequestMethod.PUT)
 	public void addVpnServer(HttpServletRequest request,
 			HttpServletResponse response) {
 
@@ -71,13 +66,11 @@ public class AdminRestService extends RestService {
 				JSONConverter.getJson(result));
 	}
 
-	@RequestMapping(value = "/vpnserver/{ip}/{productKey}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/admin/vpnserver/{ip}/{productKey}", method = RequestMethod.DELETE)
 	public void deleteVpnServer(HttpServletRequest request,
-			HttpServletResponse response,
-			@PathVariable("ip") String ip,
-			@PathVariable("productKey") String productKey
-			) {
-		
+			HttpServletResponse response, @PathVariable("ip") String ip,
+			@PathVariable("productKey") String productKey) {
+
 		StatusResult result = null;
 		try {
 			// todo: validate incoming data format
@@ -94,8 +87,8 @@ public class AdminRestService extends RestService {
 				JSONConverter.getJson(result));
 
 	}
-	
-	@RequestMapping(value = "/vpnservers", method = RequestMethod.GET)
+
+	@RequestMapping(value = "/admin/vpnservers", method = RequestMethod.GET)
 	public void getVpnServers(HttpServletRequest request,
 			HttpServletResponse response) {
 
@@ -103,7 +96,8 @@ public class AdminRestService extends RestService {
 		try {
 			// todo: validate incoming data format
 
-			Map<String, Map<String, VpnServerInfo>> servers = vpnServerService.handleFindAllServers();
+			Map<String, Map<String, VpnServerInfo>> servers = vpnServerService
+					.handleFindAllServers();
 			result = new ServerListResult(Constants.SUCCESS);
 			result.setServers(servers);
 		} catch (Exception e) {
@@ -116,7 +110,7 @@ public class AdminRestService extends RestService {
 				JSONConverter.getJson(result));
 	}
 
-	@RequestMapping(value = "/user", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/user", method = RequestMethod.POST)
 	public void addUser(HttpServletRequest request, HttpServletResponse response) {
 		String postBody = null;
 		StatusResult result = null;
@@ -142,7 +136,7 @@ public class AdminRestService extends RestService {
 				JSONConverter.getJson(result));
 	}
 
-	@RequestMapping(value = "/user", method = RequestMethod.PUT)
+	@RequestMapping(value = "/admin/user", method = RequestMethod.PUT)
 	public void updateUser(HttpServletRequest request,
 			HttpServletResponse response) {
 
@@ -170,7 +164,7 @@ public class AdminRestService extends RestService {
 				JSONConverter.getJson(result));
 	}
 
-	@RequestMapping(value = "/user/{productKey}/{ip}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/admin/user/{productKey}/{ip}", method = RequestMethod.DELETE)
 	public void deleteUser(HttpServletRequest request,
 			HttpServletResponse response,
 			@PathVariable("productKey") String productKey,

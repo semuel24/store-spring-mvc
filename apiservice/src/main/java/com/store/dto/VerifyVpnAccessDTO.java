@@ -4,7 +4,7 @@ public class VerifyVpnAccessDTO {
 
 	private String email;
 	private String password;
-	private String incomingIp;
+	private String incomingIp;//for test
 	
 	public String getEmail() {
 		return email;

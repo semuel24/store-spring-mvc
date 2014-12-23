@@ -3,10 +3,10 @@ package com.store.dto;
 public class ReportUsageDTO{
 
 	private String email;
-	private String vpnServerIp;
+	private String vpnServerIp;//for test
 	private Long upUsage;
 	private Long downUsage;
-	private String userIp;
+	private String userIp;//for future
 	
 	public String getEmail() {
 		return email;

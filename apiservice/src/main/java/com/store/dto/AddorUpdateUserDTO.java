@@ -6,7 +6,7 @@ public class AddorUpdateUserDTO {
 	private String password;
 	private String salt;
 	private Boolean status;
-	private String produtKey;
+	private String productKey;
 	private Long serviceStartTimestamp;
 	private String period;
 
@@ -42,12 +42,12 @@ public class AddorUpdateUserDTO {
 		this.status = status;
 	}
 
-	public String getProdutKey() {
-		return produtKey;
+	public String getProductKey() {
+		return productKey;
 	}
 
-	public void setProdutKey(String produtKey) {
-		this.produtKey = produtKey;
+	public void setProductKey(String productKey) {
+		this.productKey = productKey;
 	}
 
 	public Long getServiceStartTimestamp() {

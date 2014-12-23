@@ -131,7 +131,6 @@ public class RedisClient implements InitializingBean, DisposableBean {
 		VpnServerInfo server = vpnServerMapofProductKey.remove(ip);
 		vpnServerMap.put(productKey, vpnServerMapofProductKey);
 		bucket.set(vpnServerMap);
-//		bucket.set(null);
 		if (server == null) {
 			if (logger.isErrorEnabled()) {
 				logger.error("Vpn server ip:" + ip + "of product key:"
@@ -145,11 +144,17 @@ public class RedisClient implements InitializingBean, DisposableBean {
 		RBucket<Map<String, Map<String, VpnServerInfo>>> bucket = redisson
 				.getBucket(SERVER_LIST_ROOT_KEY);
 		if (bucket == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("### bucket is null ip: " + ip);
+			}
 			return null;
 		}
 
 		Map<String, Map<String, VpnServerInfo>> vpnServerMap = bucket.get();
 		if (vpnServerMap == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("### vpnServerMap is null ip: " + ip);
+			}
 			return null;
 		}
 
@@ -158,15 +163,26 @@ public class RedisClient implements InitializingBean, DisposableBean {
 				Constants.PRODUCT.DEDICATE_MEMBERSHIP.getProductKey() };
 
 		for (String productKey : productKeys) {
+			
+			if(logger.isErrorEnabled()) {
+				logger.error("### product key:" + productKey);
+			}
+			
 			if (vpnServerMap.containsKey(productKey)) {
 				Map<String, VpnServerInfo> vpnServerMapofGivenKey = vpnServerMap
 						.get(productKey);
 				if (vpnServerMapofGivenKey.containsKey(ip)) {
+					if(logger.isErrorEnabled()) {
+						logger.error("### the target product key is " + productKey);
+					}
 					return productKey;// found the product key
 				}
 			}
 		}
 
+		if(logger.isErrorEnabled()) {
+			logger.error("### the target product key is null");
+		}
 		return null;
 	}
 
@@ -191,7 +207,7 @@ public class RedisClient implements InitializingBean, DisposableBean {
 	}
 
 	private String normalizeUserKey(String email, String productKey) {
-		return USER_DATA_PREFIX + email + productKey;
+		return USER_DATA_PREFIX + email + "/" + productKey;
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -199,6 +215,8 @@ public class RedisClient implements InitializingBean, DisposableBean {
 		// get a redis connection
 		RedisClient client = new RedisClient();
 		client.afterPropertiesSet();
+		
+		client.findProductKeyServerByIp("1.1.1.1");
 
 		// add a vpn server
 		VpnServerInfo vpn1 = new VpnServerInfo();

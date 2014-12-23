@@ -23,6 +23,8 @@ public class UserRestService extends RestService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(UserRestService.class);
 
+	private static String userApiKey = "74b49f01-7009-4e98-80ef-e85004128e7d";
+	
 	@Autowired
 	private UserService userService;
 
@@ -39,17 +41,21 @@ public class UserRestService extends RestService {
 			VerifyVpnAccessDTO dto = mapper.readValue(postBody,
 					VerifyVpnAccessDTO.class);
 
-			String ip = request.getRemoteAddr();
-			if (ip != null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("incoming ip:" + ip);
+			if(logger.isErrorEnabled()) {
+				logger.error("verifyAccessinRedis - input ip:" + dto.getIncomingIp());
+			}
+			
+			if(dto.getIncomingIp() == null || "".equalsIgnoreCase(dto.getIncomingIp())) {
+				dto.setIncomingIp(request.getRemoteAddr());
+				if(logger.isErrorEnabled()) {
+					logger.error("verifyAccessinRedis - caught remote ip:" + dto.getIncomingIp());
 				}
 			}
+			
 
 			// todo: validate incoming data format
 
 			// verify user access
-			dto.setIncomingIp(ip);
 			result = userService.handleStartUseVpnService(dto);
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
@@ -73,7 +79,17 @@ public class UserRestService extends RestService {
 			ObjectMapper mapper = new ObjectMapper();
 			ReportUsageDTO dto = mapper.readValue(postBody,
 					ReportUsageDTO.class);
-			dto.setVpnServerIp(request.getRemoteAddr());
+			
+			if(logger.isErrorEnabled()) {
+				logger.error("reportUsagetoRedis - input ip:" + dto.getVpnServerIp());
+			}
+			
+			if(dto.getVpnServerIp() == null || "".equalsIgnoreCase(dto.getVpnServerIp())) {
+				dto.setVpnServerIp(request.getRemoteAddr());
+				if(logger.isErrorEnabled()) {
+					logger.error("reportUsagetoRedis - caught remote ip:" + dto.getVpnServerIp());
+				}
+			}
 
 			// todo: validate input formats
 

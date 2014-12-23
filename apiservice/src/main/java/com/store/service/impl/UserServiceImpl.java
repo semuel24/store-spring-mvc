@@ -161,9 +161,18 @@ public class UserServiceImpl implements UserService {
 		Long currentTimeStamp = System.currentTimeMillis();
 		VpnUser user = new VpnUser();
 		user.setEmail(dto.getEmail());
-		user.setPassword(dto.getPassword());
+		
+		String hashedPassword;
+		try {
+			hashedPassword = SHA256Generator.hash(dto.getPassword()
+						+ dto.getSalt());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		user.setPassword(hashedPassword);
+		
 		user.setPeriod(dto.getPeriod());
-		user.setProductKey(dto.getProdutKey());
+		user.setProductKey(dto.getProductKey());
 		user.setSalt(dto.getSalt());
 		user.setServiceStartTimestamp(currentTimeStamp);
 		user.setStatus(dto.getStatus());
