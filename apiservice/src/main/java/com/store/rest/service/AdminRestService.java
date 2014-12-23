@@ -1,7 +1,10 @@
 package com.store.rest.service;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.store.dto.AddVpnServerDTO;
 import com.store.dto.AddorUpdateUserDTO;
+import com.store.redis.client.RedisClient;
+import com.store.redis.client.VpnServerInfo;
+import com.store.result.ServerListResult;
 import com.store.result.StatusResult;
 import com.store.service.UserService;
 import com.store.service.VpnServerService;
@@ -25,8 +32,11 @@ import com.store.utils.JSONConverter;
 @Controller
 public class AdminRestService extends RestService {
 
+//	private static final Logger logger = LoggerFactory
+//			.getLogger(AdminRestService.class);
+	
 	private static final Logger logger = LoggerFactory
-			.getLogger(AdminRestService.class);
+			.getLogger(RedisClient.class);
 
 	@Autowired
 	private VpnServerService vpnServerService;
@@ -34,7 +44,7 @@ public class AdminRestService extends RestService {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/vpnServer", method = RequestMethod.PUT)
+	@RequestMapping(value = "/vpnserver", method = RequestMethod.PUT)
 	public void addVpnServer(HttpServletRequest request,
 			HttpServletResponse response) {
 
@@ -61,12 +71,13 @@ public class AdminRestService extends RestService {
 				JSONConverter.getJson(result));
 	}
 
-	@RequestMapping(value = "/vpnServer/{productKey}/{ip}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/vpnserver/{ip}/{productKey}", method = RequestMethod.DELETE)
 	public void deleteVpnServer(HttpServletRequest request,
 			HttpServletResponse response,
-			@PathVariable("productKey") String productKey,
-			@PathVariable("ip") String ip) {
-
+			@PathVariable("ip") String ip,
+			@PathVariable("productKey") String productKey
+			) {
+		
 		StatusResult result = null;
 		try {
 			// todo: validate incoming data format
@@ -82,6 +93,27 @@ public class AdminRestService extends RestService {
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
 
+	}
+	
+	@RequestMapping(value = "/vpnservers", method = RequestMethod.GET)
+	public void getVpnServers(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		ServerListResult result = null;
+		try {
+			// todo: validate incoming data format
+
+			Map<String, Map<String, VpnServerInfo>> servers = vpnServerService.handleFindAllServers();
+			result = new ServerListResult(Constants.SUCCESS);
+			result.setServers(servers);
+		} catch (Exception e) {
+			if (logger.isErrorEnabled()) {
+				logger.error(e.getMessage(), e);
+			}
+			result = new ServerListResult(Constants.GENERAL_FAILURE);
+		}
+		HttpServletUtil.populateWithJSON(response,
+				JSONConverter.getJson(result));
 	}
 
 	@RequestMapping(value = "/user", method = RequestMethod.POST)

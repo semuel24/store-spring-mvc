@@ -2,6 +2,7 @@ package com.store.redis.client;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.redisson.Config;
 import org.redisson.Redisson;
 import org.redisson.core.RBucket;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
+
 import com.store.utils.Constants;
 
 //refer to https://github.com/mrniko/redisson/wiki/Usage-examples
@@ -104,8 +106,10 @@ public class RedisClient implements InitializingBean, DisposableBean {
 	}
 
 	public void deleteVpnServer(String productKey, String ip) {
+		
 		RBucket<Map<String, Map<String, VpnServerInfo>>> bucket = redisson
 				.getBucket(SERVER_LIST_ROOT_KEY);
+		
 		Map<String, Map<String, VpnServerInfo>> vpnServerMap = bucket.get();
 
 		if (vpnServerMap == null) {
@@ -121,9 +125,13 @@ public class RedisClient implements InitializingBean, DisposableBean {
 				logger.error("Vpn server of product key:" + productKey
 						+ "map is missing in deleteVpnServer.");
 			}
+			return;
 		}
 
 		VpnServerInfo server = vpnServerMapofProductKey.remove(ip);
+		vpnServerMap.put(productKey, vpnServerMapofProductKey);
+		bucket.set(vpnServerMap);
+//		bucket.set(null);
 		if (server == null) {
 			if (logger.isErrorEnabled()) {
 				logger.error("Vpn server ip:" + ip + "of product key:"
@@ -186,7 +194,8 @@ public class RedisClient implements InitializingBean, DisposableBean {
 		return USER_DATA_PREFIX + email + productKey;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		
 		// get a redis connection
 		RedisClient client = new RedisClient();
 		client.afterPropertiesSet();
@@ -197,9 +206,12 @@ public class RedisClient implements InitializingBean, DisposableBean {
 		vpn1.setIp("1.1.1.1");
 		client.saveOrUpdateVpnServer(
 				Constants.PRODUCT.FREETRIAL.getProductKey(), vpn1);
-
+	
+		//delete the vpn server
+		client.deleteVpnServer(Constants.PRODUCT.FREETRIAL.getProductKey(), "1.1.1.1");
+		
 		// get the vpn server
-		String productKey2 = client.findProductKeyServerByIp(vpn1.getIp());
+//		String productKey2 = client.findProductKeyServerByIp(vpn1.getIp());
 
 		// get the whole list of vpn servers
 		Map<String, Map<String, VpnServerInfo>> map = client

@@ -1,7 +1,10 @@
 package com.store.service.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.store.dto.AddVpnServerDTO;
 import com.store.redis.client.RedisClient;
 import com.store.redis.client.VpnServerInfo;
@@ -23,4 +26,9 @@ public class VpnServerServiceImpl implements VpnServerService {
 	public void handleDeleteServer(String productKey, String ip) {
 		redisClient.deleteVpnServer(productKey, ip);
 	}
+	
+	public Map<String, Map<String, VpnServerInfo>> handleFindAllServers() {
+		return redisClient.findAllVpnServers();
+	}
+	
 }

@@ -1,9 +1,11 @@
 1. add a server to given product key
-curl -X PUT 'http://localhost:8080/vpnServer' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"ip":"1.1.1.1","productKey":"freetrial"}'
+curl -X PUT 'http://localhost:8080/apiservice/vpnserver' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"ip":"1.1.1.1","productKey":"freetrial"}'
 
 2. list servers of all products
+curl -X GET 'http://localhost:8080/apiservice/vpnservers' -H 'Accept:application/json' -H 'Content-Type:application/json'
 
 3. add a user with given product key
+
 
 4. verify user access to given product
 
@@ -12,5 +14,7 @@ curl -X PUT 'http://localhost:8080/vpnServer' -H 'Accept:application/json' -H 'C
 6. verify user access to given product
 
 7. delete the server
+curl -X DELETE 'http://localhost:8080/apiservice/vpnserver/1.1.1.1/freetrial' -H 'Accept:application/json' -H 'Content-Type:application/json'
 
 8. list servers of all products
+curl -X GET 'http://localhost:8080/apiservice/vpnservers' -H 'Accept:application/json' -H 'Content-Type:application/json'
