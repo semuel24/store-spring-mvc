@@ -26,8 +26,8 @@ public class Constants {
 	
 	public static enum PRODUCT {
 		FREETRIAL("freetrial"),
-		SHARED_MEMBERSHIP("shared_membership"),
-		DEDICATE_MEMBERSHIP("dedicate_membership");
+		SHARED_MEMBERSHIP("normalmember"),
+		DEDICATE_MEMBERSHIP("dedicatemember");
 		
 		private String productKey;
 		

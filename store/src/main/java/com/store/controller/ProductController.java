@@ -20,12 +20,6 @@ public class ProductController {
 		return "/client/home";
 	}
 	
-//	@RequestMapping(value = "/contact", method = RequestMethod.GET)
-//	public String viewContact(ModelMap model) {
-//
-//		return "/client/contact";
-//	}
-	
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
 	public String welcomeAdmin(ModelMap model) {
 

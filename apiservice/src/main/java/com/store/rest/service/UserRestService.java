@@ -31,7 +31,7 @@ public class UserRestService extends RestService {
 	@RequestMapping(value = "/loginservice", method = RequestMethod.POST)
 	public void verifyAccessinRedis(HttpServletRequest request,
 			HttpServletResponse response) {
-
+		
 		String postBody = null;
 		StatusResult result = null;
 		try {

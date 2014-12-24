@@ -7,6 +7,7 @@ public class ReportUsageDTO{
 	private Long upUsage;
 	private Long downUsage;
 	private String userIp;//for future
+	private Long sessionId;//session start timestamp
 	
 	public String getEmail() {
 		return email;
@@ -37,5 +38,11 @@ public class ReportUsageDTO{
 	}
 	public void setUserIp(String userIp) {
 		this.userIp = userIp;
+	}
+	public Long getSessionId() {
+		return sessionId;
+	}
+	public void setSessionId(Long sessionId) {
+		this.sessionId = sessionId;
 	}
 }

@@ -11,7 +11,10 @@ import com.store.web.form.SignUpForm;
 public interface UserService {
 
 	public CreateUserResult createUser(SignUpForm form);
+
 	public HandleForgotPasswordResult handleForgotPassword(String email);
+
 	public LoginResult handleLogin(LoginForm loginForm);
+
 	public StatusResult handleLoginService(LoginServiceDTO dto);
 }

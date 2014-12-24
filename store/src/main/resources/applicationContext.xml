@@ -1,8 +1,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="
 				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
@@ -12,12 +12,12 @@
 				http://www.springframework.org/schema/aop 
 				http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 				http://www.springframework.org/schema/task 
-				http://www.springframework.org/schema/task/spring-task-3.0.xsd" >
+				http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
 	<!-- specify packages to scan annotations -->
 	<context:component-scan base-package="com.store" />
 	<context:annotation-config />
-	
+
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:/comp/env/jdbc/MyLocalDB" />
 	</bean>
@@ -49,12 +49,23 @@
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>
-	
+
 	<!-- enable @Transactional -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
-	
+
 	<!-- validator -->
 	<bean id="validator"
-      class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-      
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<!-- outgoing API's -->
+	<bean id="apiServiceTarget" class="com.store.calling.api.WebTargetFactory">
+		<property name="serverURL" value="http://billing.tubevpn.com" />
+	</bean>
+
+	<bean id="apiService" class="com.store.calling.api.ApiServiceImpl">
+		<property name="target">
+			<ref bean="apiServiceTarget" />
+		</property>
+	</bean>
+
 </beans>

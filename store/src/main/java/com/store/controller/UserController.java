@@ -8,22 +8,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import com.store.dto.LoginServiceDTO;
 import com.store.result.CreateUserResult;
 import com.store.result.HandleForgotPasswordResult;
 import com.store.result.LoginResult;
 import com.store.result.StatusResult;
 import com.store.service.UserService;
 import com.store.utils.Constants;
-import com.store.utils.HttpServletUtil;
-import com.store.utils.JSONConverter;
 import com.store.web.form.ContactForm;
 import com.store.web.form.ForgotpasswordForm;
 import com.store.web.form.LoginForm;
@@ -31,6 +29,9 @@ import com.store.web.form.SignUpForm;
 
 @Controller
 public class UserController {
+	
+	private static final Logger logger = LoggerFactory
+			.getLogger(UserController.class);
 
 	@Autowired
 	private UserService userService;
@@ -42,7 +43,8 @@ public class UserController {
 	 * steps:
 	 * 1. validate inputs format
 	 * 2. validate email not exist
-	 * 3. create user in DB, bind default free-trial product to user and usage to 0
+	 * 3.1 create user in DB, bind default free-trial product to user and usage to 0
+	 * 3.2 put user data to redis through API service
 	 * 4. put user data into tomcat session object
 	 * 5. (async) generate profiles
 	 * 6. (async) send confirmation e-mails

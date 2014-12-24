@@ -37,9 +37,6 @@
 
     <div class="brand">tubevpn</div>
 
-    <!-- Navigation -->
-    <%@ include file="common/nav.jsp"%>
-
     <div class="container">
         <div class="row">
             <div class="box">
