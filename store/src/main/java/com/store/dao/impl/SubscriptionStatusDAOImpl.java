@@ -15,7 +15,6 @@ public class SubscriptionStatusDAOImpl extends StoreDAOImpl<SubscriptionStatus>
 
 	public void save(User user, Product product) {
 		SubscriptionStatus ss = new SubscriptionStatus();
-		ss.setBalance(0);
 		ss.setProduct(product);
 		ss.setSubscriptionStatus(true);
 		ss.setUsage(0L);

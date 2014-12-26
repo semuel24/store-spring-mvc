@@ -2,7 +2,6 @@ package com.store.redis.client;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.redisson.Config;
 import org.redisson.Redisson;
 import org.redisson.core.RBucket;
@@ -10,8 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
 import com.store.utils.Constants;
 
 //http://redis.io/topics/persistence
@@ -41,7 +41,7 @@ import com.store.utils.Constants;
  *       	}
  *       ]
  * 	}
- * 
+ * com.store.redis.client.RedisClient
  * 	  
  */
 @Component
@@ -56,6 +56,11 @@ public class RedisClient implements InitializingBean, DisposableBean {
 	public static String USER_DATA_PREFIX = "/user/";
 
 	private Redisson redisson;
+	
+//	private String redisServerAddress = "127.0.0.1:6379";
+	@Autowired
+	@Qualifier("redisServerAddress")
+	private String redisServerAddress;
 
 	public void saveOrUpdateUser(VpnUser redisUser) {
 		RBucket<VpnUser> bucket = redisson
@@ -197,7 +202,7 @@ public class RedisClient implements InitializingBean, DisposableBean {
 
 	public void afterPropertiesSet() {
 		Config config = new Config();
-		config.useSingleServer().setAddress("127.0.0.1:6379");
+		config.useSingleServer().setAddress(redisServerAddress);
 		redisson = Redisson.create(config);
 	}
 

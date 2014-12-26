@@ -17,6 +17,20 @@
 	<!-- specify packages to scan annotations -->
 	<context:component-scan base-package="com.store" />
 	<context:annotation-config />
+	
+	<!-- <bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		scope="singleton" lazy-init="false" p:placeholderPrefix="$prod:{"
+		p:order="100" p:systemPropertiesModeName="SYSTEM_PROPERTIES_MODE_OVERRIDE"
+		p:location="file:/var/lib/tomcat7/conf/vpn.properties">
+	</bean> -->
+	
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		scope="singleton" lazy-init="false" p:placeholderPrefix="$prod:{"
+		p:order="100" p:systemPropertiesModeName="SYSTEM_PROPERTIES_MODE_OVERRIDE"
+		p:location="file:${catalina.base}/conf/vpn.properties">
+	</bean>
 
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:/comp/env/jdbc/MyLocalDB" />
@@ -58,8 +72,11 @@
 		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
 	<!-- outgoing API's -->
-	<bean id="apiServiceTarget" class="com.store.calling.api.WebTargetFactory">
+	<!-- <bean id="apiServiceTarget" class="com.store.calling.api.WebTargetFactory">
 		<property name="serverURL" value="http://billing.tubevpn.com" />
+	</bean> -->
+	<bean id="apiServiceTarget" class="com.store.calling.api.WebTargetFactory">
+		<property name="serverURL" value="$prod:{api.service.address}" />
 	</bean>
 
 	<bean id="apiService" class="com.store.calling.api.ApiServiceImpl">

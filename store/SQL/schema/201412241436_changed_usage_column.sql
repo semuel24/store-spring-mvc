@@ -1,0 +1,1 @@
+ALTER TABLE `subscription_Status` CHANGE COLUMN `usage` `totalusage` BIGINT(20) NULL DEFAULT NULL ;

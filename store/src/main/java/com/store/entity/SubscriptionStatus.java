@@ -83,7 +83,7 @@ public class SubscriptionStatus implements java.io.Serializable {
 		this.lastmodifytime = lastmodifytime;
 	}
 
-	@Column(name = "usage")
+	@Column(name = "totalusage")
 	public Long getUsage() {
 		return usage;
 	}
