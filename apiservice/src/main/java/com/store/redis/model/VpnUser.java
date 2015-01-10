@@ -1,4 +1,6 @@
-package com.store.redis.client;
+package com.store.redis.model;
+
+import java.util.Map;
 
 public class VpnUser {
 
@@ -7,10 +9,17 @@ public class VpnUser {
 	private String salt;
 	private Boolean status;
 	private String productKey;
-	private Long usage;
+	
 	private Long serviceStartTimestamp;
 	private String period;
 	private Long currentCycleEndTimestamp;
+	
+	
+	private Long userUsageLimit;
+	private Long totalUsageofExpiredSessions;
+	private Long totalUsageofAllSessions;
+	
+	private Map<Long, SessionUsage>sessionUsageMap;
 
 	public String getEmail() {
 		return email;
@@ -43,13 +52,37 @@ public class VpnUser {
 	public void setStatus(Boolean status) {
 		this.status = status;
 	}
-
-	public Long getUsage() {
-		return usage;
+	
+	public Long getUserUsageLimit() {
+		return userUsageLimit;
 	}
 
-	public void setUsage(Long usage) {
-		this.usage = usage;
+	public void setUserUsageLimit(Long userUsageLimit) {
+		this.userUsageLimit = userUsageLimit;
+	}
+
+	public Long getTotalUsageofExpiredSessions() {
+		return totalUsageofExpiredSessions;
+	}
+
+	public void setTotalUsageofExpiredSessions(Long totalUsageofExpiredSessions) {
+		this.totalUsageofExpiredSessions = totalUsageofExpiredSessions;
+	}
+
+	public Long getTotalUsageofAllSessions() {
+		return totalUsageofAllSessions;
+	}
+
+	public void setTotalUsageofAllSessions(Long totalUsageofAllSessions) {
+		this.totalUsageofAllSessions = totalUsageofAllSessions;
+	}
+
+	public Map<Long, SessionUsage> getSessionUsageMap() {
+		return sessionUsageMap;
+	}
+
+	public void setSessionUsageMap(Map<Long, SessionUsage> sessionUsageMap) {
+		this.sessionUsageMap = sessionUsageMap;
 	}
 
 	public String getProductKey() {
@@ -83,4 +116,5 @@ public class VpnUser {
 	public void setCurrentCycleEndTimestamp(Long currentCycleEndTimestamp) {
 		this.currentCycleEndTimestamp = currentCycleEndTimestamp;
 	}
+	
 }

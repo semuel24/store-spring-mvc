@@ -1,14 +1,26 @@
 package com.store.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.store.dto.AddorUpdateUserDTO;
-//import org.springframework.transaction.annotation.Transactional;
+import com.store.dto.BatchRequestAccessDTO;
 import com.store.dto.ReportUsageDTO;
 import com.store.dto.VerifyVpnAccessDTO;
-import com.store.redis.client.RedisClient;
-import com.store.redis.client.VpnUser;
+import com.store.redis.dao.BlockUserDAO;
+import com.store.redis.dao.ServerRedisDAO;
+import com.store.redis.dao.UserRedisDAO;
+import com.store.redis.model.SessionUsage;
+import com.store.redis.model.VpnUser;
+import com.store.result.BatchRequestAccessResult;
 import com.store.result.LoginResult;
 import com.store.result.StatusResult;
 import com.store.service.UserService;
@@ -19,8 +31,17 @@ import com.store.utils.SHA256Generator;
 @Component("userService")
 public class UserServiceImpl implements UserService {
 	
+	private static final Logger logger = LoggerFactory
+			.getLogger(UserServiceImpl.class);
+	
 	@Autowired
-	private RedisClient redisClient;
+	private ServerRedisDAO serverRedisDAO;
+	
+	@Autowired
+	private UserRedisDAO userRedisDAO;
+	
+	@Autowired
+	private BlockUserDAO blockUserDAO;
 
 	/** 
 	 * steps:
@@ -40,16 +61,22 @@ public class UserServiceImpl implements UserService {
 
 		// step2
 		// get product key by incoming IP
-		String productKey = redisClient.findProductKeyServerByIp(dto
+		String productKey = serverRedisDAO.findProductKeyServerByIp(dto
 				.getIncomingIp());
 		if (productKey == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Unknown ip: " + dto.getIncomingIp());
+			}
 			result.setStatus(Constants.IP_UNKNOWN);
 			return result;
 		}
 
 		// validate user/vpn server mapping
-		VpnUser user = redisClient.findUserByKey(dto.getEmail(), productKey);
+		VpnUser user = userRedisDAO.findUserByKey(dto.getEmail(), productKey);
 		if (user == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Unknown email: " + dto.getEmail());
+			}
 			result.setStatus(Constants.EMAIL_INCORRECT);
 			return result;
 		}
@@ -57,6 +84,9 @@ public class UserServiceImpl implements UserService {
 		// step1
 		// validate user status
 		if (false == user.getStatus()) {
+			if(logger.isErrorEnabled()) {
+				logger.error("user deactivated: " + dto.getEmail());
+			}
 			result.setStatus(Constants.USER_DEACTIVE);
 			return result;
 		}
@@ -74,6 +104,9 @@ public class UserServiceImpl implements UserService {
 
 		if (hashedPassword == null
 				|| !hashedPassword.equalsIgnoreCase(user.getPassword())) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Invalid password: " + dto.getEmail() + " | " + dto.getPassword());
+			}
 			result.setStatus(Constants.LOGIN_FAILURE);
 			return result;
 		}
@@ -87,10 +120,13 @@ public class UserServiceImpl implements UserService {
 					.getNextBillingTimestamp(user.getServiceStartTimestamp(),
 							user.getPeriod(), current);
 			user.setCurrentCycleEndTimestamp(nextBillingTimestamp);
-			user.setUsage(0L);
-			redisClient.saveOrUpdateUser(user);
+			resetUsage(user);//reset usage for new billing cycle
+			userRedisDAO.saveOrUpdateUser(user);
 		} else {//still in old cycle
-			if (user.getUsage() > Constants.FREE_TRIAL_USAGE_LIIMIT) {
+			if (user.getTotalUsageofAllSessions() > user.getUserUsageLimit()) {
+				if(logger.isErrorEnabled()) {
+					logger.error("User: " + dto.getEmail() + " reached usage limit.");
+				}
 				result.setStatus(Constants.REACH_USAGE_LIMIT);
 				return result;
 			}
@@ -105,13 +141,12 @@ public class UserServiceImpl implements UserService {
 	 * 1. validate email and product key existence
 	 * 	  if not, return errors
 	 * 2. update usage data to redis
-	 * 	  rule: if currentTimeStamp < currentCycleEndTimestamp,
+	 * 	  rule: if old cycle (currentTimeStamp < currentCycleEndTimestamp)
 	 * 				then aggregate usage within the current cycle
-	 * 				then determine validity by if usage already passes the upper-bound limit
-	 * 			else 
+	 * 			else for new cycle
 	 * 				then currentCycleEndTimestamp += period
-	 * 				then usage = (0 + reported usage)
-	 * 				then determine validity by if usage already passes the upper-bound limit
+	 * 				resetUsage(user);//reset usage for new billing cycle
+	 * 3. update block user list
 	 */
 	public StatusResult handleReportVpnUsageService(ReportUsageDTO dto) {
 	
@@ -119,41 +154,78 @@ public class UserServiceImpl implements UserService {
 
 		// step1
 		// get product key by incoming IP
-		String productKey = redisClient.findProductKeyServerByIp(dto
+		String productKey = serverRedisDAO.findProductKeyServerByIp(dto
 				.getVpnServerIp());
 		if (productKey == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Unknown ip: " + dto.getVpnServerIp());
+			}
 			result.setStatus(Constants.IP_UNKNOWN);
 			return result;
 		}
 
-		// validate user/vpn server mapping
-		VpnUser user = redisClient.findUserByKey(dto.getEmail(), productKey);
+		// validate user/server mapping
+		VpnUser user = userRedisDAO.findUserByKey(dto.getEmail(), productKey);
 		if (user == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Unknown email: " + dto.getEmail());
+			}
 			result.setStatus(Constants.EMAIL_INCORRECT);
 			return result;
 		}
 		
-		// validate/update usage
-		Long thisUsage = dto.getDownUsage()>dto.getUpUsage() ? dto.getDownUsage():dto.getUpUsage();
-		
+		// step2 validate/update usage
 		Long current = System.currentTimeMillis();
 		if (BillingCycleHelper.bANewBillingCycleShouldStart(
-				user.getCurrentCycleEndTimestamp(), current)) {//start a new cycle
+				user.getCurrentCycleEndTimestamp(), current)) {// start a new
+																// cycle
 			Long nextBillingTimestamp = BillingCycleHelper
 					.getNextBillingTimestamp(user.getServiceStartTimestamp(),
 							user.getPeriod(), current);
 			user.setCurrentCycleEndTimestamp(nextBillingTimestamp);
-			user.setUsage(thisUsage);
-			redisClient.saveOrUpdateUser(user);
-		} else {//still in old cycle
-			user.setUsage(user.getUsage()+thisUsage);
-			redisClient.saveOrUpdateUser(user);
-			if (user.getUsage() > Constants.FREE_TRIAL_USAGE_LIIMIT) {
-				result.setStatus(Constants.REACH_USAGE_LIMIT);
-				return result;
-			}
+			resetUsage(user);// reset usage for new billing cycle
+			userRedisDAO.saveOrUpdateUser(user);
+		} else {// still in old cycle
+			Long thisUsage = dto.getDownUsage() > dto.getUpUsage() ? dto
+					.getDownUsage() : dto.getUpUsage();// extract usage
+			aggregateUsage(user, dto.getSessionId(), thisUsage);
+			userRedisDAO.saveOrUpdateUser(user);
 		}
 
+		// 3. update block user list
+		if (user.getTotalUsageofExpiredSessions() > user.getUserUsageLimit()) {
+			blockUserDAO.addBlockUser(dto.getEmail(), productKey,
+					user.getCurrentCycleEndTimestamp());
+		}
+
+		return result;
+	}
+	
+	/**
+	 * steps:
+	 * 1. verify block user list
+	 * 2. remove invalid entries
+	 */
+	public BatchRequestAccessResult handleBatchRequestAccessService(BatchRequestAccessDTO dto) {
+		BatchRequestAccessResult result = new BatchRequestAccessResult(Constants.SUCCESS);
+		List<String> blockList = new ArrayList<String>();
+		result.setBlockList(blockList);
+		
+		String productKey = serverRedisDAO.findProductKeyServerByIp(dto
+				.getVpnServerIp());
+		if (productKey == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Unknown ip: " + dto.getVpnServerIp());
+			}
+			result.setStatus(Constants.IP_UNKNOWN);
+			return result;
+		}
+		
+		for(String email : dto.getEmails()) {
+			if(blockUserDAO.verifyBlockUser(email, productKey)) {
+				blockList.add(email);
+			}
+		}
 		return result;
 	}
 	
@@ -169,32 +241,109 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		user.setPassword(hashedPassword);
-		
-		user.setPeriod(dto.getPeriod());
-		user.setProductKey(dto.getProductKey());
 		user.setSalt(dto.getSalt());
-		user.setServiceStartTimestamp(currentTimeStamp);
+		user.setPassword(hashedPassword);
 		user.setStatus(dto.getStatus());
-		user.setUsage(0L);
+		user.setProductKey(dto.getProductKey());
+		
+		
+		user.setServiceStartTimestamp(currentTimeStamp);
+		user.setPeriod(dto.getPeriod());
 		user.setCurrentCycleEndTimestamp(BillingCycleHelper
 				.getNextBillingTimestamp(dto.getServiceStartTimestamp(),
 						dto.getPeriod(), currentTimeStamp + 1));//make sure next billing time is after start time
 
-		redisClient.saveOrUpdateUser(user);
+		user.setUserUsageLimit(Constants.FREE_TRIAL_USAGE_LIIMIT);//default user usage limit
+		user.setTotalUsageofAllSessions(0L);
+		user.setTotalUsageofExpiredSessions(0L);
+		user.setSessionUsageMap(null);
+		userRedisDAO.saveOrUpdateUser(user);
 	}
 	
 	public void handleUpdateUserService(AddorUpdateUserDTO dto) {
 		throw new UnsupportedOperationException("handleUpdateUserService");
 	}
 	
-	/**
-	 * 
-	 */
 	public void handleDeleteUserService(String productKey, String email) {
 		VpnUser user = new VpnUser();
 		user.setEmail(email);
 		user.setProductKey(productKey);
-		redisClient.deleteUser(user);
+		userRedisDAO.deleteUser(user);
+	}
+	
+	private void resetUsage(VpnUser user) {
+		user.setUserUsageLimit(Constants.FREE_TRIAL_USAGE_LIIMIT);//reset to default, promotion may increase this value
+		user.setTotalUsageofAllSessions(0L);
+		user.setTotalUsageofExpiredSessions(0L);
+		user.setSessionUsageMap(null);
+	}
+	
+	private void aggregateUsage(VpnUser user, Long sessionId, Long usage) {
+		if(user == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("aggregateUsage null user");
+			}
+			return;
+		}
+		if(sessionId == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("aggregateUsage null sessionId");
+			}
+			return;
+		}
+		if(usage == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("aggregateUsage null usage");
+			}
+			return;
+		}
+		
+		//add for map
+		Map<Long, SessionUsage> sessionMap = user.getSessionUsageMap();
+		if(sessionMap == null) {
+			sessionMap = new HashMap<Long, SessionUsage>();
+			user.setSessionUsageMap(sessionMap);
+		}
+		
+		SessionUsage sessionUsage = sessionMap.get(sessionId);
+		if(sessionUsage == null) {//new session
+			sessionUsage = new SessionUsage();
+			sessionUsage.setUsage(usage);
+			sessionMap.put(sessionId, sessionUsage);
+		} else {//existing session
+			sessionUsage.setUsage(usage);
+		}
+		sessionUsage.setLastModifyTimestamp(System.currentTimeMillis());
+		
+		//clear expired sessions & add for totals
+		Long unExpiredUsage = 0L;
+		for (Iterator<Map.Entry<Long, SessionUsage>> it = sessionMap.entrySet()
+				.iterator(); it.hasNext();) {
+			Map.Entry<Long, SessionUsage> entry = it.next();
+			if (sessionExpired(entry.getValue())) {// a session expired
+				user.setTotalUsageofExpiredSessions(user
+						.getTotalUsageofExpiredSessions()
+						+ entry.getValue().getUsage());
+				it.remove();
+			} else {
+				unExpiredUsage += entry.getValue().getUsage();
+			}
+		}
+		user.setTotalUsageofAllSessions(user.getTotalUsageofExpiredSessions()
+				+ unExpiredUsage);
+	}
+	
+	private Boolean sessionExpired(SessionUsage sessionUsage) {
+		if (sessionUsage == null) {
+			throw new RuntimeException("sessionExpired got null sessionUsage");
+		}
+
+		if (sessionUsage.getLastModifyTimestamp() == null) {
+			return false;
+		}
+
+		return System.currentTimeMillis()
+				- sessionUsage.getLastModifyTimestamp() > Constants.DEFAULT_SESSION_TIMEOUT ? true
+				: false;
 	}
 }

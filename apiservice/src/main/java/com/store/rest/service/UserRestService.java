@@ -2,6 +2,7 @@ package com.store.rest.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,14 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.store.dto.BatchRequestAccessDTO;
 import com.store.dto.ReportUsageDTO;
 import com.store.dto.VerifyVpnAccessDTO;
+import com.store.result.BatchRequestAccessResult;
 import com.store.result.StatusResult;
 import com.store.service.UserService;
 import com.store.utils.Constants;
 import com.store.utils.HttpServletUtil;
 import com.store.utils.JSONConverter;
 
+/**
+ * This controller accepts requests from vpn servers.
+ *
+ */
 @Controller
 public class UserRestService extends RestService {
 
@@ -41,17 +49,16 @@ public class UserRestService extends RestService {
 			VerifyVpnAccessDTO dto = mapper.readValue(postBody,
 					VerifyVpnAccessDTO.class);
 
-			if(logger.isErrorEnabled()) {
-				logger.error("verifyAccessinRedis - input ip:" + dto.getIncomingIp());
+			if(logger.isInfoEnabled()) {
+				logger.info("verifyAccessinRedis - input ip:" + dto.getIncomingIp());
 			}
 			
 			if(dto.getIncomingIp() == null || "".equalsIgnoreCase(dto.getIncomingIp())) {
 				dto.setIncomingIp(request.getRemoteAddr());
-				if(logger.isErrorEnabled()) {
-					logger.error("verifyAccessinRedis - caught remote ip:" + dto.getIncomingIp());
+				if(logger.isInfoEnabled()) {
+					logger.info("verifyAccessinRedis - caught remote ip:" + dto.getIncomingIp());
 				}
 			}
-			
 
 			// todo: validate incoming data format
 
@@ -104,4 +111,43 @@ public class UserRestService extends RestService {
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
 	}
+	
+	@RequestMapping(value = "/batchRequestAccess", method = RequestMethod.POST)
+	public void batchRequestAccessInRedis(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		String postBody = null;
+		BatchRequestAccessResult result = null;
+		try {
+			// parse incoming data
+			postBody = getBody(request);
+			ObjectMapper mapper = new ObjectMapper();
+			BatchRequestAccessDTO dto = mapper.readValue(postBody,
+					BatchRequestAccessDTO.class);
+			
+			if(logger.isErrorEnabled()) {
+				logger.error("batchRequestAccessInRedis - input ip:" + dto.getVpnServerIp());
+			}
+			
+			if(dto.getVpnServerIp() == null || "".equalsIgnoreCase(dto.getVpnServerIp())) {
+				dto.setVpnServerIp(request.getRemoteAddr());
+				if(logger.isErrorEnabled()) {
+					logger.error("batchRequestAccessInRedis - caught remote ip:" + dto.getVpnServerIp());
+				}
+			}
+
+			// todo: validate input formats
+
+			// handle reports
+			result = userService.handleBatchRequestAccessService(dto);
+		} catch (Exception e) {
+			if (logger.isErrorEnabled()) {
+				logger.error(e.getMessage(), e);
+			}
+			result = new BatchRequestAccessResult(Constants.GENERAL_FAILURE);
+		}
+		HttpServletUtil.populateWithJSON(response,
+				JSONConverter.getJson(result));
+	}
+
 }
