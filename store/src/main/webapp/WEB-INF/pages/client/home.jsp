@@ -57,7 +57,8 @@
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner">
                             <div class="item active">
-                                <img class="img-responsive img-full" src="<c:url value="/resources/startbootstrap-business-casual/img/slide-1.jpg" />" alt="">
+                                <!-- <img class="img-responsive img-full" src="img/slide-1.jpg" alt=""> -->
+                                <img class="img-responsive img-full" src="<c:url value="/resources/startbootstrap-business-casual/img/internet.png" />" alt="">
                             </div>
                             <div class="item">
                                 <img class="img-responsive img-full" src="<c:url value="/resources/startbootstrap-business-casual/img/slide-2.jpg" />" alt="">
@@ -93,15 +94,12 @@
             <div class="box">
                 <div class="col-lg-12">
                     <hr>
-                    <h2 class="intro-text text-center">Build a website
-                        <strong>worth visiting</strong>
-                    </h2>
+                    <h2 class="intro-text text-center"><strong>vpn技术简介</strong></h2>
                     <hr>
                     <img class="img-responsive img-border img-left" src="<c:url value="/resources/startbootstrap-business-casual/img/intro-pic.jpg" />" alt="">
                     <hr class="visible-xs">
-                    <p>The boxes used in this template are nested inbetween a normal Bootstrap row and the start of your column layout. The boxes will be full-width boxes, so if you want to make them smaller then you will need to customize.</p>
-                    <p>A huge thanks to <a href="http://join.deathtothestockphoto.com/" target="_blank">Death to the Stock Photo</a> for allowing us to use the beautiful photos that make this template really come to life. When using this template, make sure your photos are decent. Also make sure that the file size on your photos is kept to a minumum to keep load times to a minimum.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc placerat diam quis nisl vestibulum dignissim. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+                    <p>虚拟专用网（英语：Virtual Private Network，简称VPN），是一种常用于连接中、大型企业或团体与团体间的私人网络的通讯方法。虚拟私人网络的讯息透过公用的网络架构（例如：互联网）来传送内联网的网络讯息。它利用已加密的通道协议（Tunneling Protocol）来达到保密、发送端认证、消息准确性等私人消息安全效果。这种技术可以用不安全的网络（例如：互联网）来发送可靠、安全的消息。需要注意的是，加密消息与否是可以控制的。没有加密的虚拟专用网消息依然有被窃取的危险。</p>
+                    <p>以日常生活的例子来比喻，虚拟专用网就像：甲公司某部门的A想寄信去乙公司某部门的B。A已知B的地址及部门，但公司与公司之间的信不能注明部门名称。于是，A请自己的秘书把指定B所属部门的信（A可以选择是否以密码与B通信）放在寄去乙公司地址的大信封中。当乙公司的秘书收到从甲公司寄到乙公司的邮件后，该秘书便会把放在该大信封内的指定部门邮件以公司内部邮件方式寄给B。同样地，B会以同样的方式回信给A。</p>
                 </div>
             </div>
         </div>
@@ -110,12 +108,74 @@
             <div class="box">
                 <div class="col-lg-12">
                     <hr>
-                    <h2 class="intro-text text-center">Beautiful boxes
-                        <strong>to showcase your content</strong>
-                    </h2>
+                    <h2 class="intro-text text-center">安全性</h2>
                     <hr>
-                    <p>Use as many boxes as you like, and put anything you want in them! They are great for just about anything, the sky's the limit!</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc placerat diam quis nisl vestibulum dignissim. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+                    <p>安全的虚拟私人网络使用加密穿隧协议，通过阻止截听与嗅探来提供机密性，还允许发送者身份验证，以阻止身份伪造，同时通过防止信息被修改提供消息完整性。</p>
+                    <p>某些虚拟私人网络不使用加密保护数据。虽然虚拟私人网络通常都会提供安全性，但未加密的虚拟私人网络严格来说是不“安全”或“可信”的。例如，一条通过GRE协议在两台主机间创建的隧道属于虚拟私人网络，但既不安全也不可信。 除以上的GRE协议例子外，本地的明文穿隧协议包括L2TP（不带IPsec时）和PPTP（不使用微软点对点加密(MPPE)时）。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">第一次使用步骤(Mac)</h2>
+                    <hr>
+                    <p>1. 如果您还没有tubevpn帐户，请到<a href="signup">注册页面</a>注册一个新账户。注册完成之后，您将得到tubevpn免费试用帐户。您会收到一封确认邮件，并且在附件里面会包括一个profile文件。这个profile文件包括了最新的vpn服务器的地址信息。</p>
+                    <p>2. 到<a href="signup">首页</a>下载符合您机器的客户端(windows/mac/android)，并安装。</p>
+                    <p>3. 打开客户端程序，引入刚才的profile文件，并在弹出的页面输入您的注册邮箱和密码</p>
+                    <p><img src="<c:url value="/resources/startbootstrap-business-casual/img/connect1.png" />"></p>
+                    <p><img src="<c:url value="/resources/startbootstrap-business-casual/img/connect2.png" />"></p>
+                    <p>4. 看到这个图片，说明您应该已经连上了vpn服务。并且在图表中显示出连接的时间长度。以后在使用tubevpn服务时只需要重复步骤3，4即可。</p>
+                    <p><img src="<c:url value="/resources/startbootstrap-business-casual/img/connected1.png" />" ></p>
+                    <p>5. 点disconnect断开服务</p>
+                    <p><img src="<c:url value="/resources/startbootstrap-business-casual/img/disconnect1.png" />"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">客户端下载</h2>
+                    <hr>
+                    <p><a href="http://pan.baidu.com/s/1mg3eQMk" target="_blank">windows客户端下载</a></p>
+                    <p><a href="http://pan.baidu.com/s/1bnyD6oB" target="_blank">Mac客户端下载</a></p>
+                    <p><a href="http://pan.baidu.com/s/1pJ9eynh" target="_blank">安卓客户端下载</a></p>
+                    <p>想要下载iphone客户端，请在appstore里面搜索关键字"openvpn"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">推荐网站</h2>
+                    <hr>
+                    <p>
+                        <a href="http://www.instagram.com"><img src="<c:url value="/resources/startbootstrap-business-casual/img/inslogo.jpeg" />" ></a>
+                        <a href="http://www.facebook.com"><img src="<c:url value="/resources/startbootstrap-business-casual/img/fblogo.jpeg" />" ></a>
+                        <a href="http://www.twitter.com/?lang=en"><img src="<c:url value="/resources/startbootstrap-business-casual/img/ttlogo.jpeg" />" ></a>
+                    </p>
+                    <p>
+                        <a href="http://www.youtube.com"><img src="<c:url value="/resources/startbootstrap-business-casual/img/youtubelogo.png" />"></a>
+                        <a href="http://www.hulu.com"><img src="<c:url value="/resources/startbootstrap-business-casual/img/hulu.jpeg" />" ></a>
+                        <a href="https://www.netflix.com/us/"><img src="<c:url value="/resources/startbootstrap-business-casual/img/netflix.jpeg" />"></a>
+                    </p>
+                    <p>
+                        <a href="http://www.mitbbs.com"><img src="<c:url value="/resources/startbootstrap-business-casual/img/mitbbslogo.jpeg" />"></a>
+                        <a href="http://www.6park.com/us.shtml"><img src="<c:url value="/resources/startbootstrap-business-casual/img/6park.jpeg" />"></a>
+                        <a href="http://huaren.us/static/index.html"><img src="<c:url value="/resources/startbootstrap-business-casual/img/huarenlogo.jpeg" />"></a>
+                        <a href="http://www.wenxuecity.com/"><img src="<c:url value="/resources/startbootstrap-business-casual/img/wenxuechenglogo.jpeg" />"></a>
+                    </p>
+                    <p>
+                        <a href="http://www.coach.com/online/handbags/Home-10551-10051-en"><img src="<c:url value="/resources/startbootstrap-business-casual/img/coachlogo.png" />"></a>
+                        <a href="http://www.amazon.com/"><img src="<c:url value="/resources/startbootstrap-business-casual/img/amazonlogo.jpeg" />"></a>
+                        <a href="http://www.ebay.com/"><img src="<c:url value="/resources/startbootstrap-business-casual/img/ebaylogo.jpeg" />"></a>
+                    </p>
                 </div>
             </div>
         </div>
