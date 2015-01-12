@@ -30,7 +30,7 @@ public class AdminRestService extends RestService {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(AdminRestService.class);
-	
+
 	private static String adminApiKey = "2e078028-3196-4361-a027-d9f19835cc7a";
 
 	@Autowired
@@ -52,6 +52,10 @@ public class AdminRestService extends RestService {
 			AddVpnServerDTO dto = mapper.readValue(postBody,
 					AddVpnServerDTO.class);
 
+			if (logger.isInfoEnabled()) {
+				logger.info("### AdminRestService.addVpnServer started to handle dto: "
+						+ dto.toString());
+			}
 			// todo: validate incoming data format
 
 			vpnServerService.handleAddServer(dto);
@@ -62,6 +66,11 @@ public class AdminRestService extends RestService {
 			}
 			result = new StatusResult(Constants.GENERAL_FAILURE);
 		}
+
+		if (logger.isInfoEnabled()) {
+			logger.info("### AdminRestService.addVpnServer finished handling result: "
+					+ result.getStatus());
+		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
 	}
@@ -71,6 +80,10 @@ public class AdminRestService extends RestService {
 			HttpServletResponse response, @PathVariable("ip") String ip,
 			@PathVariable("productKey") String productKey) {
 
+		if (logger.isInfoEnabled()) {
+			logger.info("### AdminRestService.deleteVpnServer started to handle productKey: "
+					+ productKey + " | ip:" + ip);
+		}
 		StatusResult result = null;
 		try {
 			// todo: validate incoming data format
@@ -83,6 +96,10 @@ public class AdminRestService extends RestService {
 			}
 			result = new StatusResult(Constants.GENERAL_FAILURE);
 		}
+		if (logger.isInfoEnabled()) {
+			logger.info("### AdminRestService.deleteVpnServer finished handling result: "
+					+ result.getStatus());
+		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
 
@@ -92,6 +109,9 @@ public class AdminRestService extends RestService {
 	public void getVpnServers(HttpServletRequest request,
 			HttpServletResponse response) {
 
+		if (logger.isInfoEnabled()) {
+			logger.info("### AdminRestService.getVpnServers started to handle");
+		}
 		ServerListResult result = null;
 		try {
 			// todo: validate incoming data format
@@ -120,7 +140,10 @@ public class AdminRestService extends RestService {
 			ObjectMapper mapper = new ObjectMapper();
 			AddorUpdateUserDTO dto = mapper.readValue(postBody,
 					AddorUpdateUserDTO.class);
-
+			if (logger.isInfoEnabled()) {
+				logger.info("### AdminRestService.addUser started to handle dto: "
+						+ dto.toString());
+			}
 			// todo: validate incoming data format
 
 			// verify user access
@@ -131,6 +154,10 @@ public class AdminRestService extends RestService {
 				logger.error(e.getMessage(), e);
 			}
 			result = new StatusResult(Constants.GENERAL_FAILURE);
+		}
+		if (logger.isInfoEnabled()) {
+			logger.info("### AdminRestService.addUser finished handling result: "
+					+ result.getStatus());
 		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
@@ -148,7 +175,10 @@ public class AdminRestService extends RestService {
 			ObjectMapper mapper = new ObjectMapper();
 			AddorUpdateUserDTO dto = mapper.readValue(postBody,
 					AddorUpdateUserDTO.class);
-
+			if (logger.isInfoEnabled()) {
+				logger.info("### AdminRestService.updateUser started to handle dto: "
+						+ dto.toString());
+			}
 			// todo: validate incoming data format
 
 			// verify user access
@@ -160,16 +190,24 @@ public class AdminRestService extends RestService {
 			}
 			result = new StatusResult(Constants.GENERAL_FAILURE);
 		}
+		if (logger.isInfoEnabled()) {
+			logger.info("### AdminRestService.updateUser finished handling result: "
+					+ result.getStatus());
+		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
 	}
 
-	@RequestMapping(value = "/admin/user/{productKey}/{ip}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/admin/user/{productKey}/{email}", method = RequestMethod.DELETE)
 	public void deleteUser(HttpServletRequest request,
 			HttpServletResponse response,
 			@PathVariable("productKey") String productKey,
 			@PathVariable("email") String email) {
 
+		if (logger.isInfoEnabled()) {
+			logger.info("### AdminRestService.deleteUser started to handle productKey: "
+					+ productKey + " | email:" + email);
+		}
 		StatusResult result = null;
 		try {
 			// todo: validate incoming data format
@@ -182,6 +220,10 @@ public class AdminRestService extends RestService {
 				logger.error(e.getMessage(), e);
 			}
 			result = new StatusResult(Constants.GENERAL_FAILURE);
+		}
+		if (logger.isInfoEnabled()) {
+			logger.info("### AdminRestService.deleteUser finished handling result: "
+					+ result.getStatus());
 		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));

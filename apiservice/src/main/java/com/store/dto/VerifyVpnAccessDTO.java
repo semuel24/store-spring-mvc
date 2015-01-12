@@ -24,4 +24,18 @@ public class VerifyVpnAccessDTO {
 	public void setIncomingIp(String incomingIp) {
 		this.incomingIp = incomingIp;
 	}
+	
+	public String toString() {
+		String result = "";
+		if(email != null) {
+			result += "email:" + email + " | ";
+		}
+		if(password != null) {
+			result += "password:" + password + " | ";
+		}
+		if(incomingIp != null) {
+			result += "incomingIp:" + incomingIp;
+		}
+		return result;
+	}
 }

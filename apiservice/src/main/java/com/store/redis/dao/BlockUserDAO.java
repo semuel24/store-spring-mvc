@@ -1,13 +1,19 @@
 package com.store.redis.dao;
 
+import org.redisson.Config;
+import org.redisson.Redisson;
 import org.redisson.core.RBucket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import com.store.redis.client.RedisClient;
+import com.store.utils.Constants;
 
 /**
  * {BLOCK_USER_PREFIX+email+productKey:blockUntilTimestamp}
+ * 
+ * Basically, block user list is an eventually-sync view of user data. Its data should
+ * not update back to user's table. 
  */
 @Component("blockUserDAO")
 public class BlockUserDAO {
@@ -60,5 +66,28 @@ public class BlockUserDAO {
 
 	private String getBlockUserKey(String email, String productKey) {
 		return BLOCK_USER_PREFIX + email + "/" + productKey;
+	}
+	
+	public static void main(String[] args) throws Exception {
+
+		// get a redis connection
+		RedisClient client = new RedisClient();
+		Config config = new Config();
+		config.useSingleServer().setAddress("127.0.0.1:6379");
+		client.setRedisson(Redisson.create(config));
+
+		BlockUserDAO dao = new BlockUserDAO();
+		dao.setRedisClient(client);
+
+		// insert into block list
+		dao.addBlockUser("test@gmail.com",
+				Constants.PRODUCT.FREETRIAL.getProductKey(),
+				System.currentTimeMillis());
+
+		// vefiry in block list
+		dao.verifyBlockUser("test@gmail.com",
+				Constants.PRODUCT.FREETRIAL.getProductKey());
+		
+		client.destroy();
 	}
 }

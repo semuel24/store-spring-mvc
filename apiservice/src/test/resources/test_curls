@@ -14,7 +14,10 @@ report usage less than limit
 curl -X POST 'http://localhost:8080/apiservice/reportUsage' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","vpnServerIp":"1.1.1.1","upUsage":12341234,"downUsage":112341234,"sessionId":1419459012}'
 
 report usage over than limit
-curl -X POST 'http://localhost:8080/apiservice/reportUsage' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","vpnServerIp":"1.1.1.1","upUsage":838860800,"downUsage":838860800",sessionId":1419459012}'
+curl -X POST 'http://localhost:8080/apiservice/reportUsage' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","vpnServerIp":"1.1.1.1","upUsage":838860801,"downUsage":838860800,sessionId":1419459012}'
+
+batch request access
+curl -X POST 'http://localhost:8080/apiservice/batchRequestAccess' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"emails":["sam@gmail.com"],"vpnServerIp":"1.1.1.1"}'
 
 *5. delete user
 

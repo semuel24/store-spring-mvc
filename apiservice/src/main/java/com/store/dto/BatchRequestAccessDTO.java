@@ -19,4 +19,18 @@ public class BatchRequestAccessDTO {
 	public void setEmails(List<String> emails) {
 		this.emails = emails;
 	}
+	public String toString() {
+		String result = "";
+		if(vpnServerIp != null) {
+			result += "vpnServerIp:" + vpnServerIp + " | ";
+		}
+		if(emails != null) {
+			result += "emails:[";
+			for(String email : emails) {
+				result += email + ",";
+			}
+			result += "] ";
+		}
+		return result;
+	}
 }

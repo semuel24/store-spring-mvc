@@ -65,4 +65,31 @@ public class AddorUpdateUserDTO {
 	public void setPeriod(String period) {
 		this.period = period;
 	}
+	
+	public String toString() {
+		String result = "";
+		if(email != null) {
+			result += "email:" + email + " | ";
+		}
+		if(password != null) {
+			result += "password:" + password + " | ";
+		}
+		if(salt != null) {
+			result += "salt:" + salt + " | ";
+		}
+		if(status != null) {
+			result += "status:" + status + " | ";
+		}
+		if(productKey != null) {
+			result += "productKey:" + productKey + " | ";
+		}
+		if(serviceStartTimestamp != null) {
+			result += "serviceStartTimestamp:" + serviceStartTimestamp + " | ";
+		}
+		if(period != null) {
+			result += "period:" + period;
+		}
+		
+		return result; 
+	}
 }

@@ -193,7 +193,14 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// 3. update block user list
-		if (user.getTotalUsageofExpiredSessions() > user.getUserUsageLimit()) {
+		if(logger.isErrorEnabled()) {
+			logger.error("###about to update block list");
+		}
+		if (user.getTotalUsageofAllSessions() > user.getUserUsageLimit()) {
+			
+			if(logger.isErrorEnabled()) {
+				logger.error("###update block list");
+			}
 			blockUserDAO.addBlockUser(dto.getEmail(), productKey,
 					user.getCurrentCycleEndTimestamp());
 		}

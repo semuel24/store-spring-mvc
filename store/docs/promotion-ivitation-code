@@ -1,0 +1,8 @@
+1. Every user has a code representing himself to invite friends, 
+   which is generated when sign up, 
+   and can be viewed on account page
+   
+2. Users can sign up with an invitation code,
+   no difference for the sign up user;
+   but for the invitation code owner, his usage limit can be increased for current cycle(only),
+   if the invitation code owner is on block user list, remove it

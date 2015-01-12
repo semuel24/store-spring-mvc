@@ -140,5 +140,7 @@ public class UserRedisDAO {
 		if(dao.findUserByKey(user.getEmail(), user.getProductKey()) != null) {
 			throw new RuntimeException("");
 		}
+		
+		client.destroy();
 	}
 }

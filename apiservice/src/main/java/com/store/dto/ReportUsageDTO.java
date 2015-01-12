@@ -45,4 +45,27 @@ public class ReportUsageDTO{
 	public void setSessionId(Long sessionId) {
 		this.sessionId = sessionId;
 	}
+	
+	public String toString() {
+		String result = "";
+		if(email != null) {
+			result += "email:" + email + " | ";
+		}
+		if(vpnServerIp != null) {
+			result += "vpnServerIp:" + vpnServerIp + " | ";
+		}
+		if(upUsage != null) {
+			result += "upUsage:" + upUsage + " | ";
+		}
+		if(downUsage != null) {
+			result += "downUsage:" + downUsage + " | ";
+		}
+		if(userIp != null) {
+			result += "userIp:" + userIp + " | ";
+		}
+		if(sessionId != null) {
+			result += "sessionId:" + sessionId + " | ";
+		}
+		return result;
+	}
 }

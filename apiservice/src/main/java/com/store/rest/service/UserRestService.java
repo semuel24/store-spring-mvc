@@ -32,14 +32,14 @@ public class UserRestService extends RestService {
 			.getLogger(UserRestService.class);
 
 	private static String userApiKey = "74b49f01-7009-4e98-80ef-e85004128e7d";
-	
+
 	@Autowired
 	private UserService userService;
 
 	@RequestMapping(value = "/loginservice", method = RequestMethod.POST)
 	public void verifyAccessinRedis(HttpServletRequest request,
 			HttpServletResponse response) {
-		
+
 		String postBody = null;
 		StatusResult result = null;
 		try {
@@ -49,14 +49,16 @@ public class UserRestService extends RestService {
 			VerifyVpnAccessDTO dto = mapper.readValue(postBody,
 					VerifyVpnAccessDTO.class);
 
-			if(logger.isInfoEnabled()) {
-				logger.info("verifyAccessinRedis - input ip:" + dto.getIncomingIp());
+			if (logger.isInfoEnabled()) {
+				logger.info("### UserRestService.verifyAccessinRedis started to handle dto: "
+						+ dto.toString());
 			}
-			
-			if(dto.getIncomingIp() == null || "".equalsIgnoreCase(dto.getIncomingIp())) {
+			if (dto.getIncomingIp() == null
+					|| "".equalsIgnoreCase(dto.getIncomingIp())) {
 				dto.setIncomingIp(request.getRemoteAddr());
-				if(logger.isInfoEnabled()) {
-					logger.info("verifyAccessinRedis - caught remote ip:" + dto.getIncomingIp());
+				if (logger.isInfoEnabled()) {
+					logger.info("verifyAccessinRedis - caught remote ip:"
+							+ dto.getIncomingIp());
 				}
 			}
 
@@ -69,6 +71,10 @@ public class UserRestService extends RestService {
 				logger.error(e.getMessage(), e);
 			}
 			result = new StatusResult(Constants.GENERAL_FAILURE);
+		}
+		if (logger.isInfoEnabled()) {
+			logger.info("### UserRestService.verifyAccessinRedis finished handling result: "
+					+ result.getStatus());
 		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
@@ -86,15 +92,17 @@ public class UserRestService extends RestService {
 			ObjectMapper mapper = new ObjectMapper();
 			ReportUsageDTO dto = mapper.readValue(postBody,
 					ReportUsageDTO.class);
-			
-			if(logger.isErrorEnabled()) {
-				logger.error("reportUsagetoRedis - input ip:" + dto.getVpnServerIp());
+
+			if (logger.isInfoEnabled()) {
+				logger.info("### UserRestService.reportUsagetoRedis started to handle dto: "
+						+ dto.toString());
 			}
-			
-			if(dto.getVpnServerIp() == null || "".equalsIgnoreCase(dto.getVpnServerIp())) {
+			if (dto.getVpnServerIp() == null
+					|| "".equalsIgnoreCase(dto.getVpnServerIp())) {
 				dto.setVpnServerIp(request.getRemoteAddr());
-				if(logger.isErrorEnabled()) {
-					logger.error("reportUsagetoRedis - caught remote ip:" + dto.getVpnServerIp());
+				if (logger.isErrorEnabled()) {
+					logger.error("reportUsagetoRedis - caught remote ip:"
+							+ dto.getVpnServerIp());
 				}
 			}
 
@@ -108,10 +116,14 @@ public class UserRestService extends RestService {
 			}
 			result = new StatusResult(Constants.GENERAL_FAILURE);
 		}
+		if (logger.isInfoEnabled()) {
+			logger.info("### UserRestService.reportUsagetoRedis finished handling result: "
+					+ result.getStatus());
+		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
 	}
-	
+
 	@RequestMapping(value = "/batchRequestAccess", method = RequestMethod.POST)
 	public void batchRequestAccessInRedis(HttpServletRequest request,
 			HttpServletResponse response) {
@@ -124,15 +136,17 @@ public class UserRestService extends RestService {
 			ObjectMapper mapper = new ObjectMapper();
 			BatchRequestAccessDTO dto = mapper.readValue(postBody,
 					BatchRequestAccessDTO.class);
-			
-			if(logger.isErrorEnabled()) {
-				logger.error("batchRequestAccessInRedis - input ip:" + dto.getVpnServerIp());
+
+			if (logger.isInfoEnabled()) {
+				logger.info("### UserRestService.batchRequestAccessInRedis started to handle dto: "
+						+ dto.toString());
 			}
-			
-			if(dto.getVpnServerIp() == null || "".equalsIgnoreCase(dto.getVpnServerIp())) {
+			if (dto.getVpnServerIp() == null
+					|| "".equalsIgnoreCase(dto.getVpnServerIp())) {
 				dto.setVpnServerIp(request.getRemoteAddr());
-				if(logger.isErrorEnabled()) {
-					logger.error("batchRequestAccessInRedis - caught remote ip:" + dto.getVpnServerIp());
+				if (logger.isErrorEnabled()) {
+					logger.error("batchRequestAccessInRedis - caught remote ip:"
+							+ dto.getVpnServerIp());
 				}
 			}
 
@@ -145,6 +159,10 @@ public class UserRestService extends RestService {
 				logger.error(e.getMessage(), e);
 			}
 			result = new BatchRequestAccessResult(Constants.GENERAL_FAILURE);
+		}
+		if (logger.isInfoEnabled()) {
+			logger.info("### UserRestService.batchRequestAccessInRedis finished handling result: "
+					+ result.getStatus());
 		}
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));

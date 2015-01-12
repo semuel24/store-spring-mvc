@@ -24,4 +24,19 @@ public class AddVpnServerDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String toString() {
+		
+		String result = "";
+		if(email != null) {
+			result += "email:" + email + " | ";
+		}
+		if(ip != null) {
+			result += " ip:" + ip + " | ";
+		}
+		if(productKey != null) {
+			result += " productKey:" + productKey;
+		}
+		return result;
+	}
 }

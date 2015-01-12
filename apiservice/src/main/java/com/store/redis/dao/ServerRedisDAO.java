@@ -190,7 +190,7 @@ public class ServerRedisDAO {
 		VpnServerInfo vpn1 = new VpnServerInfo();
 		vpn1.setEmail("test@gmail.com");
 		vpn1.setIp("1.1.1.1");
-		dao.saveOrUpdateVpnServer(Constants.PRODUCT.FREETRIAL.getProductKey(),
+		dao.saveOrUpdateVpnServer(Constants.PRODUCT.FREETRIAL.getProductKey(),	
 				vpn1);
 
 		if (dao.findProductKeyServerByIp(vpn1.getIp()) == null) {
@@ -208,5 +208,7 @@ public class ServerRedisDAO {
 
 		// get the whole list of vpn servers
 		Map<String, Map<String, VpnServerInfo>> map = dao.findAllVpnServers();
+		
+		client.destroy();
 	}
 }
