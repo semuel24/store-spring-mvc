@@ -116,7 +116,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <%-- <div class="row">
             <div class="box">
                 <div class="col-lg-12">
                     <hr>
@@ -133,11 +133,17 @@
                     <p><img src="<c:url value="/resources/startbootstrap-business-casual/img/disconnect1.png" />"></p>
                 </div>
             </div>
-        </div>
+        </div> --%>
 
         <div class="row">
             <div class="box">
                 <div class="col-lg-12">
+                	<hr>
+                    <h2 class="intro-text text-center">使用文档下载</h2>
+                    <hr>
+                    <p><a href="http://pan.baidu.com/s/16NCy6" target="_blank">Mac使用文档下载</a></p>
+                    <p><a href="http://pan.baidu.com/s/1eQD1itc" target="_blank">iPhone使用文档下载</a></p>
+                    <p>Windows/Android用户请参考Mac文档</p>
                     <hr>
                     <h2 class="intro-text text-center">客户端下载</h2>
                     <hr>

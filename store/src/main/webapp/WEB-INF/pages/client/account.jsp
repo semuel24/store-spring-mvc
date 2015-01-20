@@ -61,12 +61,12 @@
 
 					<form role="form">
 						<div class="row">
-							<div class="form-group col-lg-6">
+							<!-- <div class="form-group col-lg-6">
 								<label>昵称:</label><span>Sam</span>
-							</div>
-							<div class="form-group col-lg-6">
+							</div> -->
+							<!-- <div class="form-group col-lg-6">
 								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
+							</div> -->
 							<!-- <div class="form-group col-lg-6">
 								<label>用户名:</label><span>Sam</span>
 							</div> -->

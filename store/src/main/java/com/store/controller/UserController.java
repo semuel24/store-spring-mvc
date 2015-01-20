@@ -4,10 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.store.result.CreateUserResult;
 import com.store.result.HandleForgotPasswordResult;
 import com.store.result.LoginResult;
 import com.store.result.StatusResult;
 import com.store.service.UserService;
 import com.store.utils.Constants;
+import com.store.utils.EmailUtil;
 import com.store.web.form.ContactForm;
 import com.store.web.form.ForgotpasswordForm;
 import com.store.web.form.LoginForm;
@@ -70,13 +74,6 @@ public class UserController {
 		// create a new user in database
 		CreateUserResult result = null;
 		result = userService.createUser(signupForm);
-//		try {
-//			result = userService.createUser(signupForm);
-//		} catch (Exception e) {
-//			System.out.println(e.getMessage());
-//			System.out.println(e.getStackTrace());
-//			result = new CreateUserResult(Constants.GENERAL_FAILURE);
-//		}
 		if(result == null) {
 			model.put("message", StatusResult
 					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
@@ -93,9 +90,8 @@ public class UserController {
 		request.getSession().setAttribute(Constants.SESSION,
 				result.getSessionkey());
 
-		// *create a new user on service servers, and get the profile file
-
 		// *send email notification with attached profile file(async)
+		EmailUtil.sendSignUpEmail(signupForm.getEmail());
 
 		// return necessary message to web page according to error code
 		model.put("message", result.getMessage());
@@ -112,11 +108,6 @@ public class UserController {
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String handleLogout(HttpServletRequest request,
 			HttpServletResponse response) {
-
-		// clear database session
-//		String sessionkey = (String) request.getSession().getAttribute(
-//				Constants.SESSION);
-		// sessionService.invalidateSession(sessionkey);
 
 		// clear app server session
 		request.getSession().invalidate();

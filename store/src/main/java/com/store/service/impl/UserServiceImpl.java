@@ -68,7 +68,6 @@ public class UserServiceImpl implements UserService {
 		user.setEmail(form.getEmail());
 		user.setPassword(hashedPassword);
 		user.setSalt(salt);
-		user.setName(form.getName());
 		user.setStatus(Constants.ENABLED);
 		userDAO.create(user);
 
@@ -79,11 +78,6 @@ public class UserServiceImpl implements UserService {
 			throw new RuntimeException(
 					"missing free trial product in createUser");
 		}
-//		try {
-//			userDAO.merge(user);
-//		} catch (DBException e) {
-//			throw new RuntimeException(e);
-//		}
 		subscriptionStatusDAO.save(user, freeProduct);
 
 		String sessionkey = UUID.randomUUID().toString();

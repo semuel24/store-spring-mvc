@@ -2,19 +2,19 @@ package com.store.web.form;
 
 public class SignUpForm {
 
-	private String name;
+//	private String name;
 	private String email;
 	private String confirmedemail;
 	private String password;
 	private String confirmedpassword;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+//	public String getName() {
+//		return name;
+//	}
+//
+//	public void setName(String name) {
+//		this.name = name;
+//	}
 
 	public String getEmail() {
 		return email;

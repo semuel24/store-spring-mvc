@@ -52,7 +52,7 @@
                     </h2>
                     <hr>
                     <form:form action="signup" method="post" commandName="signupForm" role="form">
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="form-group col-lg-4">
 
                             </div>
@@ -60,7 +60,7 @@
                                 <label>昵称</label>
                                 <input name="name" id="name" type="text" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row">
                             <div class="form-group col-lg-4">
 
