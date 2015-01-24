@@ -102,6 +102,26 @@
 
                             </div>
                             <div class="form-group col-lg-4">
+                                <div>
+                                <span style="span-bottom:10px;">禁止使用卓越VPN网络加速器的服务器进行以下行为：</span><br/>
+
+                                A. 滥发Spam电子邮件，在论坛或留言版批量发送垃圾信息。<br/>
+                                B.使用快车，迅雷，旋风等其它P2P下载软件大流量下载任何文件。<br/>
+                                C.使用香港，台湾或韩国服务器进行大流量下载<br/>
+                                D.进行非法探测，扫描、测试卓越VPN网络加速器系统或其它网络系统以及破坏他人系统等行为。<br/>
+                                E.发布传播色情交易、政治煽动、威胁、诽谤、种族歧视以及虐待儿童等言论。<br/>
+                                F.禁止私自分享，传播以及公开自己的帐号信息。<br/>
+                                如果客户违反以上相关条款，我们有权停止或者删除你的账号，并拒绝任何方式的退款
+                                </div>
+                                <input type="checkbox" name="agree" id="agree" value="yes" class="form-control">
+                                <label>同意</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-4">
+
+                            </div>
+                            <div class="form-group col-lg-4">
                                 <input type="hidden" name="save" value="contact">
                                 <button type="submit" class="btn btn-warning btn-block">创建您的账户</button>
                             </div>

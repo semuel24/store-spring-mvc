@@ -68,6 +68,9 @@ public class UserController {
 		if (constraintViolations.size() > 0) {
 			return "/client/signup";// should not hit here
 		}
+		if(signupForm.getAgree() == null || signupForm.getAgree().length == 0) {
+			return "/client/signup";// should not hit here
+		}
 
 		// (optional)validate if username and email already exists in database
 

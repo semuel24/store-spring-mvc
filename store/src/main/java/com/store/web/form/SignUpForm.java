@@ -7,7 +7,8 @@ public class SignUpForm {
 	private String confirmedemail;
 	private String password;
 	private String confirmedpassword;
-
+	private String[] agree;
+	
 //	public String getName() {
 //		return name;
 //	}
@@ -48,4 +49,11 @@ public class SignUpForm {
 		this.confirmedpassword = confirmedpassword;
 	}
 
+	public String[] getAgree() {
+		return agree;
+	}
+
+	public void setAgree(String[] agree) {
+		this.agree = agree;
+	}
 }
