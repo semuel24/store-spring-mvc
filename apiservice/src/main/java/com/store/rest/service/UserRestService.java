@@ -79,6 +79,50 @@ public class UserRestService extends RestService {
 		HttpServletUtil.populateWithJSON(response,
 				JSONConverter.getJson(result));
 	}
+	
+	@RequestMapping(value = "/deviceControlService", method = RequestMethod.POST)
+	public void verifyDeviceinRedis(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		String postBody = null;
+		StatusResult result = null;
+		try {
+			// parse incoming data
+			postBody = getBody(request);
+			ObjectMapper mapper = new ObjectMapper();
+			VerifyVpnAccessDTO dto = mapper.readValue(postBody,
+					VerifyVpnAccessDTO.class);
+
+			if (logger.isInfoEnabled()) {
+				logger.info("### UserRestService.verifyDeviceinRedis started to handle dto: "
+						+ dto.toString());
+			}
+			if (dto.getIncomingIp() == null
+					|| "".equalsIgnoreCase(dto.getIncomingIp())) {
+				dto.setIncomingIp(request.getRemoteAddr());
+				if (logger.isInfoEnabled()) {
+					logger.info("verifyDeviceinRedis - caught remote ip:"
+							+ dto.getIncomingIp());
+				}
+			}
+
+			// todo: validate incoming data format
+
+			// verify user access
+			result = userService.handleControlDeviceService(dto);
+		} catch (Exception e) {
+			if (logger.isErrorEnabled()) {
+				logger.error(e.getMessage(), e);
+			}
+			result = new StatusResult(Constants.GENERAL_FAILURE);
+		}
+		if (logger.isInfoEnabled()) {
+			logger.info("### UserRestService.verifyDeviceinRedis finished handling result: "
+					+ result.getStatus());
+		}
+		HttpServletUtil.populateWithJSON(response,
+				JSONConverter.getJson(result));
+	}
 
 	@RequestMapping(value = "/reportUsage", method = RequestMethod.POST)
 	public void reportUsagetoRedis(HttpServletRequest request,

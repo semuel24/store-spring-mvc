@@ -102,6 +102,15 @@
 
                             </div>
                             <div class="form-group col-lg-4">
+                                <label>邀请码</label>
+                                <input name="ivitationcode" id=""ivitationcode"" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-4">
+
+                            </div>
+                            <div class="form-group col-lg-4">
                                 <div>
                                 <span style="span-bottom:10px;">禁止使用卓越VPN网络加速器的服务器进行以下行为：</span><br/>
 

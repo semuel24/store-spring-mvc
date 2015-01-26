@@ -7,6 +7,7 @@ public class SignUpForm {
 	private String confirmedemail;
 	private String password;
 	private String confirmedpassword;
+	private String ivitationcode;
 	private String[] agree;
 	
 //	public String getName() {
@@ -16,9 +17,16 @@ public class SignUpForm {
 //	public void setName(String name) {
 //		this.name = name;
 //	}
-
 	public String getEmail() {
 		return email;
+	}
+
+	public String getIvitationcode() {
+		return ivitationcode;
+	}
+
+	public void setIvitationcode(String ivitationcode) {
+		this.ivitationcode = ivitationcode;
 	}
 
 	public void setEmail(String email) {

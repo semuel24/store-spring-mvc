@@ -5,17 +5,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.store.dto.AddorUpdateUserDTO;
 import com.store.dto.BatchRequestAccessDTO;
 import com.store.dto.ReportUsageDTO;
 import com.store.dto.VerifyVpnAccessDTO;
 import com.store.redis.dao.BlockUserDAO;
+import com.store.redis.dao.DeviceKeyTakenDAO;
 import com.store.redis.dao.ServerRedisDAO;
 import com.store.redis.dao.UserRedisDAO;
 import com.store.redis.model.SessionUsage;
@@ -42,6 +41,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private BlockUserDAO blockUserDAO;
+	
+	@Autowired
+	private DeviceKeyTakenDAO deviceKeyTakenDAO;
 
 	/** 
 	 * steps:
@@ -58,7 +60,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	public StatusResult handleStartUseVpnService(VerifyVpnAccessDTO dto) {
 		LoginResult result = new LoginResult(Constants.SUCCESS);
-
+		
 		// step2
 		// get product key by incoming IP
 		String productKey = serverRedisDAO.findProductKeyServerByIp(dto
@@ -133,6 +135,46 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return result;
+	}
+	
+	/** 
+	 * steps:
+	 * 
+	 * 0. for free-trail account, validate if the device is already used by another account, if yes, block the usage
+	 * 2. validate product/incoming IP by product key
+	 */
+	public StatusResult handleControlDeviceService(VerifyVpnAccessDTO dto) {
+		LoginResult result = new LoginResult(Constants.SUCCESS);
+		
+		// step2
+		// get product key by incoming IP
+		String productKey = serverRedisDAO.findProductKeyServerByIp(dto
+				.getIncomingIp());
+		if (productKey == null) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Unknown ip: " + dto.getIncomingIp());
+			}
+			result.setStatus(Constants.IP_UNKNOWN);
+			return result;
+		}
+		
+		//step 0
+		if(productKey.equalsIgnoreCase(Constants.PRODUCT.FREETRIAL.getProductKey()) && 
+				deviceKeyTakenDAO.blockDevice(dto.getDeviceKey(), dto.getEmail())) {
+			//disable the new account
+			VpnUser _vpnUser = userRedisDAO.findUserByKey(dto.getEmail(), productKey);
+			if(_vpnUser == null) {
+				result.setStatus(Constants.USER_MISSING);
+				return result;
+			} else {
+				_vpnUser.setStatus(false);
+				userRedisDAO.saveOrUpdateUser(_vpnUser);
+			}
+			result.setStatus(Constants.DEVICE_ALREADY_TAKEN);
+			return result;
+		}
+
+		return result;//return default
 	}
 	
 	/**

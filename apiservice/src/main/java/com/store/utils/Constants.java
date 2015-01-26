@@ -14,6 +14,7 @@ public class Constants {
 	public static String USER_DEACTIVE = "7";
 	public static String IP_UNKNOWN = "8";
 	public static String REACH_USAGE_LIMIT = "9";
+	public static String DEVICE_ALREADY_TAKEN = "10";
 	
 	
 	public static String SESSION = "sessionkey";

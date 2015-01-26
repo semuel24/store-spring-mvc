@@ -40,13 +40,30 @@ public class DeviceKeyTakenDAO {
 		this.redisClient = redisClient;
 	}
 
-	public DeviceTaken findDeviceByDeviceKey(String deviceKey) {
+	//only API
+	public Boolean blockDevice(String deviceKey, String email) {
+		if (deviceKey == null || email == null) {
+//			throw new RuntimeException(
+//					"DeviceKeyTakenDAO blockDevice invalid inputs");
+			return false;
+		}
+
+		DeviceTaken device = findDeviceByDeviceKey(deviceKey);
+		if (device == null) { // does not find the device
+			addDevice(deviceKey, email);
+			return false;// grant access
+		} else {
+			return !device.getEmail().equalsIgnoreCase(email);
+		}
+	}
+	
+	private DeviceTaken findDeviceByDeviceKey(String deviceKey) {
 		RBucket<DeviceTaken> bucket = redisClient.getRedisson().getBucket(
 				normalizeDeviceKey(deviceKey));
 		return bucket.get();
 	}
 
-	public void addDevice(String deviceKey, String email) {
+	private void addDevice(String deviceKey, String email) {
 		DeviceTaken device = new DeviceTaken();
 		device.setDeviceKey(deviceKey);
 		device.setEmail(email);

@@ -15,4 +15,5 @@ public interface UserService {
 	public void handleUpdateUserService(AddorUpdateUserDTO dto);
 	public void handleDeleteUserService(String productKey, String email);
 	public BatchRequestAccessResult handleBatchRequestAccessService(BatchRequestAccessDTO dto);
+	public StatusResult handleControlDeviceService(VerifyVpnAccessDTO dto);
 }
