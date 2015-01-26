@@ -5,6 +5,7 @@ public class VerifyVpnAccessDTO {
 	private String email;
 	private String password;
 	private String incomingIp;//for test
+	private String deviceKey;
 	
 	public String getEmail() {
 		return email;
@@ -25,6 +26,12 @@ public class VerifyVpnAccessDTO {
 		this.incomingIp = incomingIp;
 	}
 	
+	public String getDeviceKey() {
+		return deviceKey;
+	}
+	public void setDeviceKey(String deviceKey) {
+		this.deviceKey = deviceKey;
+	}
 	public String toString() {
 		String result = "";
 		if(email != null) {
@@ -34,8 +41,12 @@ public class VerifyVpnAccessDTO {
 			result += "password:" + password + " | ";
 		}
 		if(incomingIp != null) {
-			result += "incomingIp:" + incomingIp;
+			result += "incomingIp:" + incomingIp + " | ";
 		}
+		if(deviceKey != null) {
+			result += "deviceKey:" + deviceKey;
+		}
+		
 		return result;
 	}
 }
