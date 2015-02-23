@@ -3,11 +3,14 @@ package com.store.controller;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.store.result.CreateUserResult;
 import com.store.result.HandleForgotPasswordResult;
 import com.store.result.LoginResult;
@@ -222,6 +226,33 @@ public class UserController {
 	
 		// go to home page
 		return "/client/home";
+	}
+	
+	@RequestMapping(value = "/checkemailexistence", method = RequestMethod.POST)
+	public void checkEmailExistence(
+			HttpServletRequest request,
+			HttpServletResponse response) {
+
+		PrintWriter out = null;
+		try {
+			String email = request.getParameter("email");
+			if(logger.isDebugEnabled()) {
+				logger.debug("#####checking email " + email + " for existence#####");
+			}
+			Boolean valid = userService.emailValid(email);
+           
+			response.setContentType("application/json;charset=UTF-8");
+			response.setHeader("Cache-Control", "no-cache");
+			out = response.getWriter();
+			out.write(valid.toString());
+
+        } catch (Exception e) {
+        	
+        } finally {
+			if (null != out) {
+				out.close();
+			}
+		}
 	}
 	
 	private String getBody(HttpServletRequest request) throws IOException {

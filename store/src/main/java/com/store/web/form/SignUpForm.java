@@ -2,31 +2,23 @@ package com.store.web.form;
 
 public class SignUpForm {
 
-//	private String name;
 	private String email;
 	private String confirmedemail;
 	private String password;
 	private String confirmedpassword;
-	private String ivitationcode;
+	private String invitationcode;
 	private String[] agree;
-	
-//	public String getName() {
-//		return name;
-//	}
-//
-//	public void setName(String name) {
-//		this.name = name;
-//	}
+
 	public String getEmail() {
 		return email;
 	}
 
-	public String getIvitationcode() {
-		return ivitationcode;
+	public String getInvitationcode() {
+		return invitationcode;
 	}
 
-	public void setIvitationcode(String ivitationcode) {
-		this.ivitationcode = ivitationcode;
+	public void setInvitationcode(String invitationcode) {
+		this.invitationcode = invitationcode;
 	}
 
 	public void setEmail(String email) {

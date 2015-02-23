@@ -42,9 +42,9 @@ public class DeviceKeyTakenDAO {
 
 	//only API
 	public Boolean blockDevice(String deviceKey, String email) {
-		if (deviceKey == null || email == null) {
-//			throw new RuntimeException(
-//					"DeviceKeyTakenDAO blockDevice invalid inputs");
+		if (deviceKey == null 
+				|| deviceKey.equalsIgnoreCase("") 
+				|| email == null) {
 			return false;
 		}
 

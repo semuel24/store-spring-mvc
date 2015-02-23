@@ -203,5 +203,11 @@ public class UserServiceImpl implements UserService {
 		// result.setSessionkey(sessionkey);
 		return result;
 	}
+	
+	@Transactional(readOnly = true)
+	public Boolean emailValid(String email) {
+		User user = userDAO.findByEmail(email);
+		return user == null ? true:false; 
+	}
 
 }

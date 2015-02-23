@@ -61,38 +61,25 @@
 
 					<form role="form">
 						<div class="row">
-							<!-- <div class="form-group col-lg-6">
-								<label>昵称:</label><span>Sam</span>
-							</div> -->
-							<!-- <div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div> -->
-							<!-- <div class="form-group col-lg-6">
-								<label>用户名:</label><span>Sam</span>
-							</div> -->
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
-							<div class="form-group col-lg-6">
-								<label>电子邮件:</label><span>sam@tubevpn.com</span>
-							</div>
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
+							<div class="form-group col-lg-12">
+                                <label>电子邮件:</label><span>sam@tubevpn.com</span>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label>邀请码:</label><span>CMZ16GX3M2A1600C10</span>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label>密码:</label><span>******</span>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <button type="submit" class="btn btn-default">编辑</button>
+                            </div>
 
-							<div class="form-group col-lg-6">
-								<label>密码:</label><span>******</span>
-							</div>
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
-
-							<div class="form-group col-lg-6">
-								<label>当前套餐:</label><span>免费试用</span>
-							</div>
-							<div class="form-group col-lg-6">
-								<button type="submit" class="btn btn-default">编辑</button>
-							</div>
+                            <div class="form-group col-lg-6">
+                                <label>当前套餐:</label><span>免费试用</span>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <button type="submit" class="btn btn-default">编辑</button>
+                            </div>
 						</div>
 					</form>
 				</div>
@@ -113,12 +100,12 @@
 	</footer>
 
 	<!-- jQuery -->
-	<script
-		src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>"></script>
+	<%-- <script
+		src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>"></script> --%>
 
 	<!-- Bootstrap Core JavaScript -->
-	<script
-		src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>"></script>
+	<%-- <script
+		src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>"></script> --%>
 
 </body>
 

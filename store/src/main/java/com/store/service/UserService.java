@@ -17,4 +17,6 @@ public interface UserService {
 	public LoginResult handleLogin(LoginForm loginForm);
 
 	public StatusResult handleLoginService(LoginServiceDTO dto);
+	
+	public Boolean emailValid(String email);
 }

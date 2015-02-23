@@ -20,6 +20,8 @@
 
     <!-- Custom CSS -->
     <link href="<c:url value="/resources/startbootstrap-business-casual/css/business-casual.css" />" rel="stylesheet">
+    
+    <link href="<c:url value="/resources/css/front.common.css" />" rel="stylesheet">
 
     <!-- Fonts -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
@@ -51,16 +53,7 @@
                         <strong>创建新用户</strong>
                     </h2>
                     <hr>
-                    <form:form action="signup" method="post" commandName="signupForm" role="form">
-                        <!-- <div class="row">
-                            <div class="form-group col-lg-4">
-
-                            </div>
-                            <div class="form-group col-lg-4">
-                                <label>昵称</label>
-                                <input name="name" id="name" type="text" class="form-control">
-                            </div>
-                        </div> -->
+                    <form:form action="signup" method="post" commandName="signupForm" role="form" id="register-form">
                         <div class="row">
                             <div class="form-group col-lg-4">
 
@@ -85,7 +78,7 @@
                             </div>
                             <div class="form-group col-lg-4">
                                 <label>密码</label>
-                                <input name="password" id="password" type="text" class="form-control">
+                                <input name="password" id="password" type="password" class="form-control">
                             </div>
                         </div>
                         <div class="row">
@@ -94,18 +87,18 @@
                             </div>
                             <div class="form-group col-lg-4">
                                 <label>确认密码</label>
-                                <input name="confirmedpassword" id="confirmedpassword" type="text" class="form-control">
+                                <input name="confirmedpassword" id="confirmedpassword" type="password" class="form-control">
                             </div>
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="form-group col-lg-4">
 
                             </div>
                             <div class="form-group col-lg-4">
                                 <label>邀请码</label>
-                                <input name="ivitationcode" id=""ivitationcode"" type="text" class="form-control">
+                                <input name="invitationcode" id="invitationcode" type="text" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row">
                             <div class="form-group col-lg-4">
 
@@ -153,12 +146,13 @@
         </div>
     </footer>
 
-    <!-- jQuery -->
-    <script src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>" ></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>" ></script>
-
+	<!-- CDN js -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+	
+	<!-- js -->
+	<%-- <script src="<c:url value="/resources/js/jquery.validate.js" />" ></script> --%>
+	<script src="<c:url value="/resources/js/signup.validation.js" />" ></script>
 </body>
 
 </html>

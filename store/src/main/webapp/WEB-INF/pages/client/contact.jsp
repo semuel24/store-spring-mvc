@@ -95,12 +95,12 @@
     </footer>
 
     <!-- jQuery -->
-	<script
-		src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>"></script>
+	<%-- <script
+		src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>"></script> --%>
 
 	<!-- Bootstrap Core JavaScript -->
-	<script
-		src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>"></script>
+	<%-- <script
+		src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>"></script> --%>
 
 </body>
 
