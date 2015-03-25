@@ -1,5 +1,9 @@
 package com.store.dto;
 
+import java.util.Map;
+
+import com.store.redis.model.SessionUsage;
+
 public class AddorUpdateUserDTO {
 
 	private String email;
@@ -9,6 +13,13 @@ public class AddorUpdateUserDTO {
 	private String productKey;
 	private Long serviceStartTimestamp;
 	private String period;
+	
+	//added more
+	private Long currentCycleEndTimestamp;
+	private Long userUsageLimit;
+	private Long totalUsageofExpiredSessions;
+	private Long totalUsageofAllSessions;
+	private Map<Long, SessionUsage>sessionUsageMap;
 
 	public String getEmail() {
 		return email;
@@ -66,6 +77,46 @@ public class AddorUpdateUserDTO {
 		this.period = period;
 	}
 	
+	public Long getCurrentCycleEndTimestamp() {
+		return currentCycleEndTimestamp;
+	}
+
+	public void setCurrentCycleEndTimestamp(Long currentCycleEndTimestamp) {
+		this.currentCycleEndTimestamp = currentCycleEndTimestamp;
+	}
+
+	public Long getUserUsageLimit() {
+		return userUsageLimit;
+	}
+
+	public void setUserUsageLimit(Long userUsageLimit) {
+		this.userUsageLimit = userUsageLimit;
+	}
+
+	public Long getTotalUsageofExpiredSessions() {
+		return totalUsageofExpiredSessions;
+	}
+
+	public void setTotalUsageofExpiredSessions(Long totalUsageofExpiredSessions) {
+		this.totalUsageofExpiredSessions = totalUsageofExpiredSessions;
+	}
+
+	public Long getTotalUsageofAllSessions() {
+		return totalUsageofAllSessions;
+	}
+
+	public void setTotalUsageofAllSessions(Long totalUsageofAllSessions) {
+		this.totalUsageofAllSessions = totalUsageofAllSessions;
+	}
+
+	public Map<Long, SessionUsage> getSessionUsageMap() {
+		return sessionUsageMap;
+	}
+
+	public void setSessionUsageMap(Map<Long, SessionUsage> sessionUsageMap) {
+		this.sessionUsageMap = sessionUsageMap;
+	}
+
 	public String toString() {
 		String result = "";
 		if(email != null) {

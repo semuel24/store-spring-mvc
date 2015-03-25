@@ -310,7 +310,47 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public void handleUpdateUserService(AddorUpdateUserDTO dto) {
-		throw new UnsupportedOperationException("handleUpdateUserService");
+		VpnUser user = new VpnUser();
+		user.setEmail(dto.getEmail());
+		
+		String hashedPassword;
+		try {
+			hashedPassword = SHA256Generator.hash(dto.getPassword()
+						+ dto.getSalt());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		user.setSalt(dto.getSalt());
+		user.setPassword(hashedPassword);
+		
+		if(dto.getStatus() != null) {
+			user.setStatus(dto.getStatus());
+		}
+		if(dto.getProductKey() != null) {
+			user.setProductKey(dto.getProductKey());
+		}
+		if(dto.getServiceStartTimestamp() != null) {
+			user.setServiceStartTimestamp(dto.getServiceStartTimestamp());
+		}
+		if(dto.getPeriod() != null) {
+			user.setPeriod(dto.getPeriod());	
+		}
+		if(dto.getCurrentCycleEndTimestamp() != null) {
+			user.setCurrentCycleEndTimestamp(dto.getCurrentCycleEndTimestamp());
+		}
+		if(dto.getUserUsageLimit() != null) {
+			user.setUserUsageLimit(dto.getUserUsageLimit());
+		}
+		if(dto.getTotalUsageofAllSessions() != null) {
+			user.setTotalUsageofAllSessions(dto.getTotalUsageofAllSessions());
+		}
+		if(dto.getTotalUsageofExpiredSessions() != null) {
+			user.setTotalUsageofExpiredSessions(dto.getTotalUsageofExpiredSessions());
+		}
+		if(dto.getSessionUsageMap() != null) {
+			user.setSessionUsageMap(dto.getSessionUsageMap());
+		}
+		userRedisDAO.saveOrUpdateUser(user);
 	}
 	
 	public void handleDeleteUserService(String productKey, String email) {

@@ -31,7 +31,7 @@ public class AdminRestService extends RestService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(AdminRestService.class);
 
-	private static String adminApiKey = "2e078028-3196-4361-a027-d9f19835cc7a";
+	private static String AdminApiKey = "2e078028-3196-4361-a027-d9f19835cc7a";
 
 	@Autowired
 	private VpnServerService vpnServerService;
@@ -46,20 +46,27 @@ public class AdminRestService extends RestService {
 		String postBody = null;
 		StatusResult result = null;
 		try {
-			// parse incoming data
-			postBody = getBody(request);
-			ObjectMapper mapper = new ObjectMapper();
-			AddVpnServerDTO dto = mapper.readValue(postBody,
-					AddVpnServerDTO.class);
-
-			if (logger.isInfoEnabled()) {
-				logger.info("### AdminRestService.addVpnServer started to handle dto: "
-						+ dto.toString());
+			//auth
+			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+				result = new StatusResult(Constants.INVALID_APIKEY);
 			}
-			// todo: validate incoming data format
-
-			vpnServerService.handleAddServer(dto);
-			result = new StatusResult(Constants.SUCCESS);
+			
+			if(result == null) {
+				// parse incoming data
+				postBody = getBody(request);
+				ObjectMapper mapper = new ObjectMapper();
+				AddVpnServerDTO dto = mapper.readValue(postBody,
+						AddVpnServerDTO.class);
+	
+				if (logger.isInfoEnabled()) {
+					logger.info("### AdminRestService.addVpnServer started to handle dto: "
+							+ dto.toString());
+				}
+				// todo: validate incoming data format
+	
+				vpnServerService.handleAddServer(dto);
+				result = new StatusResult(Constants.SUCCESS);
+			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -86,10 +93,17 @@ public class AdminRestService extends RestService {
 		}
 		StatusResult result = null;
 		try {
-			// todo: validate incoming data format
-
-			vpnServerService.handleDeleteServer(productKey, ip);
-			result = new StatusResult(Constants.SUCCESS);
+			//auth
+			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+				result = new StatusResult(Constants.INVALID_APIKEY);
+			}
+			
+			if(result == null) {
+				// todo: validate incoming data format
+	
+				vpnServerService.handleDeleteServer(productKey, ip);
+				result = new StatusResult(Constants.SUCCESS);
+			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -114,12 +128,19 @@ public class AdminRestService extends RestService {
 		}
 		ServerListResult result = null;
 		try {
-			// todo: validate incoming data format
-
-			Map<String, Map<String, VpnServerInfo>> servers = vpnServerService
-					.handleFindAllServers();
-			result = new ServerListResult(Constants.SUCCESS);
-			result.setServers(servers);
+			//auth
+			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+				result = new ServerListResult(Constants.INVALID_APIKEY);
+			}
+			
+			if(result == null) {
+				// todo: validate incoming data format
+	
+				Map<String, Map<String, VpnServerInfo>> servers = vpnServerService
+						.handleFindAllServers();
+				result = new ServerListResult(Constants.SUCCESS);
+				result.setServers(servers);
+			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -135,20 +156,27 @@ public class AdminRestService extends RestService {
 		String postBody = null;
 		StatusResult result = null;
 		try {
-			// parse incoming data
-			postBody = getBody(request);
-			ObjectMapper mapper = new ObjectMapper();
-			AddorUpdateUserDTO dto = mapper.readValue(postBody,
-					AddorUpdateUserDTO.class);
-			if (logger.isInfoEnabled()) {
-				logger.info("### AdminRestService.addUser started to handle dto: "
-						+ dto.toString());
+			//auth
+			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+				result = new StatusResult(Constants.INVALID_APIKEY);
 			}
-			// todo: validate incoming data format
-
-			// verify user access
-			userService.handleAddUserService(dto);
-			result = new StatusResult(Constants.SUCCESS);
+			
+			if(result == null) {
+				// parse incoming data
+				postBody = getBody(request);
+				ObjectMapper mapper = new ObjectMapper();
+				AddorUpdateUserDTO dto = mapper.readValue(postBody,
+						AddorUpdateUserDTO.class);
+				if (logger.isInfoEnabled()) {
+					logger.info("### AdminRestService.addUser started to handle dto: "
+							+ dto.toString());
+				}
+				// todo: validate incoming data format
+	
+				// verify user access
+				userService.handleAddUserService(dto);
+				result = new StatusResult(Constants.SUCCESS);
+			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -170,20 +198,27 @@ public class AdminRestService extends RestService {
 		String postBody = null;
 		StatusResult result = null;
 		try {
-			// parse incoming data
-			postBody = getBody(request);
-			ObjectMapper mapper = new ObjectMapper();
-			AddorUpdateUserDTO dto = mapper.readValue(postBody,
-					AddorUpdateUserDTO.class);
-			if (logger.isInfoEnabled()) {
-				logger.info("### AdminRestService.updateUser started to handle dto: "
-						+ dto.toString());
+			//auth
+			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+				result = new StatusResult(Constants.INVALID_APIKEY);
 			}
-			// todo: validate incoming data format
-
-			// verify user access
-			userService.handleUpdateUserService(dto);
-			result = new StatusResult(Constants.SUCCESS);
+			
+			if(result == null) {
+				// parse incoming data
+				postBody = getBody(request);
+				ObjectMapper mapper = new ObjectMapper();
+				AddorUpdateUserDTO dto = mapper.readValue(postBody,
+						AddorUpdateUserDTO.class);
+				if (logger.isInfoEnabled()) {
+					logger.info("### AdminRestService.updateUser started to handle dto: "
+							+ dto.toString());
+				}
+				// todo: validate incoming data format
+	
+				// verify user access
+				userService.handleUpdateUserService(dto);
+				result = new StatusResult(Constants.SUCCESS);
+			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -210,11 +245,18 @@ public class AdminRestService extends RestService {
 		}
 		StatusResult result = null;
 		try {
-			// todo: validate incoming data format
-
-			// handle deletion
-			userService.handleDeleteUserService(productKey, email);
-			result = new StatusResult(Constants.SUCCESS);
+			//auth
+			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+				result = new StatusResult(Constants.INVALID_APIKEY);
+			}
+			
+			if(result == null) {
+				// todo: validate incoming data format
+	
+				// handle deletion
+				userService.handleDeleteUserService(productKey, email);
+				result = new StatusResult(Constants.SUCCESS);
+			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);

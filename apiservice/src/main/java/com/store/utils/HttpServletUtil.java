@@ -67,4 +67,8 @@ public class HttpServletUtil {
 		return status;
 	}
 	
+	public static Boolean ValidateApiKey(HttpServletRequest request, String expectedApiKey) {
+		return expectedApiKey.equalsIgnoreCase(request.getHeader(Constants.APIKEY));
+	}
+	
 }

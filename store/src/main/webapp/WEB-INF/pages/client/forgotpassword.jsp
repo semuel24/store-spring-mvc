@@ -24,6 +24,8 @@
 <link
 	href="<c:url value="/resources/startbootstrap-business-casual/css/business-casual.css" />"
 	rel="stylesheet">
+	
+<link href="<c:url value="/resources/css/front.common.css" />" rel="stylesheet">
 
 <!-- Fonts -->
 <link
@@ -60,7 +62,7 @@
 					</h2>
 					<hr>
 
-					<form:form action="forgotpassword" method="post" commandName="forgotpasswordForm" role="form">
+					<form:form action="forgotpassword" method="post" commandName="forgotpasswordForm" role="form" id="forgot-pass-form">
 						<div class="row">
                             <div class="form-group col-lg-4">
 
@@ -76,7 +78,7 @@
                             </div>
                             <div class="form-group col-lg-4">
                                 <input type="hidden" name="save" value="contact">
-                                <button type="submit" class="btn btn-warning btn-block">继续</button>
+                                <button type="submit" class="btn btn-warning btn-block">发送临时密码到邮箱</button>
                             </div>
                         </div>
                 	</form:form>     
@@ -96,13 +98,12 @@
 		</div>
 	</footer>
 
-	<!-- jQuery -->
-	<%-- <script
-		src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>"></script> --%>
-
-	<!-- Bootstrap Core JavaScript -->
-	<%-- <script
-		src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>"></script> --%>
+	<!-- CDN js -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+	
+	<!-- js -->
+	<script src="<c:url value="/resources/js/forgot.pass.validation.js" />" ></script>
 
 </body>
 

@@ -18,5 +18,5 @@ public interface UserService {
 
 	public StatusResult handleLoginService(LoginServiceDTO dto);
 	
-	public Boolean emailValid(String email);
+	public Boolean emailTaken(String email);
 }

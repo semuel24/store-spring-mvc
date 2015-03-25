@@ -101,32 +101,7 @@ public class UserController {
 		model.put("message", result.getMessage());
 		model.put("user", signupForm);
 		return "/client/message";
-	}
-
-	@RequestMapping(value = "/signup", method = RequestMethod.GET)
-	public String viewSignUp(HttpServletRequest request,
-			HttpServletResponse response) {
-		return "/client/signup";
-	}
-
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String handleLogout(HttpServletRequest request,
-			HttpServletResponse response) {
-
-		// clear app server session
-		request.getSession().invalidate();
-
-		// go back to home page
-		return "/client/home";
-	}
-
-	@RequestMapping(value = "/forgotpassword", method = RequestMethod.GET)
-	public String viewForgotPassard(HttpServletRequest request,
-			HttpServletResponse response) {
-
-		// go back to home page
-		return "/client/forgotpassword";
-	}
+	}	
 
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
 	public String handleForgotPassard(
@@ -158,13 +133,6 @@ public class UserController {
 
 		// return message to web page
 		return "/client/message";
-	}
-
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String viewLogin(HttpServletRequest request,
-			HttpServletResponse response) {
-
-		return "/client/login";
 	}
 
 	/**
@@ -204,20 +172,6 @@ public class UserController {
 		return "/client/home";
 	}
 	
-	@RequestMapping(value = "/account", method = RequestMethod.GET)
-	public String viewAccount(HttpServletRequest request,
-			HttpServletResponse response) {
-
-		return "/client/account";
-	}
-	
-	@RequestMapping(value = "/contact", method = RequestMethod.GET)
-	public String viewContact(HttpServletRequest request,
-			HttpServletResponse response) {
-
-		return "/client/contact";
-	}
-	
 	@RequestMapping(value = "/contact", method = RequestMethod.POST)
 	public String handleContact(@ModelAttribute("contactForm") ContactForm contactForm,
 			ModelMap model, HttpServletRequest request,
@@ -236,10 +190,12 @@ public class UserController {
 		PrintWriter out = null;
 		try {
 			String email = request.getParameter("email");
+			Integer expectAlreadyExist = Integer.valueOf(request.getParameter("expectAlreadyExist"));
 			if(logger.isDebugEnabled()) {
 				logger.debug("#####checking email " + email + " for existence#####");
 			}
-			Boolean valid = userService.emailValid(email);
+			Boolean valid = expectAlreadyExist == 1 ? userService.emailTaken(email)
+					: !userService.emailTaken(email);
            
 			response.setContentType("application/json;charset=UTF-8");
 			response.setHeader("Cache-Control", "no-cache");

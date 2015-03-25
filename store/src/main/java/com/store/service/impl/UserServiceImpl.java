@@ -2,12 +2,10 @@ package com.store.service.impl;
 
 import java.util.Random;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.store.calling.api.AddorUpdateUserDTO;
 import com.store.calling.api.ApiService;
 import com.store.dao.ProductDAO;
@@ -16,7 +14,6 @@ import com.store.dao.UserDAO;
 import com.store.dto.LoginServiceDTO;
 import com.store.entity.Product;
 import com.store.entity.User;
-import com.store.exception.DBException;
 import com.store.result.CreateUserResult;
 import com.store.result.HandleForgotPasswordResult;
 import com.store.result.LoginResult;
@@ -92,7 +89,7 @@ public class UserServiceImpl implements UserService {
 		dto.setSalt(salt);
 		dto.setServiceStartTimestamp(System.currentTimeMillis());
 		dto.setStatus(true);
-		StatusResult callingResult = apiService.AddUser(dto);
+		StatusResult callingResult = apiService.addUser(dto);
 		if (callingResult == null
 				|| !callingResult.getStatus().equalsIgnoreCase(
 						Constants.SUCCESS)) {
@@ -133,9 +130,15 @@ public class UserServiceImpl implements UserService {
 			return result;
 		}
 
-		result.setNewpassword(hashedPassword);
+		result.setNewpassword(newPlainTextPassword);
 		user.setPassword(hashedPassword);
 		userDAO.update(user);
+		
+		//update to apiservice
+		AddorUpdateUserDTO dto = new AddorUpdateUserDTO();
+		dto.setEmail(email);
+		dto.setSalt(user.getSalt());
+		apiService.updateUser(dto);
 
 		return result;
 	}
@@ -199,15 +202,13 @@ public class UserServiceImpl implements UserService {
 			return result;
 		}
 
-		// String sessionkey = UUID.randomUUID().toString();
-		// result.setSessionkey(sessionkey);
 		return result;
 	}
 	
 	@Transactional(readOnly = true)
-	public Boolean emailValid(String email) {
+	public Boolean emailTaken(String email) {
 		User user = userDAO.findByEmail(email);
-		return user == null ? true:false; 
+		return user == null ? false:true; 
 	}
 
 }

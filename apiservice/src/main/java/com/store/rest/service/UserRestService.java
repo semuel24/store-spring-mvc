@@ -31,7 +31,7 @@ public class UserRestService extends RestService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(UserRestService.class);
 
-	private static String userApiKey = "74b49f01-7009-4e98-80ef-e85004128e7d";
+	private static String UserApiKey = "74b49f01-7009-4e98-80ef-e85004128e7d";
 
 	@Autowired
 	private UserService userService;

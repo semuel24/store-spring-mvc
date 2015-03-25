@@ -16,13 +16,17 @@
     <title>tubevpn</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="<c:url value="/resources/startbootstrap-business-casual/css/bootstrap.min.css" />" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="<c:url value="/resources/startbootstrap-business-casual/css/business-casual.css" />" rel="stylesheet">
-
-	<link href="<c:url value="/resources/css/front.common.css" />" rel="stylesheet">
+	<link
+		href="<c:url value="/resources/startbootstrap-business-casual/css/bootstrap.min.css" />"
+		rel="stylesheet">
 	
+	<!-- Custom CSS -->
+	<link
+		href="<c:url value="/resources/startbootstrap-business-casual/css/business-casual.css" />"
+		rel="stylesheet">
+    
+    <link href="<c:url value="/resources/css/front.common.css" />" rel="stylesheet">
+
     <!-- Fonts -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
@@ -41,7 +45,7 @@
     <div class="brand">tubevpn</div>
 
     <!-- Navigation -->
-    <%@ include file="common/nav.jsp"%>
+  	<%@ include file="common/nav.jsp"%>
 
     <div class="container">
 
@@ -50,18 +54,18 @@
                 <div class="col-lg-12">
                     <hr>
                     <h2 class="intro-text text-center">
-                        <strong>登录账户</strong>
+                        <strong>修改密码</strong>
                     </h2>
                     <hr>
                     
-                    <form:form action="login" method="post" commandName="loginForm" role="form" id="login-form">
+                    <form:form action="changepassword" method="post" commandName="changepasswordForm" role="form" id="change-pass-form">
                         <div class="row">
                             <div class="form-group col-lg-4">
 
                             </div>
                             <div class="form-group col-lg-4">
-                                <label>电子邮件(用户名)</label>
-                                <input id="email" name="email" type="text" class="form-control">
+                                <label>请输入旧密码</label>
+                                <input id="oldpass" name="oldpass" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="row">
@@ -69,31 +73,34 @@
 
                             </div>
                             <div class="form-group col-lg-4">
-                                <label>密码</label>
-                                <input id="password" name="password" type="text" class="form-control">
+                                <label>请输入新密码</label>
+                                <input id="newpass" name="newpass" type="text" class="form-control">
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="form-group col-lg-4">
+
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label>请再次输入新密码</label>
+                                <input id="newpassconfirm" name="newpassconfirm" type="text" class="form-control">
+                            </div>
+                        </div>
+                       
                         <div class="row">
                             <div class="form-group col-lg-4">
 
                             </div>
                             <div class="form-group col-lg-4">
                                 <input type="hidden" name="save" value="contact">
-                                <button type="submit" class="btn btn-warning btn-block">登陆您的账户</button>
+                                <button type="submit" class="btn btn-warning btn-block">修改密码</button>
                             </div>
                         </div>
-                    </form:form>
-                    <div class="row">
-                        <div class="form-group col-lg-4">
-
-                        </div>
-                        <div class="form-group col-lg-4">
-                            <a href="forgotpassword" class="btn btn-info btn-block">忘记密码</a>
-                        </div>
-                    </div>
+                    </form:form>  
                 </div>
             </div>
         </div>
+
     </div>
     <!-- /.container -->
 
@@ -107,12 +114,13 @@
         </div>
     </footer>
 
-   	<!-- CDN js -->
+    <!-- CDN js -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
-
+	
 	<!-- js -->
-	<script src="<c:url value="/resources/js/login.validation.js" />" ></script>
+	<script src="<c:url value="/resources/js/change.pass.validation.js" />" ></script>
+
 </body>
 
 </html>

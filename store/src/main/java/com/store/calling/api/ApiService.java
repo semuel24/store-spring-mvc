@@ -4,6 +4,7 @@ import com.store.result.StatusResult;
 
 public interface ApiService {
 
-	public StatusResult AddAServer(AddVpnServerDTO dto);
-	public StatusResult AddUser(AddorUpdateUserDTO dto);
+	public StatusResult addAServer(AddVpnServerDTO dto);
+	public StatusResult addUser(AddorUpdateUserDTO dto);
+	public StatusResult updateUser(AddorUpdateUserDTO dto);
 }

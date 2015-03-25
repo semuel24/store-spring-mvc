@@ -64,21 +64,21 @@
 							<div class="form-group col-lg-12">
                                 <label>电子邮件:</label><span>sam@tubevpn.com</span>
                             </div>
-                            <div class="form-group col-lg-12">
+                            <!-- <div class="form-group col-lg-12">
                                 <label>邀请码:</label><span>CMZ16GX3M2A1600C10</span>
-                            </div>
+                            </div> -->
                             <div class="form-group col-lg-6">
                                 <label>密码:</label><span>******</span>
                             </div>
                             <div class="form-group col-lg-6">
-                                <button type="submit" class="btn btn-default">编辑</button>
+                                <a href="changepassword" class="btn btn-default">修改密码</a>
                             </div>
 
                             <div class="form-group col-lg-6">
                                 <label>当前套餐:</label><span>免费试用</span>
                             </div>
                             <div class="form-group col-lg-6">
-                                <button type="submit" class="btn btn-default">编辑</button>
+                                <button type="submit" class="btn btn-default">修改套餐</button>
                             </div>
 						</div>
 					</form>

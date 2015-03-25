@@ -24,6 +24,9 @@ public class Constants {
 	
 	public static Integer DEFAULT_SESSION_TIMEOUT = 300;//in seconds
 	
+	public static String AdminApiKey = "2e078028-3196-4361-a027-d9f19835cc7a";
+	public static String APIKEY = "apikey";
+	
 	public static enum PRODUCT {
 		FREETRIAL("freetrial"),
 		SHARED_MEMBERSHIP("normalmember"),
