@@ -22,7 +22,7 @@
 				<li><a href="home">主页</a></li>
 				<!-- <li><a href="">产品</a></li> -->
 				<c:choose>
-					<c:when test="${not empty loggedin}">
+					<c:when test="${not empty sessionScope.sessionkey}">
 						<li><a href="account">帐户</a></li>
 						<li><a href="logout">登出</a></li>
 					</c:when>

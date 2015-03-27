@@ -5,6 +5,7 @@ import com.store.result.CreateUserResult;
 import com.store.result.HandleForgotPasswordResult;
 import com.store.result.LoginResult;
 import com.store.result.StatusResult;
+import com.store.web.form.ContactForm;
 import com.store.web.form.LoginForm;
 import com.store.web.form.SignUpForm;
 
@@ -19,4 +20,6 @@ public interface UserService {
 	public StatusResult handleLoginService(LoginServiceDTO dto);
 	
 	public Boolean emailTaken(String email);
+	
+	public void handleLeaveMessage(ContactForm contactForm);
 }

@@ -3,7 +3,7 @@ package com.store.web.form;
 public class ContactForm {
 
 	private String name;
-	private String tel;
+	private Long qq;
 	private String email;
 	private String content;
 	
@@ -13,11 +13,11 @@ public class ContactForm {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getTel() {
-		return tel;
+	public Long getQq() {
+		return qq;
 	}
-	public void setTel(String tel) {
-		this.tel = tel;
+	public void setQq(Long qq) {
+		this.qq = qq;
 	}
 	public String getEmail() {
 		return email;

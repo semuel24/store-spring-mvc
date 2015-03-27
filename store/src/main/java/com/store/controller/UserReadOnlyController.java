@@ -52,28 +52,25 @@ public class UserReadOnlyController {
 	public String viewChangePassard(HttpServletRequest request,
 			HttpServletResponse response) {
 
-		// go back to home page
 		return "/client/changepass";
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String viewLogin(HttpServletRequest request,
 			HttpServletResponse response) {
-
 		return "/client/login";
 	}
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public String viewAccount(HttpServletRequest request,
 			HttpServletResponse response) {
-
 		return "/client/account";
 	}
 	
 	@RequestMapping(value = "/contact", method = RequestMethod.GET)
 	public String viewContact(HttpServletRequest request,
 			HttpServletResponse response) {
-
 		return "/client/contact";
 	}
+
 }

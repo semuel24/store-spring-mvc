@@ -21,6 +21,8 @@
     <!-- Custom CSS -->
     <link href="<c:url value="/resources/startbootstrap-business-casual/css/business-casual.css" />" rel="stylesheet">
 
+	<link href="<c:url value="/resources/css/front.common.css" />" rel="stylesheet">
+	
     <!-- Fonts -->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
@@ -52,7 +54,7 @@
                         <strong>联系我们</strong>
                     </h2>
                     <hr>
-                    <form:form action="contact" method="post" commandName="contactForm" role="form">
+                    <form:form action="contact" method="post" commandName="contactForm" role="form" id="contact-form">
                         <div class="row">
                             <div class="form-group col-lg-4">
                                 <label>姓名</label>
@@ -63,8 +65,8 @@
                                 <input type="email" id="email" name="email" class="form-control">
                             </div>
                             <div class="form-group col-lg-4">
-                                <label>电话号码</label>
-                                <input type="tel" id="tel" name="tel" class="form-control">
+                                <label>QQ号</label>
+                                <input type="text" id="qq" name="qq" class="form-control">
                             </div>
                             <div class="clearfix"></div>
                             <div class="form-group col-lg-12">
@@ -94,13 +96,12 @@
         </div>
     </footer>
 
-    <!-- jQuery -->
-	<%-- <script
-		src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>"></script> --%>
+    <!-- CDN js -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
 
-	<!-- Bootstrap Core JavaScript -->
-	<%-- <script
-		src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>"></script> --%>
+	<!-- js -->
+	<script src="<c:url value="/resources/js/contact.validation.js" />" ></script>
 
 </body>
 

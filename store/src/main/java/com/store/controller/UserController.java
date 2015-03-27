@@ -77,7 +77,13 @@ public class UserController {
 
 		// create a new user in database
 		CreateUserResult result = null;
-		result = userService.createUser(signupForm);
+		try{
+			result = userService.createUser(signupForm);
+		} catch(Exception ex) {
+			if(logger.isErrorEnabled()) {
+				logger.error(ex.getMessage(), ex);
+			}
+		}
 		if(result == null) {
 			model.put("message", StatusResult
 					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
@@ -112,8 +118,17 @@ public class UserController {
 		// (Optional)validate email format
 
 		// change to a machine-generated password
-		HandleForgotPasswordResult result = userService
-				.handleForgotPassword(forgotpasswordForm.getEmail());
+		HandleForgotPasswordResult result = null;
+		
+		try{
+			result = userService
+					.handleForgotPassword(forgotpasswordForm.getEmail());
+		} catch(Exception ex) {
+			if(logger.isErrorEnabled()) {
+				logger.error(ex.getMessage(), ex);
+			}
+		}
+		
 		if (result == null) {
 			model.put("message", StatusResult
 					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
@@ -152,7 +167,14 @@ public class UserController {
 		request.getSession().invalidate();
 
 		// call login service
-		LoginResult result = userService.handleLogin(loginForm);
+		LoginResult result = null;
+		try{
+			result = userService.handleLogin(loginForm);
+		} catch(Exception ex) {
+			if(logger.isErrorEnabled()) {
+				logger.error(ex.getMessage(), ex);
+			}
+		}
 		if (result == null) {
 			model.put("message", StatusResult
 					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
@@ -177,9 +199,22 @@ public class UserController {
 			ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
 
-	
-		// go to home page
-		return "/client/home";
+		// (Optional)validate input format
+		
+		// leave a message for whatever user
+		try{
+			userService.handleLeaveMessage(contactForm);
+		} catch(Exception ex) {
+			if(logger.isErrorEnabled()) {
+				logger.error(ex.getMessage(), ex);
+			}
+			model.put("message", StatusResult
+					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
+			return "/client/message";
+		}
+		
+		model.put("message", "感谢您的留言");
+		return "/client/message";
 	}
 	
 	@RequestMapping(value = "/checkemailexistence", method = RequestMethod.POST)

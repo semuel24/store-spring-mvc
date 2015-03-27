@@ -1,17 +1,22 @@
 package com.store.service.impl;
 
+import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.store.calling.api.AddorUpdateUserDTO;
 import com.store.calling.api.ApiService;
+import com.store.dao.MessageDAO;
 import com.store.dao.ProductDAO;
 import com.store.dao.SubscriptionStatusDAO;
 import com.store.dao.UserDAO;
 import com.store.dto.LoginServiceDTO;
+import com.store.entity.Message;
 import com.store.entity.Product;
 import com.store.entity.User;
 import com.store.result.CreateUserResult;
@@ -21,6 +26,8 @@ import com.store.result.StatusResult;
 import com.store.service.UserService;
 import com.store.utils.Constants;
 import com.store.utils.SHA256Generator;
+import com.store.utils.StoreCharsetUtil;
+import com.store.web.form.ContactForm;
 import com.store.web.form.LoginForm;
 import com.store.web.form.SignUpForm;
 
@@ -37,13 +44,15 @@ public class UserServiceImpl implements UserService {
 	private ProductDAO productDAO;
 
 	@Autowired
+	private MessageDAO messageDAO;
+
+	@Autowired
 	@Qualifier("apiService")
 	private ApiService apiService;
 
 	/**
-	 * 1. create user in DB, 
-	 * 2. bind default free-trial product to user and usage to 0 
-	 * 3. put user data to redis through API service
+	 * 1. create user in DB, 2. bind default free-trial product to user and
+	 * usage to 0 3. put user data to redis through API service
 	 */
 	@Transactional(readOnly = false)
 	public CreateUserResult createUser(SignUpForm form) {
@@ -133,8 +142,8 @@ public class UserServiceImpl implements UserService {
 		result.setNewpassword(newPlainTextPassword);
 		user.setPassword(hashedPassword);
 		userDAO.update(user);
-		
-		//update to apiservice
+
+		// update to apiservice
 		AddorUpdateUserDTO dto = new AddorUpdateUserDTO();
 		dto.setEmail(email);
 		dto.setSalt(user.getSalt());
@@ -204,11 +213,32 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Boolean emailTaken(String email) {
 		User user = userDAO.findByEmail(email);
-		return user == null ? false:true; 
+		return user == null ? false : true;
+	}
+
+	@Transactional
+	public void handleLeaveMessage(ContactForm form) {
+		Message msg = new Message();
+		msg.setCreatetime(new Date());
+		msg.setName(StoreCharsetUtil.EncodeString(form.getName()));
+		msg.setEmail(form.getEmail());
+		msg.setQq(form.getQq());
+		msg.setFixed(false);
+		msg.setMessage(StoreCharsetUtil.EncodeString(form.getContent()));
+		messageDAO.create(msg);
+	}
+
+	public static void main(String[] args) {
+		ContactForm form = new ContactForm();
+		form.setName("sam");
+
+		UserServiceImpl service = new UserServiceImpl();
+		service.handleLeaveMessage(form);
+
 	}
 
 }

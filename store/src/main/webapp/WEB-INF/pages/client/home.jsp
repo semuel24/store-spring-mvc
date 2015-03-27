@@ -202,8 +202,11 @@
     <!-- jQuery -->
     <%-- <script src="<c:url value="/resources/startbootstrap-business-casual/js/jquery.js"/>" ></script> --%>
 
+	<!-- CDN js -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	
     <!-- Bootstrap Core JavaScript -->
-    <%-- <script src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>" ></script> --%>
+    <script src="<c:url value="/resources/startbootstrap-business-casual/js/bootstrap.min.js"/>" ></script>
 
     <!-- Script to Activate the Carousel -->
     <script>
