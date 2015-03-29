@@ -1,79 +1,156 @@
 package com.store.utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EmailUtil {
 
-	public static void main(String [] args) {
-		EmailUtil.sendSignUpEmail("semuelxu@gmail.com");
-	}
+	private final static String HOST = "localhost";
+	public final static String SOURCE_EMAIL = "yaoxu@tubevpn.com";
+	private final Boolean BEmailServiceOn = false;
 	
-	public static void sendSignUpEmail(String email) {
-		// Recipient's email ID needs to be mentioned.
-	      String to = email;
+	private static String SIGNUP_EMAIL_TEMPLATE = null;
+	private static String FORGOT_PASSWORD_EMAIL_TEMPLATE = null;
+	private static String CHANGE_PASSWORD_EMAIL_TEMPLATE = null;
 
-	      // Sender's email ID needs to be mentioned
-	      String from = "yaoxu@tubevpn.com";
+	static {
+		// read sign up email template
+		SIGNUP_EMAIL_TEMPLATE = READTEMPLATE("emails/signup.template");
 
-	      // Assuming you are sending email from localhost
-	      String host = "localhost";
+		// read forgot password template
+		FORGOT_PASSWORD_EMAIL_TEMPLATE = READTEMPLATE("emails/forgot.password.template");
 
-	      // Get system properties
-	      Properties properties = System.getProperties();
-
-	      // Setup mail server
-	      properties.setProperty("mail.smtp.host", host);
-
-	      // Get the default Session object.
-	      Session session = Session.getDefaultInstance(properties);
-
-	      try{
-	         // Create a default MimeMessage object.
-	         MimeMessage message = new MimeMessage(session);
-
-	         // Set From: header field of the header.
-	         message.setFrom(new InternetAddress(from));
-
-	         // Set To: header field of the header.
-	         message.addRecipient(Message.RecipientType.TO,
-	                                  new InternetAddress(to));
-
-	         // Set Subject: header field
-	         message.setSubject("欢迎注册tubevpn");
-
-	         // Create the message part 
-	         BodyPart messageBodyPart = new MimeBodyPart();
-
-	         // Fill the message
-	         messageBodyPart.setText("欢迎使用tubevpn账户，请下载附件，得到profile，并按照howto文档使用vpn服务。");
-	         
-	         // Create a multipar message
-	         Multipart multipart = new MimeMultipart();
-
-	         // Set text message part
-	         multipart.addBodyPart(messageBodyPart);
-
-	         // Part two is attachment
-	         messageBodyPart = new MimeBodyPart();
-	         String filename = "client.ovpn";
-	         DataSource source = new FileDataSource(filename);
-	         
-	         messageBodyPart.setDataHandler(new DataHandler(source));
-	         messageBodyPart.setFileName(filename);
-	         multipart.addBodyPart(messageBodyPart);
-
-	         // Send the complete message parts
-	         message.setContent(multipart );
-
-	         // Send message
-	         Transport.send(message);
-	         System.out.println("Sent message successfully....");
-	      }catch (MessagingException mex) {
-	         mex.printStackTrace();
-	      }
+		// read change password template
+		CHANGE_PASSWORD_EMAIL_TEMPLATE = READTEMPLATE("emails/change.password.template");
 	}
-	
+
+	public void sendSignUpEmail(String toEmail) {
+		try {
+			// no attachment, everything is on external link
+			SendEmail(SOURCE_EMAIL, toEmail, "欢迎注册tubevpn",
+					SIGNUP_EMAIL_TEMPLATE, null);
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void sendForgotPasswordEmail(String toEmail, String newPassword) {
+		try {
+			String email = FORGOT_PASSWORD_EMAIL_TEMPLATE.replaceAll("$password", newPassword);
+			// no attachment, everything is on external link
+			SendEmail(SOURCE_EMAIL, toEmail, "tubevpn 忘记置密码服务",
+					email, null);
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void sendChangePasswordEmail(String toEmail) {
+		try {
+			// no attachment, everything is on external link
+			SendEmail(SOURCE_EMAIL, toEmail, "tubevpn 修改密码服务",
+					CHANGE_PASSWORD_EMAIL_TEMPLATE, null);
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void SendEmail(String from, String to, String header,
+			String content, String attachmentPath) throws AddressException,
+			MessagingException {
+		
+		if(!BEmailServiceOn) {
+			return;
+		}
+
+		// Get system properties
+		Properties properties = System.getProperties();
+
+		// Setup mail server
+		properties.setProperty("mail.smtp.host", HOST);
+
+		// Get the default Session object.
+		Session session = Session.getDefaultInstance(properties);
+
+		// Create a default MimeMessage object.
+		MimeMessage message = new MimeMessage(session);
+
+		// Set From: header field of the header.
+		message.setFrom(new InternetAddress(from));
+
+		// Set To: header field of the header.
+		message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+		// Set Subject: header field
+		message.setSubject(header);
+
+		// Create the message part
+		BodyPart messageBodyPart = new MimeBodyPart();
+
+		// Fill the message
+		messageBodyPart.setText(content);
+
+		// Create a multipar message
+		Multipart multipart = new MimeMultipart();
+
+		// Set text message part
+		multipart.addBodyPart(messageBodyPart);
+
+		// Part two is attachment
+		messageBodyPart = new MimeBodyPart();
+		DataSource source = new FileDataSource(attachmentPath);
+
+		messageBodyPart.setDataHandler(new DataHandler(source));
+		messageBodyPart.setFileName(attachmentPath);
+		multipart.addBodyPart(messageBodyPart);
+
+		// Send the complete message parts
+		message.setContent(multipart);
+
+		// Send message
+		Transport.send(message);
+	}
+
+	private static String READTEMPLATE(String templateRelativePath) {
+		ClassLoader classLoader = EmailUtil.class.getClassLoader();
+
+		// read sign up email template
+		File file = new File(classLoader.getResource(templateRelativePath)
+				.getFile());
+		StringBuilder signup_email_template = new StringBuilder("");
+		try (Scanner scanner = new Scanner(file)) {
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				signup_email_template.append(line).append("\n");
+			}
+			scanner.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return signup_email_template.toString();
+	}
+
+	public static void main(String[] args) {
+		EmailUtil util = new EmailUtil();
+		util.sendSignUpEmail("semuelxu@gmail.com");
+	}
 }

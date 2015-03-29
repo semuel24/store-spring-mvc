@@ -1,6 +1,7 @@
 package com.store.result;
 
 import com.store.utils.Constants;
+import com.store.utils.EmailUtil;
 
 public class StatusResult {
 	
@@ -22,14 +23,14 @@ public class StatusResult {
 	public static String convertErrorCode2Message(String errorCode) {
 		
 		if(Constants.SUCCESS.equalsIgnoreCase(errorCode)) {
-			return "success";
+			return "操作成功";
 		}
 		
 		if(Constants.GENERAL_FAILURE.equalsIgnoreCase(errorCode)) {
-			return "general failure";
+			return "你的操作发生错误，请与管理员联系 " + EmailUtil.SOURCE_EMAIL;
 		}
 		
-		return "unknown";
+		return "发生未知错误，请与管理员联系 " + EmailUtil.SOURCE_EMAIL;
 	}
 	
 	public String getMessage() {

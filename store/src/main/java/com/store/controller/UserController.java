@@ -43,6 +43,9 @@ public class UserController {
 
 	@Autowired
 	private Validator validator;
+	
+	@Autowired
+	private EmailUtil emailUtil;
 
 	/**
 	 * steps:
@@ -51,7 +54,6 @@ public class UserController {
 	 * 3.1 create user in DB, bind default free-trial product to user and usage to 0
 	 * 3.2 put user data to redis through API service
 	 * 4. put user data into tomcat session object
-	 * 5. (async) generate profiles
 	 * 6. (async) send confirmation e-mails
 	 */
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
@@ -64,14 +66,14 @@ public class UserController {
 		request.getSession().invalidate();
 
 		// (optional)validate input format
-		Set<ConstraintViolation<SignUpForm>> constraintViolations = validator
-				.validate(signupForm);
-		if (constraintViolations.size() > 0) {
-			return "/client/signup";// should not hit here
-		}
-		if(signupForm.getAgree() == null || signupForm.getAgree().length == 0) {
-			return "/client/signup";// should not hit here
-		}
+//		Set<ConstraintViolation<SignUpForm>> constraintViolations = validator
+//				.validate(signupForm);
+//		if (constraintViolations.size() > 0) {
+//			return "/client/signup";// should not hit here
+//		}
+//		if(signupForm.getAgree() == null || signupForm.getAgree().length == 0) {
+//			return "/client/signup";// should not hit here
+//		}
 
 		// (optional)validate if username and email already exists in database
 
@@ -101,7 +103,7 @@ public class UserController {
 				result.getSessionkey());
 
 		// *send email notification with attached profile file(async)
-		EmailUtil.sendSignUpEmail(signupForm.getEmail());
+		emailUtil.sendSignUpEmail(signupForm.getEmail());
 
 		// return necessary message to web page according to error code
 		model.put("message", result.getMessage());
@@ -131,7 +133,7 @@ public class UserController {
 		
 		if (result == null) {
 			model.put("message", StatusResult
-					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
+	 				.convertErrorCode2Message(Constants.GENERAL_FAILURE));
 		} else {
 			model.put("message", result.getMessage());
 		}
@@ -143,7 +145,7 @@ public class UserController {
 																			// handling
 																			// triggers
 																			// email
-			// todo
+			emailUtil.sendForgotPasswordEmail(forgotpasswordForm.getEmail(), result.getNewpassword());
 		}
 
 		// return message to web page
@@ -213,7 +215,7 @@ public class UserController {
 			return "/client/message";
 		}
 		
-		model.put("message", "感谢您的留言");
+		model.put("message", "感谢您的留言，我们将会尽快与您联系");
 		return "/client/message";
 	}
 	

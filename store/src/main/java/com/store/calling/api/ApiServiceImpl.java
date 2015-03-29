@@ -3,14 +3,13 @@ package com.store.calling.api;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-
 import com.store.result.StatusResult;
 import com.store.utils.Constants;
 import com.store.utils.JSONConverter;
 
 public class ApiServiceImpl implements ApiService {
 
-	
+	private final Boolean BServiceOn = false;
 	
 	private WebTarget target;
 	
@@ -23,10 +22,19 @@ public class ApiServiceImpl implements ApiService {
 	}
 
 	public StatusResult addAServer(AddVpnServerDTO dto) {
+		if(!BServiceOn) {
+			return new StatusResult(Constants.SUCCESS);
+		}
+		
 		throw new UnsupportedOperationException("ApiServiceImpl AddAServer");
 	}
 
 	public StatusResult addUser(AddorUpdateUserDTO dto) {
+		
+		if(!BServiceOn) {
+			return new StatusResult(Constants.SUCCESS);
+		}
+		
 		if (target == null) {
 			throw new RuntimeException("target is null in ApiServiceImpl.AddUser");
 		}
@@ -44,6 +52,11 @@ public class ApiServiceImpl implements ApiService {
 	}
 	
 	public StatusResult updateUser(AddorUpdateUserDTO dto) {
+		
+		if(!BServiceOn) {
+			return new StatusResult(Constants.SUCCESS);
+		}
+		
 		if (target == null) {
 			throw new RuntimeException("target is null in ApiServiceImpl.updateUserPass");
 		}
