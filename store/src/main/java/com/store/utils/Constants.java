@@ -14,9 +14,10 @@ public class Constants {
 	public static String USER_DEACTIVE = "7";
 	public static String IP_UNKNOWN = "8";
 	public static String REACH_USAGE_LIMIT = "9";
-	
+	public static String INVALID_CHANGE_PASSWORD_CODE = "10";
 	
 	public static String SESSION = "sessionkey";
+	public static String EMAIL = "email";
 	public static Integer ENABLED = 1;
 	public static Integer DISABLED = 0;
 	

@@ -4,11 +4,9 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.slf4j.Logger;
@@ -27,6 +25,9 @@ import com.store.result.StatusResult;
 import com.store.service.UserService;
 import com.store.utils.Constants;
 import com.store.utils.EmailUtil;
+import com.store.utils.MessageConstants;
+import com.store.web.form.ChangePasswordForm;
+import com.store.web.form.ChangePasswordWithCodeForm;
 import com.store.web.form.ContactForm;
 import com.store.web.form.ForgotpasswordForm;
 import com.store.web.form.LoginForm;
@@ -101,16 +102,25 @@ public class UserController {
 				Constants.DEFAULT_SESSION_TIMEOUT);
 		request.getSession().setAttribute(Constants.SESSION,
 				result.getSessionkey());
+		request.getSession().setAttribute(Constants.EMAIL,
+				signupForm.getEmail());
 
 		// *send email notification with attached profile file(async)
 		emailUtil.sendSignUpEmail(signupForm.getEmail());
 
 		// return necessary message to web page according to error code
-		model.put("message", result.getMessage());
+		model.put("message", MessageConstants.SIGNUP_SUCCESS);
 		model.put("user", signupForm);
 		return "/client/message";
 	}	
 
+	/**
+	 * flow: 1. validate email and maybe others
+	 * 	     2. generate a pseudo code for this account(email), 
+	 * 			and save in helper table for a given period
+	 * 		 3. send this generated code to email and corresponding
+	 * 			web page
+	 */
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
 	public String handleForgotPassard(
 			@ModelAttribute("forgotpasswordForm") ForgotpasswordForm forgotpasswordForm,
@@ -121,31 +131,110 @@ public class UserController {
 
 		// change to a machine-generated password
 		HandleForgotPasswordResult result = null;
-		
-		try{
-			result = userService
-					.handleForgotPassword(forgotpasswordForm.getEmail());
-		} catch(Exception ex) {
-			if(logger.isErrorEnabled()) {
+
+		try {
+			result = userService.handleForgotPassword(forgotpasswordForm
+					.getEmail());
+		} catch (Exception ex) {
+			if (logger.isErrorEnabled()) {
 				logger.error(ex.getMessage(), ex);
 			}
 		}
-		
+
 		if (result == null) {
 			model.put("message", StatusResult
-	 				.convertErrorCode2Message(Constants.GENERAL_FAILURE));
+					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
+		} else if (Constants.SUCCESS.equalsIgnoreCase(result.getStatus())) {
+			model.put("message",
+					MessageConstants.FORGOT_PASSWORD_OPERATION_SUCCESS);
 		} else {
-			model.put("message", result.getMessage());
+			model.put("message",
+					StatusResult.convertErrorCode2Message(result.getStatus()));
 		}
 
 		// send the password to given email
 		if (result != null
-				&& Constants.SUCCESS.equalsIgnoreCase(result.getStatus())) {// only
-																			// success
-																			// handling
-																			// triggers
-																			// email
-			emailUtil.sendForgotPasswordEmail(forgotpasswordForm.getEmail(), result.getNewpassword());
+				&& Constants.SUCCESS.equalsIgnoreCase(result.getStatus())) {
+			emailUtil.sendForgotPasswordEmail(forgotpasswordForm.getEmail(),
+					result.getChangePasswordCode());
+		}
+
+		// return message to web page
+		return "/client/message";
+	}
+	
+	@RequestMapping(value = "/changepassword", method = RequestMethod.POST)
+	public String handleChangePassard(
+			@ModelAttribute("changePasswordForm") ChangePasswordForm changePasswordForm,
+			ModelMap model, HttpServletRequest request,
+			HttpServletResponse response) {
+
+		StatusResult result = null;
+
+		try {
+			// get the email from session
+			changePasswordForm.setEmail((String) request.getSession()
+					.getAttribute(Constants.EMAIL));
+
+			result = userService.handleChangePassword(changePasswordForm);
+		} catch (Exception ex) {
+			if (logger.isErrorEnabled()) {
+				logger.error(ex.getMessage(), ex);
+			}
+		}
+
+		if (result == null) {
+			model.put("message", StatusResult
+					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
+		} else if (Constants.SUCCESS.equalsIgnoreCase(result.getStatus())) {
+			model.put("message", MessageConstants.CHANGE_PASSWORD_SUCCESS);
+		} else {
+			model.put("message",
+					StatusResult.convertErrorCode2Message(result.getStatus()));
+		}
+
+		// send the password to given email
+		if (result != null
+				&& Constants.SUCCESS.equalsIgnoreCase(result.getStatus())) {
+			emailUtil.sendChangePasswordEmail(changePasswordForm.getEmail());
+		}
+
+		// return message to web page
+		return "/client/message";
+	}
+	
+	@RequestMapping(value = "/changepasswordwithcode", method = RequestMethod.POST)
+	public String handleChangePassardWithCode(
+			@ModelAttribute("changePasswordWithCodeForm") ChangePasswordWithCodeForm changePasswordWithCodeForm,
+			ModelMap model, HttpServletRequest request,
+			HttpServletResponse response) {
+
+		StatusResult result = null;
+
+		try {
+			result = userService
+					.handleChangePasswordWithCode(changePasswordWithCodeForm);
+		} catch (Exception ex) {
+			if (logger.isErrorEnabled()) {
+				logger.error(ex.getMessage(), ex);
+			}
+		}
+
+		if (result == null) {
+			model.put("message", StatusResult
+					.convertErrorCode2Message(Constants.GENERAL_FAILURE));
+		} else if (Constants.SUCCESS.equalsIgnoreCase(result.getStatus())) {
+			model.put("message", MessageConstants.CHANGE_PASSWORD_SUCCESS);
+		} else {
+			model.put("message",
+					StatusResult.convertErrorCode2Message(result.getStatus()));
+		}
+
+		// send the password to given email
+		if (result != null
+				&& Constants.SUCCESS.equalsIgnoreCase(result.getStatus())) {
+			emailUtil.sendChangePasswordEmail(changePasswordWithCodeForm
+					.getEmail());
 		}
 
 		// return message to web page
@@ -191,6 +280,8 @@ public class UserController {
 				Constants.DEFAULT_SESSION_TIMEOUT);
 		request.getSession().setAttribute(Constants.SESSION,
 				result.getSessionkey());
+		request.getSession().setAttribute(Constants.EMAIL,
+				loginForm.getEmail());
 
 		// go to home page
 		return "/client/home";
@@ -215,7 +306,7 @@ public class UserController {
 			return "/client/message";
 		}
 		
-		model.put("message", "感谢您的留言，我们将会尽快与您联系");
+		model.put("message", MessageConstants.CONTACT_US_SUCCESS);
 		return "/client/message";
 	}
 	

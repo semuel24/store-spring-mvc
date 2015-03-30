@@ -29,6 +29,7 @@
 					<c:otherwise>
 						<li><a href="login">登陆</a></li>
 						<li><a href="signup">注册</a></li>
+						<li><a href="changepasswithcode">修改密码</a></li>
 					</c:otherwise>
 				</c:choose>
 				<li><a href="contact">联系我们</a></li>

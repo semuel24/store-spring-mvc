@@ -3,20 +3,20 @@ package com.store.service.impl;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.store.calling.api.AddorUpdateUserDTO;
 import com.store.calling.api.ApiService;
 import com.store.dao.MessageDAO;
+import com.store.dao.PasswordHelperCodeDAO;
 import com.store.dao.ProductDAO;
 import com.store.dao.SubscriptionStatusDAO;
 import com.store.dao.UserDAO;
 import com.store.dto.LoginServiceDTO;
 import com.store.entity.Message;
+import com.store.entity.PasswordHelperCode;
 import com.store.entity.Product;
 import com.store.entity.User;
 import com.store.result.CreateUserResult;
@@ -27,6 +27,8 @@ import com.store.service.UserService;
 import com.store.utils.Constants;
 import com.store.utils.SHA256Generator;
 import com.store.utils.StoreCharsetUtil;
+import com.store.web.form.ChangePasswordForm;
+import com.store.web.form.ChangePasswordWithCodeForm;
 import com.store.web.form.ContactForm;
 import com.store.web.form.LoginForm;
 import com.store.web.form.SignUpForm;
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDAO userDAO;
-
+	
 	@Autowired
 	private SubscriptionStatusDAO subscriptionStatusDAO;
 
@@ -45,6 +47,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private MessageDAO messageDAO;
+	
+	@Autowired
+	private PasswordHelperCodeDAO passwordHelperCodeDAO;
 
 	@Autowired
 	@Qualifier("apiService")
@@ -114,42 +119,165 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 
+//	@Transactional(readOnly = false)
+//	// @Override
+//	public HandleForgotPasswordResult handleForgotPassword(String email) {
+//		HandleForgotPasswordResult result = new HandleForgotPasswordResult(
+//				Constants.SUCCESS);
+//
+//		User user = userDAO.findByEmail(email);
+//		if (user == null) {
+//			result.setStatus(Constants.EMAIL_INCORRECT);
+//			return result;
+//		}
+//
+//		Random rd = new Random();
+//		String newPlainTextPassword = String.valueOf(rd.nextLong());
+//
+//		String hashedPassword;
+//		try {
+//			hashedPassword = SHA256Generator.hash(newPlainTextPassword
+//					+ user.getSalt());
+//		} catch (Exception e) {
+//			System.out.println(e.getStackTrace());
+//			result.setStatus(Constants.GENERAL_FAILURE);
+//			return result;
+//		}
+//
+//		result.setChangePasswordCode(newPlainTextPassword);
+//		user.setPassword(hashedPassword);
+//		userDAO.update(user);
+//
+//		// update to apiservice
+//		AddorUpdateUserDTO dto = new AddorUpdateUserDTO();
+//		dto.setEmail(email);
+//		dto.setSalt(user.getSalt());
+//		apiService.updateUser(dto);
+//
+//		return result;
+//	}
+	
 	@Transactional(readOnly = false)
 	// @Override
 	public HandleForgotPasswordResult handleForgotPassword(String email) {
 		HandleForgotPasswordResult result = new HandleForgotPasswordResult(
 				Constants.SUCCESS);
 
+		//some validation
 		User user = userDAO.findByEmail(email);
 		if (user == null) {
 			result.setStatus(Constants.EMAIL_INCORRECT);
 			return result;
 		}
 
-		Random rd = new Random();
-		String newPlainTextPassword = String.valueOf(rd.nextLong());
+		//generate change password helper code
+		String code = GenerateChangePasswordCode(10);
+		result.setChangePasswordCode(code);
+		
+		//save to temp password helper table
+		PasswordHelperCode passwordHelperCode = new PasswordHelperCode();
+		passwordHelperCode.setUserId(user.getId());
+		passwordHelperCode.setCreateTime(new Date());
+		passwordHelperCode.setCode(code);
+		passwordHelperCodeDAO.create(passwordHelperCode);
+		
+		return result;
+	}
+	
+	@Transactional(readOnly = false)
+	public StatusResult handleChangePassword(
+			ChangePasswordForm changePasswordForm) {
 
-		String hashedPassword;
+		StatusResult result = new StatusResult(Constants.SUCCESS);
+
+		// validate email
+		User user = userDAO.findByEmail(changePasswordForm.getEmail());
+		if (user == null) {
+			result.setStatus(Constants.EMAIL_INCORRECT);
+			return result;
+		}
+
+		// validate old password
+		String hashedOldPassword;
 		try {
-			hashedPassword = SHA256Generator.hash(newPlainTextPassword
-					+ user.getSalt());
+			hashedOldPassword = SHA256Generator.hash(changePasswordForm
+					.getOldpass() + user.getSalt());
+		} catch (Exception e) {
+			System.out.println(e.getStackTrace());
+			result.setStatus(Constants.GENERAL_FAILURE);
+			return result;
+		}
+		if (!hashedOldPassword.equalsIgnoreCase(user.getPassword())) {
+			result.setStatus(Constants.GENERAL_FAILURE);
+			return result;
+		}
+
+		// change to use new password
+		String hashedNewPassword;
+		try {
+			hashedNewPassword = SHA256Generator.hash(changePasswordForm
+					.getNewpass() + user.getSalt());
 		} catch (Exception e) {
 			System.out.println(e.getStackTrace());
 			result.setStatus(Constants.GENERAL_FAILURE);
 			return result;
 		}
 
-		result.setNewpassword(newPlainTextPassword);
-		user.setPassword(hashedPassword);
+		user.setPassword(hashedNewPassword);
 		userDAO.update(user);
 
 		// update to apiservice
 		AddorUpdateUserDTO dto = new AddorUpdateUserDTO();
-		dto.setEmail(email);
+		dto.setEmail(changePasswordForm.getEmail());
 		dto.setSalt(user.getSalt());
 		apiService.updateUser(dto);
 
 		return result;
+	}
+
+	@Transactional(readOnly = false)
+	public StatusResult handleChangePasswordWithCode(
+			ChangePasswordWithCodeForm changePasswordWithCodeForm) {
+
+		StatusResult result = new StatusResult(Constants.SUCCESS);
+		
+		User user = userDAO.findByEmail(changePasswordWithCodeForm.getEmail());
+		if (user == null) {
+			result.setStatus(Constants.EMAIL_INCORRECT);
+			return result;
+		}
+
+		// validate email + password code
+		PasswordHelperCode passwordHelperCode = passwordHelperCodeDAO.lookup(
+				changePasswordWithCodeForm.getEmail(),
+				changePasswordWithCodeForm.getCode());
+		if (passwordHelperCode == null) {
+			result.setStatus(Constants.INVALID_CHANGE_PASSWORD_CODE);
+			return result;
+		}
+
+		// change to use new password
+		String hashedNewPassword;
+		try {
+			hashedNewPassword = SHA256Generator.hash(changePasswordWithCodeForm
+					.getNewpass() + user.getSalt());
+		} catch (Exception e) {
+			System.out.println(e.getStackTrace());
+			result.setStatus(Constants.GENERAL_FAILURE);
+			return result;
+		}
+
+		user.setPassword(hashedNewPassword);
+		userDAO.update(user);
+
+		// update to apiservice
+		AddorUpdateUserDTO dto = new AddorUpdateUserDTO();
+		dto.setEmail(changePasswordWithCodeForm.getEmail());
+		dto.setSalt(user.getSalt());
+		apiService.updateUser(dto);
+
+		return result;
+
 	}
 
 	@Transactional(readOnly = true)
@@ -231,13 +359,29 @@ public class UserServiceImpl implements UserService {
 		msg.setMessage(StoreCharsetUtil.EncodeString(form.getContent()));
 		messageDAO.create(msg);
 	}
+	
+	private static String GenerateChangePasswordCode(int codeLength) {
+		char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+		StringBuilder sb = new StringBuilder();
+		Random random = new Random();
+		for (int i = 0; i < codeLength; i++) {
+		    char c = chars[random.nextInt(chars.length)];
+		    sb.append(c);
+		}
+		String output = sb.toString();
+		return output;
+	}
 
 	public static void main(String[] args) {
-		ContactForm form = new ContactForm();
-		form.setName("sam");
-
-		UserServiceImpl service = new UserServiceImpl();
-		service.handleLeaveMessage(form);
+//		ContactForm form = new ContactForm();
+//		form.setName("sam");
+//
+//		UserServiceImpl service = new UserServiceImpl();
+//		service.handleLeaveMessage(form);
+		
+		for(int i=0; i<10; i++) {
+			System.out.println(GenerateChangePasswordCode(10));
+		}
 
 	}
 

@@ -1,12 +1,12 @@
 package com.store.result;
 
 import com.store.utils.Constants;
-import com.store.utils.EmailUtil;
+import com.store.utils.MessageConstants;
 
 public class StatusResult {
-	
+
 	private String status;
-	
+
 	public StatusResult(String _status) {
 		this.status = _status;
 	}
@@ -18,24 +18,27 @@ public class StatusResult {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
+
 	public static String convertErrorCode2Message(String errorCode) {
-		
-		if(Constants.SUCCESS.equalsIgnoreCase(errorCode)) {
-			return "操作成功";
+
+		if (Constants.SUCCESS.equalsIgnoreCase(errorCode)) {
+			return MessageConstants.OPERATION_SUCCESS;
 		}
-		
-		if(Constants.GENERAL_FAILURE.equalsIgnoreCase(errorCode)) {
-			return "你的操作发生错误，请与管理员联系 " + EmailUtil.SOURCE_EMAIL;
+
+		if (Constants.INVALID_CHANGE_PASSWORD_CODE.equalsIgnoreCase(errorCode)) {
+			return MessageConstants.CHANGE_PASSWORD_CODE_INVALID;
 		}
-		
-		return "发生未知错误，请与管理员联系 " + EmailUtil.SOURCE_EMAIL;
+
+		if (Constants.GENERAL_FAILURE.equalsIgnoreCase(errorCode)) {
+			return MessageConstants.GENERAL_ERROR;
+		}
+
+		return MessageConstants.GENERAL_ERROR;
 	}
-	
+
 	public String getMessage() {
-		//translate error code to error message
+		// translate error code to error message
 		return StatusResult.convertErrorCode2Message(this.getStatus());
 	}
-	
+
 }

@@ -54,18 +54,27 @@
                 <div class="col-lg-12">
                     <hr>
                     <h2 class="intro-text text-center">
-                        <strong>修改密码</strong>
+                        <strong>使用协助代码修改密码</strong>
                     </h2>
                     <hr>
                     
-                    <form:form action="changepassword" method="post" commandName="changePasswordForm" role="form" id="change-pass-form">
+                    <form:form action="changepasswordwithcode" method="post" commandName="changePasswordWithCodeForm" role="form" id="change-pass-withcode-form">
                         <div class="row">
                             <div class="form-group col-lg-4">
 
                             </div>
                             <div class="form-group col-lg-4">
-                                <label>请输入旧密码</label>
-                                <input id="oldpass" name="oldpass" type="password" class="form-control">
+                                <label>邮箱</label>
+                                <input id="email" name="email" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-4">
+
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label>请输入协助代码(如果您使用了忘记密码服务，代码在您收到的通知邮件当中)</label>
+                                <input id="code" name="code" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="row">
@@ -119,7 +128,7 @@
 	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
 	
 	<!-- js -->
-	<script src="<c:url value="/resources/js/change.pass.validation.js" />" ></script>
+	<script src="<c:url value="/resources/js/change.pass.withcode.validation.js" />" ></script>
 
 </body>
 

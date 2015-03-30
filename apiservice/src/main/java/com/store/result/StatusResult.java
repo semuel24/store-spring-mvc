@@ -26,10 +26,10 @@ public class StatusResult {
 		}
 		
 		if(Constants.GENERAL_FAILURE.equalsIgnoreCase(errorCode)) {
-			return "general failure";
+			return "a general error happened";
 		}
 		
-		return "unknown";
+		return "unknown error happened";
 	}
 	
 	public String getMessage() {

@@ -24,7 +24,7 @@ $("#forgot-pass-form").validate({
 			required : "请填写邮箱",
 			email : "请填写合法邮箱",
 			rangelength : "合法邮箱长度为5-30字符",
-			remote : "该邮箱已注册，请选择另一个邮箱"
+			remote : "您填写的为无效邮箱"
 		}
 	},
 	submitHandler : function(form) {

@@ -2,18 +2,17 @@ package com.store.result;
 
 public class HandleForgotPasswordResult extends StatusResult {
 
-	private String newpassword;
-	
+	private String changePasswordCode;
+
 	public HandleForgotPasswordResult(String _status) {
 		super(_status);
 	}
 
-	public String getNewpassword() {
-		return newpassword;
+	public String getChangePasswordCode() {
+		return changePasswordCode;
 	}
 
-	public void setNewpassword(String newpassword) {
-		this.newpassword = newpassword;
+	public void setChangePasswordCode(String newpassword) {
+		this.changePasswordCode = newpassword;
 	}
-
 }

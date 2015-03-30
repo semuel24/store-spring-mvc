@@ -135,7 +135,7 @@
             </div>
         </div> --%>
 
-        <div class="row">
+        <!-- <div class="row">
             <div class="box">
                 <div class="col-lg-12">
                 	<hr>
@@ -153,7 +153,7 @@
                     <p>想要下载iphone客户端，请在appstore里面搜索关键字"openvpn"</p>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="row">
             <div class="box">

@@ -14,7 +14,7 @@ public class EmailUtil {
 	private final static String HOST = "localhost";
 	public final static String SOURCE_EMAIL = "yaoxu@tubevpn.com";
 	private final Boolean BEmailServiceOn = false;
-	
+		
 	private static String SIGNUP_EMAIL_TEMPLATE = null;
 	private static String FORGOT_PASSWORD_EMAIL_TEMPLATE = null;
 	private static String CHANGE_PASSWORD_EMAIL_TEMPLATE = null;
@@ -44,9 +44,9 @@ public class EmailUtil {
 		}
 	}
 
-	public void sendForgotPasswordEmail(String toEmail, String newPassword) {
+	public void sendForgotPasswordEmail(String toEmail, String changePasswordCode) {
 		try {
-			String email = FORGOT_PASSWORD_EMAIL_TEMPLATE.replaceAll("$password", newPassword);
+			String email = FORGOT_PASSWORD_EMAIL_TEMPLATE.replaceAll("$code", changePasswordCode);
 			// no attachment, everything is on external link
 			SendEmail(SOURCE_EMAIL, toEmail, "tubevpn 忘记置密码服务",
 					email, null);
