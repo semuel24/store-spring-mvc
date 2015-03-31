@@ -1,18 +1,20 @@
 package com.store.service.impl;
 
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.store.db.dao.ServerRedisDAO;
 import com.store.dto.AddVpnServerDTO;
 import com.store.redis.client.VpnServerInfo;
-import com.store.redis.dao.ServerRedisDAO;
 import com.store.service.VpnServerService;
 
 @Component("vpnServerService")
 public class VpnServerServiceImpl implements VpnServerService {
 
 	@Autowired
-	private ServerRedisDAO serverRedisDAO;
+	private ServerRedisDAOImpl serverRedisDAO;
 	
 	public void handleAddServer(AddVpnServerDTO dto) {
 		VpnServerInfo vpnServer = new VpnServerInfo();

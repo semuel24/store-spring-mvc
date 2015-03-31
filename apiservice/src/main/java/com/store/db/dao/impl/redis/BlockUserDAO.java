@@ -1,4 +1,4 @@
-package com.store.redis.dao;
+package com.store.db.dao.impl.redis;
 
 import org.redisson.Config;
 import org.redisson.Redisson;
@@ -15,7 +15,7 @@ import com.store.utils.Constants;
  * Basically, block user list is an eventually-sync view of user data. Its data should
  * not update back to user's table. 
  */
-@Component("blockUserDAO")
+//@Component("blockUserDAO")
 public class BlockUserDAO {
 
 	@Autowired

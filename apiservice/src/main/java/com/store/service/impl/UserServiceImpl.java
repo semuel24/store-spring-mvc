@@ -5,18 +5,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.store.db.dao.BlockUserDAO;
+import com.store.db.dao.DeviceKeyTakenDAO;
+import com.store.db.dao.ServerRedisDAO;
+import com.store.db.dao.UserRedisDAO;
 import com.store.dto.AddorUpdateUserDTO;
 import com.store.dto.BatchRequestAccessDTO;
 import com.store.dto.ReportUsageDTO;
 import com.store.dto.VerifyVpnAccessDTO;
-import com.store.redis.dao.BlockUserDAO;
-import com.store.redis.dao.DeviceKeyTakenDAO;
-import com.store.redis.dao.ServerRedisDAO;
-import com.store.redis.dao.UserRedisDAO;
 import com.store.redis.model.SessionUsage;
 import com.store.redis.model.VpnUser;
 import com.store.result.BatchRequestAccessResult;
@@ -34,10 +36,10 @@ public class UserServiceImpl implements UserService {
 			.getLogger(UserServiceImpl.class);
 	
 	@Autowired
-	private ServerRedisDAO serverRedisDAO;
+	private ServerRedisDAOImpl serverRedisDAO;
 	
 	@Autowired
-	private UserRedisDAO userRedisDAO;
+	private UserRedisDAOImpl userRedisDAO;
 	
 	@Autowired
 	private BlockUserDAO blockUserDAO;

@@ -105,7 +105,7 @@
                             </div>
                             <div class="form-group col-lg-4">
                                 <div>
-                                <span style="span-bottom:10px;">禁止使用卓越VPN网络加速器的服务器进行以下行为：</span><br/>
+                                <span style="span-bottom:10px;">禁止使用VPN网络加速器的服务器进行以下行为：</span><br/>
 
                                 A. 滥发Spam电子邮件，在论坛或留言版批量发送垃圾信息。<br/>
                                 B.使用快车，迅雷，旋风等其它P2P下载软件大流量下载任何文件。<br/>

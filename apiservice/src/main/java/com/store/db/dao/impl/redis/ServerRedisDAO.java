@@ -1,4 +1,4 @@
-package com.store.redis.dao;
+package com.store.db.dao.impl.redis;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ import com.store.utils.Constants;
  *       ]
  * 	}
  */
-@Component
+//@Component
 public class ServerRedisDAO {
 
 	@Autowired

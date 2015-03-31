@@ -6,18 +6,27 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class EmailUtil {
 
 	private final static String HOST = "localhost";
 	public final static String SOURCE_EMAIL = "yaoxu@tubevpn.com";
-	private final Boolean BEmailServiceOn = false;
 		
 	private static String SIGNUP_EMAIL_TEMPLATE = null;
 	private static String FORGOT_PASSWORD_EMAIL_TEMPLATE = null;
 	private static String CHANGE_PASSWORD_EMAIL_TEMPLATE = null;
+	
+//	@Resource("${email.flag}")
+	private String bEmailServiceOn;
+
+	public String getbEmailServiceOn() {
+		return bEmailServiceOn;
+	}
+
+	public void setbEmailServiceOn(String bEmailServiceOn) {
+		this.bEmailServiceOn = bEmailServiceOn;
+	}
 
 	static {
 		// read sign up email template
@@ -77,7 +86,7 @@ public class EmailUtil {
 			String content, String attachmentPath) throws AddressException,
 			MessagingException {
 		
-		if(!BEmailServiceOn) {
+		if(!"true".equalsIgnoreCase(bEmailServiceOn)) {
 			return;
 		}
 

@@ -18,18 +18,11 @@
 	<context:component-scan base-package="com.store" />
 	<context:annotation-config />
 	
-	<!-- <bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		scope="singleton" lazy-init="false" p:placeholderPrefix="$prod:{"
-		p:order="100" p:systemPropertiesModeName="SYSTEM_PROPERTIES_MODE_OVERRIDE"
-		p:location="file:/var/lib/tomcat7/conf/vpn.properties">
-	</bean> -->
-	
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
 		scope="singleton" lazy-init="false" p:placeholderPrefix="$prod:{"
 		p:order="100" p:systemPropertiesModeName="SYSTEM_PROPERTIES_MODE_OVERRIDE"
-		p:location="file:${catalina.base}/conf/vpn.properties">
+		p:location="file:${catalina.base}/conf/store.web.properties">
 	</bean>
 
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
@@ -74,17 +67,32 @@
 		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
 	<!-- outgoing API's -->
-	<!-- <bean id="apiServiceTarget" class="com.store.calling.api.WebTargetFactory">
-		<property name="serverURL" value="http://billing.tubevpn.com" />
-	</bean> -->
 	<bean id="apiServiceTarget" class="com.store.calling.api.WebTargetFactory">
 		<property name="serverURL" value="$prod:{api.service.address}" />
 	</bean>
 
+	<bean id="email.flag" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="$prod:{email.flag}" />
+	</bean>
+	
+	<bean id="call.store.flag" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="$prod:{call.store.flag}" />
+	</bean>
+	
 	<bean id="apiService" class="com.store.calling.api.ApiServiceImpl">
 		<property name="target">
 			<ref bean="apiServiceTarget" />
 		</property>
+		<property name="bServiceOn">
+			<ref bean="call.store.flag" />
+		</property>
 	</bean>
+	
+	<bean id="emailUtil" class="com.store.utils.EmailUtil">
+		<property name="bEmailServiceOn">
+			<ref bean="email.flag" />
+		</property>
+	</bean>
+	
 
 </beans>

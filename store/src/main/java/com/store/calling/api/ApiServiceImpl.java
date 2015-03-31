@@ -9,10 +9,18 @@ import com.store.utils.JSONConverter;
 
 public class ApiServiceImpl implements ApiService {
 
-	private final Boolean BServiceOn = false;
+	private String bServiceOn;
 	
 	private WebTarget target;
 	
+	public String getbServiceOn() {
+		return bServiceOn;
+	}
+
+	public void setbServiceOn(String bServiceOn) {
+		this.bServiceOn = bServiceOn;
+	}
+
 	public WebTarget getTarget() {
 		return target;
 	}
@@ -22,7 +30,7 @@ public class ApiServiceImpl implements ApiService {
 	}
 
 	public StatusResult addAServer(AddVpnServerDTO dto) {
-		if(!BServiceOn) {
+		if(!"true".equalsIgnoreCase(bServiceOn)) {
 			return new StatusResult(Constants.SUCCESS);
 		}
 		
@@ -31,7 +39,7 @@ public class ApiServiceImpl implements ApiService {
 
 	public StatusResult addUser(AddorUpdateUserDTO dto) {
 		
-		if(!BServiceOn) {
+		if(!"true".equalsIgnoreCase(bServiceOn)) {
 			return new StatusResult(Constants.SUCCESS);
 		}
 		
@@ -53,7 +61,7 @@ public class ApiServiceImpl implements ApiService {
 	
 	public StatusResult updateUser(AddorUpdateUserDTO dto) {
 		
-		if(!BServiceOn) {
+		if(!"true".equalsIgnoreCase(bServiceOn)) {
 			return new StatusResult(Constants.SUCCESS);
 		}
 		

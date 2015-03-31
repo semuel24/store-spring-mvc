@@ -1,8 +1,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="
 				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
@@ -12,28 +12,61 @@
 				http://www.springframework.org/schema/aop 
 				http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 				http://www.springframework.org/schema/task 
-				http://www.springframework.org/schema/task/spring-task-3.0.xsd" >
+				http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
 	<!-- specify packages to scan annotations -->
 	<context:component-scan base-package="com.store" />
 	<context:annotation-config />
-	
-	<!-- <bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		scope="singleton" lazy-init="false" p:placeholderPrefix="$prod:{"
-		p:order="100" p:systemPropertiesModeName="SYSTEM_PROPERTIES_MODE_OVERRIDE"
-		p:location="file:/var/lib/tomcat7/conf/vpn.properties">
-	</bean> -->
-	
+
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
 		scope="singleton" lazy-init="false" p:placeholderPrefix="$prod:{"
 		p:order="100" p:systemPropertiesModeName="SYSTEM_PROPERTIES_MODE_OVERRIDE"
-		p:location="file:${catalina.base}/conf/vpn.properties">
+		p:location="file:${catalina.base}/conf/store.api.properties">
 	</bean>
-	
+
+
+	<!-- mysql config -->
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/comp/env/jdbc/MyLocalDB" />
+	</bean>
+
+	<!-- mysql session factory config -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+				<prop key="hibernate.connection.charSet">UTF-8</prop>
+				<prop key="hibernate.cache.use_second_level_cache">false</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+			</props>
+		</property>
+		<property name="packagesToScan">
+			<list>
+				<value>com.store.entity</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Transaction manager for a single Hibernate SessionFactory (alternative 
+		to JTA) -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+
+	<!-- enable @Transactional -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- redis server config -->
 	<bean id="redisServerAddress" class="java.lang.String">
 		<constructor-arg value="$prod:{redis.server.address}" />
 	</bean>
-	
+
 </beans>

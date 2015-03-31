@@ -1,4 +1,4 @@
-package com.store.redis.dao;
+package com.store.db.dao.impl.redis;
 
 import java.util.UUID;
 import org.redisson.Config;
@@ -23,7 +23,7 @@ import com.store.redis.model.DeviceTaken;
  * key: deviceKey
  * value: email
  */
-@Component("deviceKeyTakenDAO")
+//@Component("deviceKeyTakenDAO")
 public class DeviceKeyTakenDAO {
 
 	@Autowired

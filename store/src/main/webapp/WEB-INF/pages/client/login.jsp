@@ -70,7 +70,7 @@
                             </div>
                             <div class="form-group col-lg-4">
                                 <label>密码</label>
-                                <input id="password" name="password" type="text" class="form-control">
+                                <input id="password" name="password" type="password" class="form-control">
                             </div>
                         </div>
                         <div class="row">
