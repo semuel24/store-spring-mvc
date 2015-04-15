@@ -18,4 +18,5 @@ public class ProductDAOImpl extends StoreDAOImpl<Product> implements ProductDAO 
 
 		return (Product) query.uniqueResult();
 	}
+	
 }

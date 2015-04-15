@@ -9,16 +9,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "message")
-public class Message {
+@Table(name = "api_block_user")
+public class ApiBlockUser {
 
 	private int id;
-	private String name;
 	private String email;
-	private Long qq;
-	private String Message;
+	private String product;
 	private Date createtime;
-	private Boolean fixed;
+	private Date blockuntiltimestamp;
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
@@ -30,15 +28,6 @@ public class Message {
 		this.id = id;
 	}
 
-	@Column(name = "name")
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Column(name = "email")
 	public String getEmail() {
 		return email;
@@ -48,13 +37,13 @@ public class Message {
 		this.email = email;
 	}
 
-	@Column(name = "qq")
-	public Long getQq() {
-		return qq;
+	@Column(name = "product")
+	public String getProduct() {
+		return product;
 	}
 
-	public void setQq(Long qq) {
-		this.qq = qq;
+	public void setProduct(String product) {
+		this.product = product;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -67,21 +56,13 @@ public class Message {
 		this.createtime = createtime;
 	}
 
-	@Column(name = "fixed")
-	public Boolean getFixed() {
-		return fixed;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "blockuntiltimestamp")
+	public Date getBlockuntiltimestamp() {
+		return blockuntiltimestamp;
 	}
 
-	public void setFixed(Boolean fixed) {
-		this.fixed = fixed;
-	}
-
-	@Column(name = "message")
-	public String getMessage() {
-		return Message;
-	}
-
-	public void setMessage(String message) {
-		Message = message;
+	public void setBlockuntiltimestamp(Date blockuntiltimestamp) {
+		this.blockuntiltimestamp = blockuntiltimestamp;
 	}
 }

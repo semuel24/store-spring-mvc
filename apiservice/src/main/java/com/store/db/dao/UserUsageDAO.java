@@ -1,11 +1,12 @@
 package com.store.db.dao;
 
-import com.store.entity.UserUsage;
+import com.store.entity.ApiUserUsage;
 import com.store.redis.model.VpnUser;
 
-public interface UserUsageDAO extends StoreDAO<UserUsage>{
+public interface UserUsageDAO extends StoreDAO<ApiUserUsage>{
 
-	public void saveOrUpdateUser(VpnUser redisUser);
+	public void createUser(VpnUser redisUser);
+	public void updateUser(VpnUser redisUser);
 
 	/**
 	 * only needs email and productKey

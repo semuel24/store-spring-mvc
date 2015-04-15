@@ -9,16 +9,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "message")
-public class Message {
+@Table(name = "api_vpn_server")
+public class ApiVpnServer {
 
 	private int id;
-	private String name;
+	private String productkey;
+	private String ip;
 	private String email;
-	private Long qq;
-	private String Message;
 	private Date createtime;
-	private Boolean fixed;
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
@@ -30,13 +28,22 @@ public class Message {
 		this.id = id;
 	}
 
-	@Column(name = "name")
-	public String getName() {
-		return name;
+	@Column(name = "productkey")
+	public String getProductkey() {
+		return productkey;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setProductkey(String productkey) {
+		this.productkey = productkey;
+	}
+
+	@Column(name = "ip")
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 	@Column(name = "email")
@@ -46,15 +53,6 @@ public class Message {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	@Column(name = "qq")
-	public Long getQq() {
-		return qq;
-	}
-
-	public void setQq(Long qq) {
-		this.qq = qq;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -67,21 +65,4 @@ public class Message {
 		this.createtime = createtime;
 	}
 
-	@Column(name = "fixed")
-	public Boolean getFixed() {
-		return fixed;
-	}
-
-	public void setFixed(Boolean fixed) {
-		this.fixed = fixed;
-	}
-
-	@Column(name = "message")
-	public String getMessage() {
-		return Message;
-	}
-
-	public void setMessage(String message) {
-		Message = message;
-	}
 }

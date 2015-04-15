@@ -10,15 +10,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.store.db.dao.BlockUserDAO;
 import com.store.db.dao.DeviceKeyTakenDAO;
-import com.store.db.dao.ServerRedisDAO;
-import com.store.db.dao.UserRedisDAO;
+import com.store.db.dao.UserUsageDAO;
+import com.store.db.dao.VpnServerDAO;
 import com.store.dto.AddorUpdateUserDTO;
 import com.store.dto.BatchRequestAccessDTO;
 import com.store.dto.ReportUsageDTO;
 import com.store.dto.VerifyVpnAccessDTO;
+import com.store.exception.DBException;
 import com.store.redis.model.SessionUsage;
 import com.store.redis.model.VpnUser;
 import com.store.result.BatchRequestAccessResult;
@@ -36,10 +38,10 @@ public class UserServiceImpl implements UserService {
 			.getLogger(UserServiceImpl.class);
 	
 	@Autowired
-	private ServerRedisDAOImpl serverRedisDAO;
+	private VpnServerDAO serverRedisDAO;
 	
 	@Autowired
-	private UserRedisDAOImpl userRedisDAO;
+	private UserUsageDAO userRedisDAO;
 	
 	@Autowired
 	private BlockUserDAO blockUserDAO;
@@ -59,8 +61,9 @@ public class UserServiceImpl implements UserService {
 	 * 				then currentCycleEndTimestamp += period
 	 * 				then usage = 0
 	 * 				then valid
+	 * @throws DBException 
 	 */
-	public StatusResult handleStartUseVpnService(VerifyVpnAccessDTO dto) {
+	public StatusResult handleStartUseVpnService(VerifyVpnAccessDTO dto) throws DBException {
 		LoginResult result = new LoginResult(Constants.SUCCESS);
 		
 		// step2
@@ -125,7 +128,7 @@ public class UserServiceImpl implements UserService {
 							user.getPeriod(), current);
 			user.setCurrentCycleEndTimestamp(nextBillingTimestamp);
 			resetUsage(user);//reset usage for new billing cycle
-			userRedisDAO.saveOrUpdateUser(user);
+			userRedisDAO.updateUser(user);
 		} else {//still in old cycle
 			if (user.getTotalUsageofAllSessions() > user.getUserUsageLimit()) {
 				if(logger.isErrorEnabled()) {
@@ -144,8 +147,9 @@ public class UserServiceImpl implements UserService {
 	 * 
 	 * 0. for free-trail account, validate if the device is already used by another account, if yes, block the usage
 	 * 2. validate product/incoming IP by product key
+	 * @throws DBException 
 	 */
-	public StatusResult handleControlDeviceService(VerifyVpnAccessDTO dto) {
+	public StatusResult handleControlDeviceService(VerifyVpnAccessDTO dto) throws DBException {
 		LoginResult result = new LoginResult(Constants.SUCCESS);
 		
 		// step2
@@ -170,7 +174,7 @@ public class UserServiceImpl implements UserService {
 				return result;
 			} else {
 				_vpnUser.setStatus(false);
-				userRedisDAO.saveOrUpdateUser(_vpnUser);
+				userRedisDAO.updateUser(_vpnUser);
 			}
 			result.setStatus(Constants.DEVICE_ALREADY_TAKEN);
 			return result;
@@ -191,8 +195,9 @@ public class UserServiceImpl implements UserService {
 	 * 				then currentCycleEndTimestamp += period
 	 * 				resetUsage(user);//reset usage for new billing cycle
 	 * 3. update block user list
+	 * @throws DBException 
 	 */
-	public StatusResult handleReportVpnUsageService(ReportUsageDTO dto) {
+	public StatusResult handleReportVpnUsageService(ReportUsageDTO dto) throws DBException {
 	
 		LoginResult result = new LoginResult(Constants.SUCCESS);
 
@@ -228,12 +233,12 @@ public class UserServiceImpl implements UserService {
 							user.getPeriod(), current);
 			user.setCurrentCycleEndTimestamp(nextBillingTimestamp);
 			resetUsage(user);// reset usage for new billing cycle
-			userRedisDAO.saveOrUpdateUser(user);
+			userRedisDAO.updateUser(user);
 		} else {// still in old cycle
 			Long thisUsage = dto.getDownUsage() > dto.getUpUsage() ? dto
 					.getDownUsage() : dto.getUpUsage();// extract usage
 			aggregateUsage(user, dto.getSessionId(), thisUsage);
-			userRedisDAO.saveOrUpdateUser(user);
+			userRedisDAO.updateUser(user);
 		}
 
 		// 3. update block user list
@@ -308,7 +313,7 @@ public class UserServiceImpl implements UserService {
 		user.setTotalUsageofAllSessions(0L);
 		user.setTotalUsageofExpiredSessions(0L);
 		user.setSessionUsageMap(null);
-		userRedisDAO.saveOrUpdateUser(user);
+		userRedisDAO.createUser(user);
 	}
 	
 	public void handleUpdateUserService(AddorUpdateUserDTO dto) {
@@ -352,7 +357,7 @@ public class UserServiceImpl implements UserService {
 		if(dto.getSessionUsageMap() != null) {
 			user.setSessionUsageMap(dto.getSessionUsageMap());
 		}
-		userRedisDAO.saveOrUpdateUser(user);
+		userRedisDAO.updateUser(user);
 	}
 	
 	public void handleDeleteUserService(String productKey, String email) {

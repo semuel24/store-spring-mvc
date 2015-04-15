@@ -1,8 +1,8 @@
 package com.store.db.dao;
 
-import com.store.entity.BlockUser;
+import com.store.entity.ApiBlockUser;
 
-public interface BlockUserDAO extends StoreDAO<BlockUser>{
+public interface BlockUserDAO extends StoreDAO<ApiBlockUser>{
 
 	public void addBlockUser(String email, String productKey,
 			Long blockUntilTimestamp);

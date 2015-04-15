@@ -1,43 +1,45 @@
 package com.store.db.dao.iml.mysql;
 
-import org.redisson.Config;
-import org.redisson.Redisson;
-import org.redisson.core.RBucket;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import java.util.Date;
+
+import org.hibernate.Query;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.store.db.dao.BlockUserDAO;
-import com.store.entity.BlockUser;
-import com.store.redis.client.RedisClient;
-import com.store.utils.Constants;
+import com.store.entity.ApiBlockUser;
 
-/**
- * {BLOCK_USER_PREFIX+email+productKey:blockUntilTimestamp}
- * 
- * Basically, block user list is an eventually-sync view of user data. Its data should
- * not update back to user's table. 
- */
+@Transactional
 @Component("blockUserDAO")
-public class BlockUserDAOImpl extends StoreDAOImpl<BlockUser> implements BlockUserDAO{
-
-	public static String BLOCK_USER_PREFIX = "/blockuser/";
+public class BlockUserDAOImpl extends StoreDAOImpl<ApiBlockUser> implements
+		BlockUserDAO {
 
 	public void addBlockUser(String email, String productKey,
 			Long blockUntilTimestamp) {
-		
+
+		ApiBlockUser user = new ApiBlockUser();
+		user.setBlockuntiltimestamp(new Date(blockUntilTimestamp));
+		user.setCreatetime(new Date());
+		user.setEmail(email);
+		user.setProduct(productKey);
+		this.create(user);
 	}
 
 	/**
-	 * return true - given user is blocked
-	 * 		  false - given user is not on the block list
+	 * return true - given user is blocked false - given user is not on the
+	 * block list
 	 */
 	public Boolean verifyBlockUser(String email, String productKey) {
-		
-		throw new RuntimeException("verifyBlockUser exception");
+
+		Query query = factory
+				.getCurrentSession()
+				.createQuery(
+						" from ApiBlockUser as user where user.email = :email and user.product = :product ");
+		query.setString("email", email);
+		query.setString("product", productKey);
+
+		Object o = query.uniqueResult();
+		return o != null;
 	}
 
-	private String getBlockUserKey(String email, String productKey) {
-		return BLOCK_USER_PREFIX + email + "/" + productKey;
-	}
 }

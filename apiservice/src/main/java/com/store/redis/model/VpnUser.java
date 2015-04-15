@@ -9,17 +9,16 @@ public class VpnUser {
 	private String salt;
 	private Boolean status;
 	private String productKey;
-	
+
 	private Long serviceStartTimestamp;
 	private String period;
 	private Long currentCycleEndTimestamp;
-	
-	
+
 	private Long userUsageLimit;
 	private Long totalUsageofExpiredSessions;
 	private Long totalUsageofAllSessions;
-	
-	private Map<Long, SessionUsage>sessionUsageMap;
+
+	private Map<Long, SessionUsage> sessionUsageMap;
 
 	public String getEmail() {
 		return email;
@@ -52,7 +51,7 @@ public class VpnUser {
 	public void setStatus(Boolean status) {
 		this.status = status;
 	}
-	
+
 	public Long getUserUsageLimit() {
 		return userUsageLimit;
 	}
@@ -116,5 +115,5 @@ public class VpnUser {
 	public void setCurrentCycleEndTimestamp(Long currentCycleEndTimestamp) {
 		this.currentCycleEndTimestamp = currentCycleEndTimestamp;
 	}
-	
+
 }
