@@ -1,13 +1,36 @@
+# [ADMIN APIs]
+# [[SERVER]]
 1. add a server to given product key
 curl -X PUT 'http://localhost:8080/apiservice/admin/vpnserver' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"ip":"1.1.1.1","productKey":"freetrial"}'
 
 2. list servers of all products
 curl -X GET 'http://localhost:8080/apiservice/admin/vpnservers' -H 'Accept:application/json' -H 'Content-Type:application/json'
 
-3. add a user with given product key
+*3. delete the server
+curl -X DELETE 'http://localhost:8080/apiservice/admin/vpnserver/1.1.1.1/freetrial' -H 'Accept:application/json' -H 'Content-Type:application/json'
+
+# [[User]]
+1. add a user with given product key
 curl -X POST 'http://localhost:8080/apiservice/admin/user' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","password":"password","salt":"salt","productKey":"freetrial","serviceStartTimestamp":0,"period":"monthly","status":true}'
 
-4. verify user access to given product
+2. update a user account(identified be email+product key)
+update password of a user
+curl -X PUT 'http://localhost:8080/apiservice/admin/user' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","productKey":"freetrial","password":"password2","salt":"salt"}'
+
+update status of a user(disable/enable)
+curl -X PUT 'http://localhost:8080/apiservice/admin/user' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","productKey":"freetrial","status":true}'
+
+update limit of a user
+curl -X PUT 'http://localhost:8080/apiservice/admin/user' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","productKey":"freetrial","userUsageLimit":0}'
+
+*3. delete user
+
+
+# [PUBLIC APIs]
+validate block user
+curl -X POST 'http://localhost:8080/apiservice/deviceControlService' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","incomingIp":"1.1.1.1","deviceKey":"device1"}'
+
+2. verify user access to given product
 curl -X POST 'http://localhost:8080/apiservice/loginservice' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","password":"password","incomingIp":"1.1.1.1"}'
 
 report usage less than limit
@@ -19,13 +42,5 @@ curl -X POST 'http://localhost:8080/apiservice/reportUsage' -H 'Accept:applicati
 batch request access
 curl -X POST 'http://localhost:8080/apiservice/batchRequestAccess' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"emails":["sam@gmail.com"],"vpnServerIp":"1.1.1.1"}'
 
-*5. delete user
-
-*6. verify user access to given product
+*4. verify user access to given product
 curl -X POST 'http://localhost:8080/apiservice/loginservice' -H 'Accept:application/json' -H 'Content-Type:application/json' -d '{"email":"sam@gmail.com","password":"password","incomingIp":"1.1.1.1"}'
-
-*7. delete the server
-curl -X DELETE 'http://localhost:8080/apiservice/admin/vpnserver/1.1.1.1/freetrial' -H 'Accept:application/json' -H 'Content-Type:application/json'
-
-*8. list servers of all products
-curl -X GET 'http://localhost:8080/apiservice/admin/vpnservers' -H 'Accept:application/json' -H 'Content-Type:application/json'

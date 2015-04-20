@@ -24,7 +24,7 @@ import com.store.redis.model.DeviceTaken;
  * value: email
  */
 //@Component("deviceKeyTakenDAO")
-public class DeviceKeyTakenDAO {
+public class DeviceKeyTakenDAORedisImpl {
 
 	@Autowired
 	@Qualifier("redisClient")
@@ -90,7 +90,7 @@ public class DeviceKeyTakenDAO {
 		config.useSingleServer().setAddress("127.0.0.1:6379");
 		client.setRedisson(Redisson.create(config));
 		
-		DeviceKeyTakenDAO dao = new DeviceKeyTakenDAO();
+		DeviceKeyTakenDAORedisImpl dao = new DeviceKeyTakenDAORedisImpl();
 		dao.setRedisClient(client);
 
 		// can't find a device

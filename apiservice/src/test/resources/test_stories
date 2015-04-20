@@ -1,0 +1,12 @@
+[usage limit]
+# story 1 - a new cycle starts (auth/report usage APIs)
+
+# story 2 - exceed usage limit (auth/report usage APIs)
+
+
+
+[device control]
+# story 3 - one user changes device
+
+# story 4 - another user blocked on same device
+

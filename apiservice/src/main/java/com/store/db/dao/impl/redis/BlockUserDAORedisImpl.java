@@ -6,8 +6,10 @@ import org.redisson.core.RBucket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
 import com.store.redis.client.RedisClient;
 import com.store.utils.Constants;
+import com.store.utils.TimeUtil;
 
 /**
  * {BLOCK_USER_PREFIX+email+productKey:blockUntilTimestamp}
@@ -16,11 +18,14 @@ import com.store.utils.Constants;
  * not update back to user's table. 
  */
 //@Component("blockUserDAO")
-public class BlockUserDAO {
+public class BlockUserDAORedisImpl {
 
 	@Autowired
 	@Qualifier("redisClient")
 	private RedisClient redisClient;
+	
+	@Autowired
+	private TimeUtil timeUtil;
 
 	public static String BLOCK_USER_PREFIX = "/blockuser/";
 
@@ -52,12 +57,12 @@ public class BlockUserDAO {
 			return false;
 		}
 		
-		if(System.currentTimeMillis() >= blockUntilTimestamp) {
+		if(timeUtil.getCurrentUnixTime() >= blockUntilTimestamp) {
 			bucket.delete();//reset
 			return false;
 		}
 		
-		if(System.currentTimeMillis() < blockUntilTimestamp) {
+		if(timeUtil.getCurrentUnixTime() < blockUntilTimestamp) {
 			return true;
 		}
 		
@@ -76,13 +81,13 @@ public class BlockUserDAO {
 		config.useSingleServer().setAddress("127.0.0.1:6379");
 		client.setRedisson(Redisson.create(config));
 
-		BlockUserDAO dao = new BlockUserDAO();
+		BlockUserDAORedisImpl dao = new BlockUserDAORedisImpl();
 		dao.setRedisClient(client);
 
 		// insert into block list
 		dao.addBlockUser("test@gmail.com",
 				Constants.PRODUCT.FREETRIAL.getProductKey(),
-				System.currentTimeMillis());
+				TimeUtil.StaticCurrentUnixTime());
 
 		// vefiry in block list
 		dao.verifyBlockUser("test@gmail.com",

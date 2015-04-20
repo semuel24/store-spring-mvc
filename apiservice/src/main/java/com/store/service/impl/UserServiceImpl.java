@@ -9,17 +9,19 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.store.db.dao.BlockUserDAO;
-import com.store.db.dao.DeviceKeyTakenDAO;
-import com.store.db.dao.UserUsageDAO;
-import com.store.db.dao.VpnServerDAO;
+import com.store.db.dao.api.BlockUserDAO;
+import com.store.db.dao.api.DeviceKeyTakenDAO;
+import com.store.db.dao.api.UserUsageDAO;
+import com.store.db.dao.api.VpnServerDAO;
 import com.store.dto.AddorUpdateUserDTO;
 import com.store.dto.BatchRequestAccessDTO;
+import com.store.dto.DeviceControlDTO;
 import com.store.dto.ReportUsageDTO;
 import com.store.dto.VerifyVpnAccessDTO;
+import com.store.entity.ApiDeviceKeyTaken;
 import com.store.exception.DBException;
 import com.store.redis.model.SessionUsage;
 import com.store.redis.model.VpnUser;
@@ -30,6 +32,7 @@ import com.store.service.UserService;
 import com.store.utils.BillingCycleHelper;
 import com.store.utils.Constants;
 import com.store.utils.SHA256Generator;
+import com.store.utils.TimeUtil;
 
 @Component("userService")
 public class UserServiceImpl implements UserService {
@@ -38,16 +41,23 @@ public class UserServiceImpl implements UserService {
 			.getLogger(UserServiceImpl.class);
 	
 	@Autowired
+	@Qualifier("vpnServerDAODecorated")
 	private VpnServerDAO serverRedisDAO;
 	
 	@Autowired
+	@Qualifier("userUsageDAODecorated")
 	private UserUsageDAO userRedisDAO;
 	
 	@Autowired
+	@Qualifier("blockUserDAODecorated")
 	private BlockUserDAO blockUserDAO;
 	
 	@Autowired
+	@Qualifier("deviceKeyTakenDAODecorated")
 	private DeviceKeyTakenDAO deviceKeyTakenDAO;
+	
+	@Autowired
+	private TimeUtil timeUtil;
 
 	/** 
 	 * steps:
@@ -120,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
 		// step3
 		// validate user bandwidth usage if product is usage sensitive
-		Long current = System.currentTimeMillis();
+		Long current = timeUtil.getCurrentUnixTime();
 		if (BillingCycleHelper.bANewBillingCycleShouldStart(
 				user.getCurrentCycleEndTimestamp(), current)) {//start a new cycle
 			Long nextBillingTimestamp = BillingCycleHelper
@@ -144,32 +154,44 @@ public class UserServiceImpl implements UserService {
 	
 	/** 
 	 * steps:
+	 * handles all products
 	 * 
 	 * 0. for free-trail account, validate if the device is already used by another account, if yes, block the usage
 	 * 2. validate product/incoming IP by product key
 	 * @throws DBException 
 	 */
-	public StatusResult handleControlDeviceService(VerifyVpnAccessDTO dto) throws DBException {
+	public StatusResult handleControlDeviceService(DeviceControlDTO dto)
+			throws DBException {
 		LoginResult result = new LoginResult(Constants.SUCCESS);
-		
+
 		// step2
 		// get product key by incoming IP
 		String productKey = serverRedisDAO.findProductKeyServerByIp(dto
 				.getIncomingIp());
 		if (productKey == null) {
-			if(logger.isErrorEnabled()) {
+			if (logger.isErrorEnabled()) {
 				logger.error("Unknown ip: " + dto.getIncomingIp());
 			}
 			result.setStatus(Constants.IP_UNKNOWN);
 			return result;
 		}
-		
-		//step 0
-		if(productKey.equalsIgnoreCase(Constants.PRODUCT.FREETRIAL.getProductKey()) && 
-				deviceKeyTakenDAO.blockDevice(dto.getDeviceKey(), dto.getEmail())) {
-			//disable the new account
-			VpnUser _vpnUser = userRedisDAO.findUserByKey(dto.getEmail(), productKey);
-			if(_vpnUser == null) {
+
+		// step 0
+		if (!productKey.equalsIgnoreCase(Constants.PRODUCT.FREETRIAL
+				.getProductKey())) {
+			return result;// return default
+		}
+
+		ApiDeviceKeyTaken _taken = deviceKeyTakenDAO
+				.getBlockDeviceByDeviceKey(dto.getDeviceKey());
+		if (_taken == null) {// insert a new record
+			deviceKeyTakenDAO.insertNewRecord(dto.getDeviceKey(),
+					dto.getEmail());
+		} else if(!dto.getEmail().equalsIgnoreCase(_taken.getEmail())){ // device already used
+			// disable the new account
+			VpnUser _vpnUser = userRedisDAO.findUserByKey(dto.getEmail(),
+					productKey);
+			if (_vpnUser == null) {
 				result.setStatus(Constants.USER_MISSING);
 				return result;
 			} else {
@@ -180,7 +202,7 @@ public class UserServiceImpl implements UserService {
 			return result;
 		}
 
-		return result;//return default
+		return result;// return default
 	}
 	
 	/**
@@ -224,7 +246,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		// step2 validate/update usage
-		Long current = System.currentTimeMillis();
+		Long current = timeUtil.getCurrentUnixTime();
 		if (BillingCycleHelper.bANewBillingCycleShouldStart(
 				user.getCurrentCycleEndTimestamp(), current)) {// start a new
 																// cycle
@@ -262,23 +284,25 @@ public class UserServiceImpl implements UserService {
 	 * 1. verify block user list
 	 * 2. remove invalid entries
 	 */
-	public BatchRequestAccessResult handleBatchRequestAccessService(BatchRequestAccessDTO dto) {
-		BatchRequestAccessResult result = new BatchRequestAccessResult(Constants.SUCCESS);
+	public BatchRequestAccessResult handleBatchRequestAccessService(
+			BatchRequestAccessDTO dto) {
+		BatchRequestAccessResult result = new BatchRequestAccessResult(
+				Constants.SUCCESS);
 		List<String> blockList = new ArrayList<String>();
 		result.setBlockList(blockList);
-		
+
 		String productKey = serverRedisDAO.findProductKeyServerByIp(dto
 				.getVpnServerIp());
 		if (productKey == null) {
-			if(logger.isErrorEnabled()) {
+			if (logger.isErrorEnabled()) {
 				logger.error("Unknown ip: " + dto.getVpnServerIp());
 			}
 			result.setStatus(Constants.IP_UNKNOWN);
 			return result;
 		}
-		
-		for(String email : dto.getEmails()) {
-			if(blockUserDAO.verifyBlockUser(email, productKey)) {
+
+		for (String email : dto.getEmails()) {
+			if (blockUserDAO.verifyBlockUserByTime(email, productKey)) {
 				blockList.add(email);
 			}
 		}
@@ -286,7 +310,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public void handleAddUserService(AddorUpdateUserDTO dto) {
-		Long currentTimeStamp = System.currentTimeMillis();
+		Long currentTimeStamp = timeUtil.getCurrentUnixTime();
 		VpnUser user = new VpnUser();
 		user.setEmail(dto.getEmail());
 		
@@ -316,25 +340,36 @@ public class UserServiceImpl implements UserService {
 		userRedisDAO.createUser(user);
 	}
 	
-	public void handleUpdateUserService(AddorUpdateUserDTO dto) {
+	public void handleUpdateUserService(AddorUpdateUserDTO dto) throws DBException {
 		VpnUser user = new VpnUser();
+		
+		if(dto.getEmail() == null || "".equalsIgnoreCase(dto.getEmail())) {
+			throw new RuntimeException("Missing email when update a user!");
+		}
 		user.setEmail(dto.getEmail());
 		
-		String hashedPassword;
-		try {
-			hashedPassword = SHA256Generator.hash(dto.getPassword()
-						+ dto.getSalt());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		if(dto.getProductKey() == null || "".equalsIgnoreCase(dto.getProductKey())) {
+			throw new RuntimeException("Missing product key when update a user!");
 		}
-		user.setSalt(dto.getSalt());
-		user.setPassword(hashedPassword);
+		user.setProductKey(dto.getProductKey());
+		
+		//to change password, salt is also needed to provided
+		if(dto.getPassword() != null && dto.getSalt() != null) {
+			String hashedPassword;
+			try {
+				hashedPassword = SHA256Generator.hash(dto.getPassword()
+							+ dto.getSalt());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			user.setSalt(dto.getSalt());
+			user.setPassword(hashedPassword);
+		} else if(dto.getPassword() != null || dto.getSalt() != null) {
+			throw new RuntimeException("Missing password of salt when update a user!");
+		}
 		
 		if(dto.getStatus() != null) {
 			user.setStatus(dto.getStatus());
-		}
-		if(dto.getProductKey() != null) {
-			user.setProductKey(dto.getProductKey());
 		}
 		if(dto.getServiceStartTimestamp() != null) {
 			user.setServiceStartTimestamp(dto.getServiceStartTimestamp());
@@ -371,7 +406,7 @@ public class UserServiceImpl implements UserService {
 		user.setUserUsageLimit(Constants.FREE_TRIAL_USAGE_LIIMIT);//reset to default, promotion may increase this value
 		user.setTotalUsageofAllSessions(0L);
 		user.setTotalUsageofExpiredSessions(0L);
-		user.setSessionUsageMap(null);
+		user.setSessionUsageMap(new HashMap<Long, SessionUsage>());
 	}
 	
 	private void aggregateUsage(VpnUser user, Long sessionId, Long usage) {
@@ -409,10 +444,11 @@ public class UserServiceImpl implements UserService {
 		} else {//existing session
 			sessionUsage.setUsage(usage);
 		}
-		sessionUsage.setLastModifyTimestamp(System.currentTimeMillis());
+		sessionUsage.setLastModifyTimestamp(timeUtil.getCurrentUnixTime());
 		
 		//clear expired sessions & add for totals
 		Long unExpiredUsage = 0L;
+		user.setToDelSessionIdList(new ArrayList<Long>());
 		for (Iterator<Map.Entry<Long, SessionUsage>> it = sessionMap.entrySet()
 				.iterator(); it.hasNext();) {
 			Map.Entry<Long, SessionUsage> entry = it.next();
@@ -420,7 +456,8 @@ public class UserServiceImpl implements UserService {
 				user.setTotalUsageofExpiredSessions(user
 						.getTotalUsageofExpiredSessions()
 						+ entry.getValue().getUsage());
-				it.remove();
+//				it.remove();
+				user.getToDelSessionIdList().add(entry.getKey());
 			} else {
 				unExpiredUsage += entry.getValue().getUsage();
 			}
@@ -438,7 +475,7 @@ public class UserServiceImpl implements UserService {
 			return false;
 		}
 
-		return System.currentTimeMillis()
+		return timeUtil.getCurrentUnixTime()
 				- sessionUsage.getLastModifyTimestamp() > Constants.DEFAULT_SESSION_TIMEOUT ? true
 				: false;
 	}

@@ -1,15 +1,17 @@
 package com.store.db.dao.iml.mysql;
 
 import java.util.List;
+
 import org.hibernate.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.store.db.dao.SessionUsageDAO;
+
+import com.store.db.dao.mysql.SessionUsageDAO;
 import com.store.entity.ApiSessionUsage;
 
 @Transactional
-@Component("sessionUsageDAO")
-public class SessionUsageDAOImpl extends StoreDAOImpl<ApiSessionUsage>
+@Component("sessionUsageDAOMysql")
+public class SessionUsageDAOMysqlImpl extends StoreDAOMysqlImpl<ApiSessionUsage>
 		implements SessionUsageDAO {
 
 	@SuppressWarnings("unchecked")
@@ -24,7 +26,6 @@ public class SessionUsageDAOImpl extends StoreDAOImpl<ApiSessionUsage>
 		return (List<ApiSessionUsage>) query.list();
 	}
 
-	@SuppressWarnings("unchecked")
 	public ApiSessionUsage findSessionBySessionId(Long sessionId) {
 		Query query = factory
 				.getCurrentSession()
@@ -33,5 +34,14 @@ public class SessionUsageDAOImpl extends StoreDAOImpl<ApiSessionUsage>
 		query.setLong("sessionId", sessionId);
 
 		return (ApiSessionUsage) query.uniqueResult();
+	}
+	
+	public void deleteById(Long sessionId) {
+		Query query = factory
+				.getCurrentSession()
+				.createSQLQuery(
+						" delete from api_session_usage where sessionid = :sessionId ");
+		query.setLong("sessionId", sessionId);
+		query.executeUpdate();
 	}
 }

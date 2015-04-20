@@ -25,7 +25,7 @@ public class Constants {
 	
 	public static Long FREE_TRIAL_USAGE_LIIMIT = 838860800L;//in bytes, 800 MB
 	
-	public static Integer DEFAULT_SESSION_TIMEOUT = 900;//in seconds
+	public static Long DEFAULT_SESSION_TIMEOUT = 900000l;//in seconds
 	
 	public static enum PRODUCT {
 		FREETRIAL("freetrial"),

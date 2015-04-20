@@ -2,16 +2,19 @@ package com.store.db.dao.impl.redis;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.redisson.Config;
 import org.redisson.Redisson;
 import org.redisson.core.RBucket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
 import com.store.redis.client.RedisClient;
 import com.store.redis.model.SessionUsage;
 import com.store.redis.model.VpnUser;
 import com.store.utils.Constants;
+import com.store.utils.TimeUtil;
 
 /**
  *  redis stores user 
@@ -42,7 +45,7 @@ import com.store.utils.Constants;
  * 						 }
  */
 //@Component
-public class UserRedisDAO {
+public class UserRedisDAORedisImpl {
 
 	@Autowired
 	@Qualifier("redisClient")
@@ -95,7 +98,7 @@ public class UserRedisDAO {
 		config.useSingleServer().setAddress("127.0.0.1:6379");
 		client.setRedisson(Redisson.create(config));
 
-		UserRedisDAO dao = new UserRedisDAO();
+		UserRedisDAORedisImpl dao = new UserRedisDAORedisImpl();
 		dao.setRedisClient(client);
 		
 		//mock a user
@@ -105,16 +108,16 @@ public class UserRedisDAO {
 		user.setPassword("password");
 		user.setStatus(true);
 		user.setProductKey(Constants.PRODUCT.FREETRIAL.getProductKey());
-		user.setServiceStartTimestamp(System.currentTimeMillis());
+		user.setServiceStartTimestamp(TimeUtil.StaticCurrentUnixTime());
 		user.setPeriod(Constants.PERIOD.MONTHLY.getPeriod());
-		user.setCurrentCycleEndTimestamp(System.currentTimeMillis()+3600000);//one hour later
+		user.setCurrentCycleEndTimestamp(TimeUtil.StaticCurrentUnixTime()+3600000);//one hour later
 		user.setUserUsageLimit(1000000000L);
 		user.setTotalUsageofExpiredSessions(100000000L);
 		user.setTotalUsageofAllSessions(100000000L);
 		
 		SessionUsage session1Usage = new SessionUsage();
 		session1Usage.setUsage(10000000L);
-		session1Usage.setLastModifyTimestamp(System.currentTimeMillis());
+		session1Usage.setLastModifyTimestamp(TimeUtil.StaticCurrentUnixTime());
 		Map<Long, SessionUsage> sessionMap = new HashMap<Long, SessionUsage>();
 		Long session1Id = 1234123414L;
 		sessionMap.put(session1Id, session1Usage);

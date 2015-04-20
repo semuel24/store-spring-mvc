@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.store.db.dao.SessionUsageDAO;
-import com.store.db.dao.UserUsageDAO;
+import com.store.db.dao.api.UserUsageDAO;
+import com.store.db.dao.mysql.SessionUsageDAO;
 import com.store.entity.ApiSessionUsage;
 import com.store.entity.ApiUserUsage;
 import com.store.exception.DBException;
@@ -17,11 +18,12 @@ import com.store.redis.model.SessionUsage;
 import com.store.redis.model.VpnUser;
 
 @Transactional
-@Component
-public class UserUsageDAOImpl extends StoreDAOImpl<ApiUserUsage> implements
+@Component("userUsageDAOMysql")
+public class UserUsageDAOMysqlImpl extends StoreDAOMysqlImpl<ApiUserUsage> implements
 		UserUsageDAO {
 	
 	@Autowired
+	@Qualifier("sessionUsageDAOMysql")
 	private SessionUsageDAO sessionUsageDAO;
 
 	public void createUser(VpnUser redisUser) {
@@ -74,22 +76,43 @@ public class UserUsageDAOImpl extends StoreDAOImpl<ApiUserUsage> implements
 		if (apiUserUsage == null) {
 			throw new RuntimeException("Trying to update an non-existing user");
 		}
-		// update whatever passed-in
-		apiUserUsage.setEmail(redisUser.getEmail());
-		apiUserUsage.setPassword(redisUser.getPassword());
-		apiUserUsage.setSalt(redisUser.getSalt());
-		apiUserUsage.setStatus(redisUser.getStatus());
-		apiUserUsage.setProductKey(redisUser.getProductKey());
-		apiUserUsage.setServiceStartTimestamp(redisUser
-				.getServiceStartTimestamp());
-		apiUserUsage.setPeriod(redisUser.getPeriod());
-		apiUserUsage.setCurrentCycleEndTimestamp(redisUser
-				.getCurrentCycleEndTimestamp());
-		apiUserUsage.setUserUsageLimit(redisUser.getUserUsageLimit());
-		apiUserUsage.setTotalUsageofExpiredSessions(redisUser
-				.getTotalUsageofExpiredSessions());
-		apiUserUsage.setTotalUsageofAllSessions(redisUser
-				.getTotalUsageofAllSessions());
+		// update reasonable passed-in, no NULL allowed
+		if (redisUser.getPassword() != null) {
+			apiUserUsage.setPassword(redisUser.getPassword());
+		}
+		if (redisUser.getSalt() != null) {
+			apiUserUsage.setSalt(redisUser.getSalt());
+		}
+		if (redisUser.getStatus() != null) {
+			apiUserUsage.setStatus(redisUser.getStatus());
+		}
+		if (redisUser.getServiceStartTimestamp() != null) {
+			apiUserUsage.setServiceStartTimestamp(redisUser
+					.getServiceStartTimestamp());
+		}
+		if (redisUser.getPeriod() != null) {
+			apiUserUsage.setPeriod(redisUser.getPeriod());
+		}
+		if (redisUser.getCurrentCycleEndTimestamp() != null) {
+			apiUserUsage.setCurrentCycleEndTimestamp(redisUser
+					.getCurrentCycleEndTimestamp());
+		}
+		if (redisUser.getUserUsageLimit() != null) {
+			apiUserUsage.setUserUsageLimit(redisUser.getUserUsageLimit());
+		}
+		if (redisUser.getTotalUsageofExpiredSessions() != null) {
+			apiUserUsage.setTotalUsageofExpiredSessions(redisUser
+					.getTotalUsageofExpiredSessions());
+		}
+		if (redisUser.getTotalUsageofExpiredSessions() != null) {
+			apiUserUsage.setTotalUsageofExpiredSessions(redisUser
+					.getTotalUsageofExpiredSessions());
+		}
+		if (redisUser.getTotalUsageofAllSessions() != null) {
+			apiUserUsage.setTotalUsageofAllSessions(redisUser
+					.getTotalUsageofAllSessions());
+		}
+
 		this.update(apiUserUsage);
 		
 		/**
@@ -127,6 +150,12 @@ public class UserUsageDAOImpl extends StoreDAOImpl<ApiUserUsage> implements
 				} else {
 					sessionUsageDAO.update(_apiSessionUsage);
 				}
+			}
+		}
+		//clean up expired sessions
+		if(redisUser.getToDelSessionIdList() != null) {
+			for(Long _delSessionId : redisUser.getToDelSessionIdList()) {
+				sessionUsageDAO.deleteById(_delSessionId);
 			}
 		}
 	}

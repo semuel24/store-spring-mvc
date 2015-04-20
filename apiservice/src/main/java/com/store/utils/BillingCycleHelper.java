@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +69,9 @@ public class BillingCycleHelper {
 
 	public static void main(String args[]) throws ParseException {
 		// test1();
-		test2();
+//		test2();
+		
+		
 	}
 
 	private static void test2() throws ParseException {
@@ -78,7 +81,7 @@ public class BillingCycleHelper {
 		Date date1 = format.parse(string1);
 		Long serviceStartTimestamp = date1.getTime();
 		// current date
-		Long currentTimestamp = System.currentTimeMillis();
+		Long currentTimestamp = TimeUtil.StaticCurrentUnixTime();
 
 		Long nextBillingCycleTimestamp = getNextBillingTimestamp(
 				serviceStartTimestamp, Constants.PERIOD.MONTHLY.getPeriod(),

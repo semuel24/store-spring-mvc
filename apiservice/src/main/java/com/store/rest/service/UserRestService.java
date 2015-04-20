@@ -7,11 +7,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.store.dto.BatchRequestAccessDTO;
+import com.store.dto.DeviceControlDTO;
 import com.store.dto.ReportUsageDTO;
 import com.store.dto.VerifyVpnAccessDTO;
 import com.store.result.BatchRequestAccessResult;
@@ -31,7 +33,9 @@ public class UserRestService extends RestService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(UserRestService.class);
 
-	private static String UserApiKey = "74b49f01-7009-4e98-80ef-e85004128e7d";
+	@Autowired
+	@Qualifier("userApiKey")
+	private String userApiKey;
 
 	@Autowired
 	private UserService userService;
@@ -90,8 +94,8 @@ public class UserRestService extends RestService {
 			// parse incoming data
 			postBody = getBody(request);
 			ObjectMapper mapper = new ObjectMapper();
-			VerifyVpnAccessDTO dto = mapper.readValue(postBody,
-					VerifyVpnAccessDTO.class);
+			DeviceControlDTO dto = mapper.readValue(postBody,
+					DeviceControlDTO.class);
 
 			if (logger.isInfoEnabled()) {
 				logger.info("### UserRestService.verifyDeviceinRedis started to handle dto: "

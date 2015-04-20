@@ -69,4 +69,13 @@
 		<constructor-arg value="$prod:{redis.server.address}" />
 	</bean>
 
+	<!-- API Keys -->
+	<bean id="adminApiKey" class="java.lang.String">
+		<constructor-arg value="$prod:{admin.api.key}" />
+	</bean>
+
+	<bean id="userApiKey" class="java.lang.String">
+		<constructor-arg value="$prod:{user.api.key}" />
+	</bean>
+	
 </beans>

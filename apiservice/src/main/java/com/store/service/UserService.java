@@ -2,6 +2,7 @@ package com.store.service;
 
 import com.store.dto.AddorUpdateUserDTO;
 import com.store.dto.BatchRequestAccessDTO;
+import com.store.dto.DeviceControlDTO;
 import com.store.dto.VerifyVpnAccessDTO;
 import com.store.dto.ReportUsageDTO;
 import com.store.exception.DBException;
@@ -16,5 +17,5 @@ public interface UserService {
 	public void handleUpdateUserService(AddorUpdateUserDTO dto) throws DBException;
 	public void handleDeleteUserService(String productKey, String email);
 	public BatchRequestAccessResult handleBatchRequestAccessService(BatchRequestAccessDTO dto);
-	public StatusResult handleControlDeviceService(VerifyVpnAccessDTO dto) throws DBException;
+	public StatusResult handleControlDeviceService(DeviceControlDTO dto) throws DBException;
 }

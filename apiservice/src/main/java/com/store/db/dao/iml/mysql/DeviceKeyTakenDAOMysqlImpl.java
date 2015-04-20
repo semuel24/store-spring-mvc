@@ -6,7 +6,7 @@ import org.hibernate.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.store.db.dao.DeviceKeyTakenDAO;
+import com.store.db.dao.api.DeviceKeyTakenDAO;
 import com.store.entity.ApiDeviceKeyTaken;
 
 /**
@@ -19,8 +19,8 @@ import com.store.entity.ApiDeviceKeyTaken;
  * storage schema -------------- key: deviceKey value: email
  */
 @Transactional
-@Component("deviceKeyTakenDAO")
-public class DeviceKeyTakenDAOImpl extends StoreDAOImpl<ApiDeviceKeyTaken>
+@Component("deviceKeyTakenDAOMysql")
+public class DeviceKeyTakenDAOMysqlImpl extends StoreDAOMysqlImpl<ApiDeviceKeyTaken>
 		implements DeviceKeyTakenDAO {
 
 	// only API
@@ -36,6 +36,29 @@ public class DeviceKeyTakenDAOImpl extends StoreDAOImpl<ApiDeviceKeyTaken>
 		@SuppressWarnings("unchecked")
 		List<Object[]> entities = query.list();
 		return entities.size() != 0;
+	}
+
+	public ApiDeviceKeyTaken getBlockDeviceByDeviceKey(String deviceKey) {
+		Query query = factory
+				.getCurrentSession()
+				.createSQLQuery(
+						" select * from api_device_key_taken as taken where taken.deviceKey = :deviceKey ")
+				.addEntity(ApiDeviceKeyTaken.class);
+		query.setString("deviceKey", deviceKey);
+
+		@SuppressWarnings("unchecked")
+		List<ApiDeviceKeyTaken> entities = (List<ApiDeviceKeyTaken>) query
+				.list();
+
+		return entities != null && entities.size() != 0 ? entities.get(0)
+				: null;
+	}
+
+	public void insertNewRecord(String deviceKey, String email) {
+		ApiDeviceKeyTaken taken = new ApiDeviceKeyTaken();
+		taken.setDeviceKey(deviceKey);
+		taken.setEmail(email);
+		this.create(taken);
 	}
 
 }

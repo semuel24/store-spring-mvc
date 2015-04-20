@@ -1,4 +1,4 @@
-package com.store.db.dao;
+package com.store.db.dao.mysql;
 
 import java.util.List;
 import org.hibernate.SessionFactory;

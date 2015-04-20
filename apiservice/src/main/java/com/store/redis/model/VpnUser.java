@@ -1,5 +1,6 @@
 package com.store.redis.model;
 
+import java.util.List;
 import java.util.Map;
 
 public class VpnUser {
@@ -19,6 +20,7 @@ public class VpnUser {
 	private Long totalUsageofAllSessions;
 
 	private Map<Long, SessionUsage> sessionUsageMap;
+	private List<Long> toDelSessionIdList;//expired session will be removed
 
 	public String getEmail() {
 		return email;
@@ -116,4 +118,11 @@ public class VpnUser {
 		this.currentCycleEndTimestamp = currentCycleEndTimestamp;
 	}
 
+	public List<Long> getToDelSessionIdList() {
+		return toDelSessionIdList;
+	}
+
+	public void setToDelSessionIdList(List<Long> toDelSessionIdList) {
+		this.toDelSessionIdList = toDelSessionIdList;
+	}
 }

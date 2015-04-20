@@ -43,7 +43,7 @@ public class ApiSessionUsage {
 		this.sessionId = sessionId;
 	}
 
-	@Column(name = "usage")
+	@Column(name = "usage_amount")
 	public Long getUsage() {
 		return usage;
 	}

@@ -11,18 +11,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.store.db.dao.VpnServerDAO;
+import com.store.db.dao.api.VpnServerDAO;
 import com.store.entity.ApiVpnServer;
 import com.store.redis.client.VpnServerInfo;
 import com.store.utils.Constants;
 
 @Transactional
-@Component
-public class VpnServerDAOImpl extends StoreDAOImpl<ApiVpnServer> implements
+@Component("vpnServerDAOMysql")
+public class VpnServerDAOMysqlImpl extends StoreDAOMysqlImpl<ApiVpnServer> implements
 		VpnServerDAO {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(VpnServerDAOImpl.class);
+			.getLogger(VpnServerDAOMysqlImpl.class);
 
 	public void saveOrUpdateVpnServer(String productKey, VpnServerInfo server) {
 

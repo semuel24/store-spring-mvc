@@ -43,9 +43,9 @@ CREATE TABLE `api_user_usage` (
   `serviceStartTimestamp` bigint(20) NULL DEFAULT NULL,
   `period` varchar(20) NOT NULL,
   `currentCycleEndTimestamp` bigint(20) NULL DEFAULT NULL,
-  `userUsageLimit` int(20) NOT NULL,
-  `totalUsageofExpiredSessions` bigint(20) NULL DEFAULT NULL,
-  `totalUsageofAllSessions` bigint(20) NULL DEFAULT NULL,
+  `userUsageLimit` int(40) NOT NULL,
+  `totalUsageofExpiredSessions` bigint(40) NULL DEFAULT NULL,
+  `totalUsageofAllSessions` bigint(40) NULL DEFAULT NULL,
   `createtime` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
@@ -58,7 +58,7 @@ CREATE TABLE `api_session_usage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_usage_id` int(11) NOT NULL,
   `sessionid` bigint(20) NOT NULL,
-  `usage` int(20) NOT NULL,
+  `usage_amount` int(40) NOT NULL,
   `lastModifyTimestamp` bigint(20) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
@@ -67,4 +67,5 @@ CREATE TABLE `api_session_usage` (
   CONSTRAINT `fk_user_usage_id` FOREIGN KEY (`user_usage_id`) REFERENCES `api_user_usage` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `api_block_user` ADD INDEX `block_user_combo_idx` (`email` ASC, `product` ASC, `blockuntiltimestamp` ASC);
 

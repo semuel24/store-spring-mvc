@@ -1,16 +1,20 @@
 package com.store.rest.service;
 
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.store.dto.AddVpnServerDTO;
 import com.store.dto.AddorUpdateUserDTO;
 import com.store.redis.client.VpnServerInfo;
@@ -31,7 +35,9 @@ public class AdminRestService extends RestService {
 	private static final Logger logger = LoggerFactory
 			.getLogger(AdminRestService.class);
 
-	private static String AdminApiKey = "2e078028-3196-4361-a027-d9f19835cc7a";
+	@Autowired
+	@Qualifier("adminApiKey")
+	private String adminApiKey;
 
 	@Autowired
 	private VpnServerService vpnServerService;
@@ -47,7 +53,7 @@ public class AdminRestService extends RestService {
 		StatusResult result = null;
 		try {
 			//auth
-			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+			if(!HttpServletUtil.ValidateApiKey(request, adminApiKey)) {
 				result = new StatusResult(Constants.INVALID_APIKEY);
 			}
 			
@@ -94,7 +100,7 @@ public class AdminRestService extends RestService {
 		StatusResult result = null;
 		try {
 			//auth
-			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+			if(!HttpServletUtil.ValidateApiKey(request, adminApiKey)) {
 				result = new StatusResult(Constants.INVALID_APIKEY);
 			}
 			
@@ -129,7 +135,7 @@ public class AdminRestService extends RestService {
 		ServerListResult result = null;
 		try {
 			//auth
-			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+			if(!HttpServletUtil.ValidateApiKey(request, adminApiKey)) {
 				result = new ServerListResult(Constants.INVALID_APIKEY);
 			}
 			
@@ -157,7 +163,7 @@ public class AdminRestService extends RestService {
 		StatusResult result = null;
 		try {
 			//auth
-			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+			if(!HttpServletUtil.ValidateApiKey(request, adminApiKey)) {
 				result = new StatusResult(Constants.INVALID_APIKEY);
 			}
 			
@@ -199,7 +205,7 @@ public class AdminRestService extends RestService {
 		StatusResult result = null;
 		try {
 			//auth
-			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+			if(!HttpServletUtil.ValidateApiKey(request, adminApiKey)) {
 				result = new StatusResult(Constants.INVALID_APIKEY);
 			}
 			
@@ -246,7 +252,7 @@ public class AdminRestService extends RestService {
 		StatusResult result = null;
 		try {
 			//auth
-			if(!HttpServletUtil.ValidateApiKey(request, AdminApiKey)) {
+			if(!HttpServletUtil.ValidateApiKey(request, adminApiKey)) {
 				result = new StatusResult(Constants.INVALID_APIKEY);
 			}
 			

@@ -1,8 +1,6 @@
-package com.store.db.dao;
+package com.store.db.dao.api;
 
-import com.store.entity.ApiBlockUser;
-
-public interface BlockUserDAO extends StoreDAO<ApiBlockUser>{
+public interface BlockUserDAO{
 
 	public void addBlockUser(String email, String productKey,
 			Long blockUntilTimestamp);
@@ -11,6 +9,6 @@ public interface BlockUserDAO extends StoreDAO<ApiBlockUser>{
 	 * return true - given user is blocked
 	 * 		  false - given user is not on the block list
 	 */
-	public Boolean verifyBlockUser(String email, String productKey);
+	public Boolean verifyBlockUserByTime(String email, String productKey);
 
 }

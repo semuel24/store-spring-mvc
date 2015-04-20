@@ -1,17 +1,19 @@
 package com.store.db.dao.iml.mysql;
 
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import com.store.db.dao.StoreDAO;
+
+import com.store.db.dao.mysql.StoreDAO;
 import com.store.exception.DBException;
 
 @Transactional
-public class StoreDAOImpl<Entity> implements StoreDAO<Entity> {
+public class StoreDAOMysqlImpl<Entity> implements StoreDAO<Entity> {
 
 	protected SessionFactory factory;
 	

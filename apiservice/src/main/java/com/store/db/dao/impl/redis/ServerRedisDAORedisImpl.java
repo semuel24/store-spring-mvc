@@ -31,14 +31,14 @@ import com.store.utils.Constants;
  * 	}
  */
 //@Component
-public class ServerRedisDAO {
+public class ServerRedisDAORedisImpl {
 
 	@Autowired
 	@Qualifier("redisClient")
 	private RedisClient redisClient;
 
 	private static final Logger logger = LoggerFactory
-			.getLogger(ServerRedisDAO.class);
+			.getLogger(ServerRedisDAORedisImpl.class);
 
 	public static String SERVER_LIST_ROOT_KEY_PREFIX = "/vpnserver/";
 	public static String SERVER_LIST_ROOT_KEY = SERVER_LIST_ROOT_KEY_PREFIX
@@ -178,7 +178,7 @@ public class ServerRedisDAO {
 		config.useSingleServer().setAddress("127.0.0.1:6379");
 		client.setRedisson(Redisson.create(config));
 
-		ServerRedisDAO dao = new ServerRedisDAO();
+		ServerRedisDAORedisImpl dao = new ServerRedisDAORedisImpl();
 		dao.setRedisClient(client);
 
 		// find a server
