@@ -97,7 +97,8 @@
     </div>
     <!-- /.container -->
 
-    <footer>
+	<%@ include file="common/footer.jsp"%>
+    <!-- <footer>
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -105,7 +106,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> -->
 
    	<!-- CDN js -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>

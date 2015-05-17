@@ -50,7 +50,8 @@
     </div>
     <!-- /.container -->
 
-    <footer>
+	<%@ include file="common/footer.jsp"%>
+    <!-- <footer>
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -58,7 +59,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> -->
 
     <!-- jQuery -->
 	<%-- <script

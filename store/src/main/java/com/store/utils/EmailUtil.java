@@ -124,12 +124,14 @@ public class EmailUtil {
 		multipart.addBodyPart(messageBodyPart);
 
 		// Part two is attachment
-		messageBodyPart = new MimeBodyPart();
-		DataSource source = new FileDataSource(attachmentPath);
+		if(attachmentPath != null) {
+			messageBodyPart = new MimeBodyPart();
+			DataSource source = new FileDataSource(attachmentPath);
 
-		messageBodyPart.setDataHandler(new DataHandler(source));
-		messageBodyPart.setFileName(attachmentPath);
-		multipart.addBodyPart(messageBodyPart);
+			messageBodyPart.setDataHandler(new DataHandler(source));
+			messageBodyPart.setFileName(attachmentPath);
+			multipart.addBodyPart(messageBodyPart);
+		}
 
 		// Send the complete message parts
 		message.setContent(multipart);
