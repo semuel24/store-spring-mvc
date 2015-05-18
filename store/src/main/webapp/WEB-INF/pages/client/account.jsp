@@ -14,6 +14,7 @@
 <meta name="author" content="">
 
 <title>tubevpn</title>
+<link rel="shortcut icon" href="<c:url value="/resources/images/bg.jpg" />" />
 
 <!-- Bootstrap Core CSS -->
 <link

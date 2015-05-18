@@ -107,7 +107,7 @@ public class EmailUtil {
 
 	public void sendForgotPasswordEmail(String toEmail, String changePasswordCode) {
 		try {
-			String email = getForgotPasswordEmailTemplate().replaceAll("$code", changePasswordCode);
+			String email = getForgotPasswordEmailTemplate().replaceAll("\\$code", changePasswordCode);
 			// no attachment, everything is on external link
 			SendEmail(SOURCE_EMAIL, toEmail, "tubevpn 忘记置密码服务",
 					email, null);
@@ -173,7 +173,8 @@ public class EmailUtil {
 		BodyPart messageBodyPart = new MimeBodyPart();
 
 		// Fill the message
-		messageBodyPart.setText(content);
+//		messageBodyPart.setText(content);
+		messageBodyPart.setContent(content, "text/html; charset=utf-8");
 
 		// Create a multipar message
 		Multipart multipart = new MimeMultipart();
@@ -223,7 +224,9 @@ public class EmailUtil {
 
 	public static void main(String[] args) throws IOException {
 		EmailUtil util = new EmailUtil();
-		String content = util.readTemplate("/Users/yaoxu/fuhu/code/play/store-spring-mvc/store/tomcat/conf/emails/signup.template");
-		System.out.println(content);
+//		String content = util.readTemplate("/Users/yaoxu/fuhu/code/play/store-spring-mvc/store/tomcat/conf/emails/signup.template");
+//		System.out.println(content);
+		
+		System.out.println("请在三天内使用协助代码$code到网页www.tubevpn.com/store/changepasswithcode修改您的密码。".replaceAll("\\$code", "kaklyxivih"));
 	}
 }
