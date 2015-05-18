@@ -6,18 +6,28 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
-//@Component
+/**
+ * bean initialized in applicationContext.xml
+ */
 public class EmailUtil {
 
 	private final static String HOST = "localhost";
-	public final static String SOURCE_EMAIL = "yaoxu@tubevpn.com";
-		
-	private static String SIGNUP_EMAIL_TEMPLATE = null;
-	private static String FORGOT_PASSWORD_EMAIL_TEMPLATE = null;
-	private static String CHANGE_PASSWORD_EMAIL_TEMPLATE = null;
+	public final static String SOURCE_EMAIL = "contact@tubevpn.com";
 	
-//	@Resource("${email.flag}")
+	//email template path
+	private String signupEmailTemplatePath = null;
+	private String forgotPasswordEmailTemplatePath = null;
+	private String changePasswordEmailTemplatePath = null;
+	
+	//email template content
+	private String signupEmailTemplate = null;
+	private String forgotPasswordEmailTemplate = null;
+	private String changePasswordEmailTemplate = null;
+	
+	
 	private String bEmailServiceOn;
 
 	public String getbEmailServiceOn() {
@@ -28,26 +38,68 @@ public class EmailUtil {
 		this.bEmailServiceOn = bEmailServiceOn;
 	}
 
-	static {
-		// read sign up email template
-		SIGNUP_EMAIL_TEMPLATE = READTEMPLATE("emails/signup.template");
+	public String getSignupEmailTemplatePath() {
+		return signupEmailTemplatePath;
+	}
 
-		// read forgot password template
-		FORGOT_PASSWORD_EMAIL_TEMPLATE = READTEMPLATE("emails/forgot.password.template");
+	public void setSignupEmailTemplatePath(String signupEmailTemplatePath) {
+		this.signupEmailTemplatePath = signupEmailTemplatePath;
+	}
 
-		// read change password template
-		CHANGE_PASSWORD_EMAIL_TEMPLATE = READTEMPLATE("emails/change.password.template");
+	public String getForgotPasswordEmailTemplatePath() {
+		return forgotPasswordEmailTemplatePath;
+	}
+
+	public void setForgotPasswordEmailTemplatePath(
+			String forgotPasswordEmailTemplatePath) {
+		this.forgotPasswordEmailTemplatePath = forgotPasswordEmailTemplatePath;
+	}
+
+	public String getChangePasswordEmailTemplatePath() {
+		return changePasswordEmailTemplatePath;
+	}
+
+	public void setChangePasswordEmailTemplatePath(
+			String changePasswordEmailTemplatePath) {
+		this.changePasswordEmailTemplatePath = changePasswordEmailTemplatePath;
+	}
+
+	public String getSignupEmailTemplate() throws IOException {
+		if(signupEmailTemplate != null) {
+			return signupEmailTemplate;
+		}
+		signupEmailTemplate = readTemplate(getSignupEmailTemplatePath());
+		return signupEmailTemplate;
+	}
+
+	public String getForgotPasswordEmailTemplate() throws IOException {
+		if(forgotPasswordEmailTemplate != null) {
+			return forgotPasswordEmailTemplate;
+		}
+		forgotPasswordEmailTemplate = readTemplate(getForgotPasswordEmailTemplatePath());
+		return forgotPasswordEmailTemplate;
+	}
+
+	public String getChangePasswordEmailTemplate() throws IOException {
+		if(changePasswordEmailTemplate != null) {
+			return changePasswordEmailTemplate;
+		}
+		changePasswordEmailTemplate = readTemplate(getChangePasswordEmailTemplatePath());
+		return changePasswordEmailTemplate;
 	}
 
 	public void sendSignUpEmail(String toEmail) {
 		try {
 			// no attachment, everything is on external link
 			SendEmail(SOURCE_EMAIL, toEmail, "欢迎注册tubevpn",
-					SIGNUP_EMAIL_TEMPLATE, null);
+					getSignupEmailTemplate(), null);
 		} catch (AddressException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -55,7 +107,7 @@ public class EmailUtil {
 
 	public void sendForgotPasswordEmail(String toEmail, String changePasswordCode) {
 		try {
-			String email = FORGOT_PASSWORD_EMAIL_TEMPLATE.replaceAll("$code", changePasswordCode);
+			String email = getForgotPasswordEmailTemplate().replaceAll("$code", changePasswordCode);
 			// no attachment, everything is on external link
 			SendEmail(SOURCE_EMAIL, toEmail, "tubevpn 忘记置密码服务",
 					email, null);
@@ -65,6 +117,9 @@ public class EmailUtil {
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -72,11 +127,14 @@ public class EmailUtil {
 		try {
 			// no attachment, everything is on external link
 			SendEmail(SOURCE_EMAIL, toEmail, "tubevpn 修改密码服务",
-					CHANGE_PASSWORD_EMAIL_TEMPLATE, null);
+					getChangePasswordEmailTemplate(), null);
 		} catch (AddressException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -140,28 +198,32 @@ public class EmailUtil {
 		Transport.send(message);
 	}
 
-	private static String READTEMPLATE(String templateRelativePath) {
-		ClassLoader classLoader = EmailUtil.class.getClassLoader();
+//	private String readTemplate(String templateAbsolutePath) {
+//
+//		// read sign up email template
+//		File file = new File(templateAbsolutePath);
+//		StringBuilder signup_email_template = new StringBuilder("");
+//		try (Scanner scanner = new Scanner(file)) {
+//			while (scanner.hasNextLine()) {
+//				String line = scanner.nextLine();
+//				signup_email_template.append(line).append("\n");
+//			}
+//			scanner.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return signup_email_template.toString();
+//	}
+	
+	private String readTemplate(String templateAbsolutePath) throws IOException {
 
-		// read sign up email template
-		File file = new File(classLoader.getResource(templateRelativePath)
-				.getFile());
-		StringBuilder signup_email_template = new StringBuilder("");
-		try (Scanner scanner = new Scanner(file)) {
-			while (scanner.hasNextLine()) {
-				String line = scanner.nextLine();
-				signup_email_template.append(line).append("\n");
-			}
-			scanner.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return signup_email_template.toString();
+		return Files.toString(new File(templateAbsolutePath), Charsets.UTF_8);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		EmailUtil util = new EmailUtil();
-		util.sendSignUpEmail("semuelxu@gmail.com");
+		String content = util.readTemplate("/Users/yaoxu/fuhu/code/play/store-spring-mvc/store/tomcat/conf/emails/signup.template");
+		System.out.println(content);
 	}
 }
