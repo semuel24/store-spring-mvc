@@ -70,6 +70,7 @@ public class UserReadOnlyController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String viewLogin(HttpServletRequest request,
 			HttpServletResponse response) {
+	
 		return "/client/login";
 	}
 

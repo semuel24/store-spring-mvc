@@ -56,6 +56,18 @@ public class ApiServiceImpl implements ApiService {
 						String.class);
 
 		StatusResult sr = JSONConverter.getObject(s, StatusResult.class);
+		if (sr == null
+				|| !sr.getStatus().equalsIgnoreCase(
+						Constants.SUCCESS)) {
+			if (sr == null) {
+				throw new RuntimeException(
+						"In createUser callingResult is null.");
+			} else {
+				throw new RuntimeException("In createUser callingResult is "
+						+ sr.getStatus());
+			}
+		}
+		
 		return sr;
 	}
 	
@@ -78,6 +90,18 @@ public class ApiServiceImpl implements ApiService {
 						String.class);
 
 		StatusResult sr = JSONConverter.getObject(s, StatusResult.class);
+		
+		if (sr == null
+				|| !sr.getStatus().equalsIgnoreCase(
+						Constants.SUCCESS)) {
+			if (sr == null) {
+				throw new RuntimeException(
+						"In createUser callingResult is null.");
+			} else {
+				throw new RuntimeException("In createUser callingResult is "
+						+ sr.getStatus());
+			}
+		}
 		return sr;
 	}
 }

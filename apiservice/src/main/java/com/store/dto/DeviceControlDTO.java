@@ -5,6 +5,7 @@ public class DeviceControlDTO {
 	private String email;
 	private String incomingIp;// for test
 	private String deviceKey;
+	private String platform;
 
 	public String getEmail() {
 		return email;
@@ -30,4 +31,12 @@ public class DeviceControlDTO {
 		this.deviceKey = deviceKey;
 	}
 
+	public String getPlatform() {
+		return platform;
+	}
+
+	public void setPlatform(String platform) {
+		this.platform = platform;
+	}
+	
 }

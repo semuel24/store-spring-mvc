@@ -1,12 +1,15 @@
 package com.store.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.store.calling.api.AddorUpdateUserDTO;
 import com.store.calling.api.ApiService;
 import com.store.dao.MessageDAO;
@@ -18,6 +21,7 @@ import com.store.dto.LoginServiceDTO;
 import com.store.entity.Message;
 import com.store.entity.PasswordHelperCode;
 import com.store.entity.Product;
+import com.store.entity.SubscriptionStatus;
 import com.store.entity.User;
 import com.store.result.CreateUserResult;
 import com.store.result.HandleForgotPasswordResult;
@@ -103,59 +107,10 @@ public class UserServiceImpl implements UserService {
 		dto.setSalt(salt);
 		dto.setServiceStartTimestamp(System.currentTimeMillis());
 		dto.setStatus(true);
-		StatusResult callingResult = apiService.addUser(dto);
-		if (callingResult == null
-				|| !callingResult.getStatus().equalsIgnoreCase(
-						Constants.SUCCESS)) {
-			if (callingResult == null) {
-				throw new RuntimeException(
-						"In createUser callingResult is null.");
-			} else {
-				throw new RuntimeException("In createUser callingResult is "
-						+ callingResult.getStatus());
-			}
-		}
-
+		apiService.addUser(dto);
+		
 		return result;
 	}
-
-//	@Transactional(readOnly = false)
-//	// @Override
-//	public HandleForgotPasswordResult handleForgotPassword(String email) {
-//		HandleForgotPasswordResult result = new HandleForgotPasswordResult(
-//				Constants.SUCCESS);
-//
-//		User user = userDAO.findByEmail(email);
-//		if (user == null) {
-//			result.setStatus(Constants.EMAIL_INCORRECT);
-//			return result;
-//		}
-//
-//		Random rd = new Random();
-//		String newPlainTextPassword = String.valueOf(rd.nextLong());
-//
-//		String hashedPassword;
-//		try {
-//			hashedPassword = SHA256Generator.hash(newPlainTextPassword
-//					+ user.getSalt());
-//		} catch (Exception e) {
-//			System.out.println(e.getStackTrace());
-//			result.setStatus(Constants.GENERAL_FAILURE);
-//			return result;
-//		}
-//
-//		result.setChangePasswordCode(newPlainTextPassword);
-//		user.setPassword(hashedPassword);
-//		userDAO.update(user);
-//
-//		// update to apiservice
-//		AddorUpdateUserDTO dto = new AddorUpdateUserDTO();
-//		dto.setEmail(email);
-//		dto.setSalt(user.getSalt());
-//		apiService.updateUser(dto);
-//
-//		return result;
-//	}
 	
 	@Transactional(readOnly = false)
 	// @Override
@@ -230,7 +185,17 @@ public class UserServiceImpl implements UserService {
 		AddorUpdateUserDTO dto = new AddorUpdateUserDTO();
 		dto.setEmail(changePasswordForm.getEmail());
 		dto.setSalt(user.getSalt());
-		apiService.updateUser(dto);
+		dto.setPassword(changePasswordForm.getNewpass());
+		//one user might bind to multiple products
+		List<String> products = subscriptionStatusDAO
+				.findByUserId(user.getId());
+		if (products == null || products.size() == 0) {
+			throw new RuntimeException("Empty product list");
+		}
+		for (String product : products) {
+			dto.setProductKey(product);
+			apiService.updateUser(dto);
+		}
 
 		return result;
 	}
@@ -274,7 +239,18 @@ public class UserServiceImpl implements UserService {
 		AddorUpdateUserDTO dto = new AddorUpdateUserDTO();
 		dto.setEmail(changePasswordWithCodeForm.getEmail());
 		dto.setSalt(user.getSalt());
-		apiService.updateUser(dto);
+		dto.setPassword(changePasswordWithCodeForm.getNewpass());
+		
+		//one user might bind to multiple products
+		List<String> products = subscriptionStatusDAO
+				.findByUserId(user.getId());
+		if (products == null || products.size() == 0) {
+			throw new RuntimeException("Empty product list");
+		}
+		for (String product : products) {
+			dto.setProductKey(product);
+			apiService.updateUser(dto);
+		}
 
 		return result;
 
